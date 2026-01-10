@@ -1,0 +1,186 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+|--------------------------------------------------------------------------
+| Zyncro ERP design tokens
+|--------------------------------------------------------------------------
+| Light theme is the default. The `dark` class on <html> (managed by
+| ThemeProvider) switches to the dark surface tokens.
+*/
+
+:root {
+  --zx-bg: 248 250 252;            /* slate-50 */
+  --zx-surface: 255 255 255;       /* cards, sidebars */
+  --zx-surface-hover: 241 245 249; /* slate-100 */
+  --zx-border: 226 232 240;        /* slate-200 */
+  --zx-text: 15 23 42;             /* slate-900 */
+  --zx-text-muted: 100 116 139;    /* slate-500 */
+  --zx-primary: 21 150 144;        /* #159690 */
+  --zx-deep: 21 75 135;            /* #154B87 */
+}
+
+.dark [data-app="true"] {
+  --zx-bg: 2 6 23;                 /* slate-950 */
+  --zx-surface: 15 23 42;          /* slate-900 */
+  --zx-surface-hover: 30 41 59;    /* slate-800 */
+  --zx-border: 51 65 85;           /* slate-700 */
+  --zx-text: 241 245 249;          /* slate-100 */
+  --zx-text-muted: 148 163 184;    /* slate-400 */
+  --zx-primary: 20 184 178;        /* brighter teal for dark contrast */
+  --zx-deep: 96 165 250;           /* blue-400 for dark contrast */
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  @apply bg-[rgb(var(--zx-bg))] text-[rgb(var(--zx-text))] antialiased;
+}
+
+/* Shared thin scrollbar for sidebar / dashboard scrolling */
+.zx-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.zx-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.zx-scroll::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: rgb(var(--zx-border));
+}
+.zx-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--zx-text-muted) / 0.5);
+}
+
+/* Subtle page enter animation shared by dashboard pages */
+@keyframes zx-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in {
+  animation: zx-fade-in 0.35s ease-out both;
+}
+
+/* Focus visibility for keyboard users */
+:focus-visible {
+  outline: 2px solid rgb(var(--zx-primary));
+  outline-offset: 2px;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dark-mode coverage for legacy utility colors
+|--------------------------------------------------------------------------
+| The shared layout components are token-based, but many existing pages
+| hardcode light utility classes. These overrides remap the common ones
+| under `.dark [data-app="true"]` so the whole application reads coherently in dark mode.
+*/
+
+.dark [data-app="true"] .bg-white { background-color: rgb(15 23 42); }              /* slate-900 */
+.dark [data-app="true"] .bg-slate-50 { background-color: rgb(2 6 23); }             /* slate-950 */
+.dark [data-app="true"] .bg-slate-100 { background-color: rgb(30 41 59); }          /* slate-800 */
+.dark [data-app="true"] .bg-slate-200 { background-color: rgb(51 65 85); }          /* slate-700 */
+
+.dark [data-app="true"] .text-slate-900,
+.dark [data-app="true"] .text-slate-800 { color: rgb(241 245 249); }                /* slate-100 */
+.dark [data-app="true"] .text-slate-700 { color: rgb(226 232 240); }                /* slate-200 */
+.dark [data-app="true"] .text-slate-600 { color: rgb(203 213 225); }                /* slate-300 */
+.dark [data-app="true"] .text-slate-500 { color: rgb(148 163 184); }                /* slate-400 */
+.dark [data-app="true"] .text-slate-400 { color: rgb(148 163 184); }
+
+.dark [data-app="true"] .border-slate-100,
+.dark [data-app="true"] .border-slate-200 { border-color: rgb(51 65 85); }          /* slate-700 */
+.dark [data-app="true"] .border-slate-300 { border-color: rgb(71 85 105); }         /* slate-600 */
+
+.dark [data-app="true"] input.bg-white,
+.dark [data-app="true"] input.bg-slate-50,
+.dark [data-app="true"] select.bg-white,
+.dark [data-app="true"] textarea.bg-white { color: rgb(241 245 249); }
+
+.dark [data-app="true"] .bg-slate-50\/50,
+.dark [data-app="true"] .bg-slate-50\/80 { background-color: rgb(2 6 23 / 0.6); }
+.dark [data-app="true"] .bg-white\/40,
+.dark [data-app="true"] .bg-white\/60,
+.dark [data-app="true"] .bg-white\/80,
+.dark [data-app="true"] .bg-white\/50 { background-color: rgb(15 23 42 / 0.85); }
+
+/*
+|--------------------------------------------------------------------------
+| Dark-mode hover/interactive fixes
+|--------------------------------------------------------------------------
+| Legacy pages hover to white/slate-50 surfaces, which are blinding in
+| dark mode. Remap every hover/selected variant to stay INSIDE the dark
+| palette so rows, cards and buttons remain readable.
+*/
+
+.dark [data-app="true"] .hover\:bg-white:hover,
+.dark [data-app="true"] .hover\:bg-white\/60:hover,
+.dark [data-app="true"] .hover\:bg-white\/80:hover,
+.dark [data-app="true"] .hover\:bg-slate-50:hover,
+.dark [data-app="true"] .hover\:bg-slate-100:hover,
+.dark [data-app="true"] .hover\:bg-slate-50\/50:hover,
+.dark [data-app="true"] .hover\:bg-slate-50\/80:hover,
+.dark [data-app="true"] .hover\:bg-slate-100\/50:hover,
+.dark [data-app="true"] .hover\:bg-slate-200:hover { background-color: rgb(30 41 59); }   /* slate-800 */
+
+.dark [data-app="true"] .group:hover .group-hover\:bg-white { background-color: rgb(30 41 59); }
+.dark [data-app="true"] .group:hover .group-hover\:bg-slate-100 { background-color: rgb(30 41 59); }
+
+/* Dark inputs keep readable text + placeholders */
+.dark [data-app="true"] input,
+.dark [data-app="true"] select,
+.dark [data-app="true"] textarea { color-scheme: dark; }
+
+.dark [data-app="true"] input::placeholder,
+.dark [data-app="true"] textarea::placeholder { color: rgb(100 116 139); }
+
+/* White-on-white shadows removed in dark mode */
+.dark [data-app="true"] .shadow,
+.dark [data-app="true"] .shadow-sm,
+.dark [data-app="true"] .shadow-md,
+.dark [data-app="true"] .shadow-lg,
+.dark [data-app="true"] .shadow-xl { box-shadow: 0 10px 30px rgb(0 0 0 / 0.35) !important; }
+.dark [data-app="true"] .shadow-none { box-shadow: none !important; }
+
+/* Sticky table headers keep contrast */
+.dark [data-app="true"] thead tr { background-color: rgb(2 6 23); }
+
+/* Legacy "text-slate-900 on colored hover" buttons stay readable */
+.dark [data-app="true"] .hover\:text-slate-900:hover { color: rgb(241 245 249); }
+
+/*
+|--------------------------------------------------------------------------
+| Legacy modal safety net
+|--------------------------------------------------------------------------
+| Every hand-rolled modal (fixed inset-0 wrapper) gets its card clamped
+| to the viewport with internal scrolling, so tall forms can never push
+| the modal off-screen or overflow the page on small viewports.
+*/
+.fixed.inset-0 > div[class*="rounded"] {
+  max-height: 92vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+@media (max-width: 640px) {
+  /* Full-width sheets on mobile for every legacy modal */
+  .fixed.inset-0 > div[class*="rounded"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 1.25rem;
+  }
+  .fixed.inset-0 {
+    padding: 0.5rem !important;
+  }
+}

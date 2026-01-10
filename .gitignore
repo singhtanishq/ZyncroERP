@@ -1,0 +1,121 @@
+# ============================================================
+# Zyncro ERP - Root Git Ignore
+# Laravel Backend + React Frontend
+# ============================================================
+
+
+# ------------------------------------------------------------
+# Environment / Secrets
+# ------------------------------------------------------------
+
+.env
+.env.*
+!.env.example
+
+# Laravel environment files
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# React/Vite environment files
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+
+# ------------------------------------------------------------
+# Laravel
+# ------------------------------------------------------------
+
+backend/vendor/
+
+backend/storage/*.key
+backend/storage/app/*
+backend/storage/framework/cache/*
+backend/storage/framework/sessions/*
+backend/storage/framework/testing/*
+backend/storage/framework/views/*
+backend/storage/logs/*
+
+backend/bootstrap/cache/*
+
+
+# ------------------------------------------------------------
+# Node / React / Vite
+# ------------------------------------------------------------
+
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.vite/
+
+
+# ------------------------------------------------------------
+# Logs
+# ------------------------------------------------------------
+
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+
+# ------------------------------------------------------------
+# Operating System
+# ------------------------------------------------------------
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+._*
+
+.Spotlight-V100
+.Trashes
+.elegant-icons/
+
+
+# ------------------------------------------------------------
+# Editors / IDEs
+# ------------------------------------------------------------
+
+.vscode/*
+!.vscode/extensions.json
+
+.idea/
+
+*.swp
+*.swo
+
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+
+# ------------------------------------------------------------
+# Miscellaneous
+# ------------------------------------------------------------
+
+*.tmp
+*.temp
+
+# ------------------------------------------------------------
+# Runtime / User Uploaded Files
+# ------------------------------------------------------------
+
+backend/public/uploads/*
+!backend/public/uploads/.gitignore
+
+# ------------------------------------------------------------
+# Local Database / Backups
+# ------------------------------------------------------------
+
+*.sqlite
+*.sqlite3
+*.db
+*.sql
+*.sql.gz
+*.dump
