@@ -176,43 +176,48 @@ export default function AddStudent() {
                 </h3>
 
                 <div className="space-y-6">
-                  {/* Name Input */}
-                  <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
-                      Full Name <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative group">
-                      <User className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500 transition-colors" size={20} />
-                      <input
-                        name="name"
-                        placeholder="e.g. John Doe"
-                        value={form.name}
-                        onChange={handleChange}
-                        className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-brand-teal-500/20 focus:border-brand-teal-500 outline-none transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
-                        required
-                      />
+                  
+                  {/* Row 1: Name & Email */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Name Input */}
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
+                        Full Name <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative group">
+                        <User className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500 transition-colors" size={20} />
+                        <input
+                          name="name"
+                          placeholder="e.g. John Doe"
+                          value={form.name}
+                          onChange={handleChange}
+                          className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-brand-teal-500/20 focus:border-brand-teal-500 outline-none transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    {/* Email Input */}
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
+                        Email Address <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative group">
+                        <Mail className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500 transition-colors" size={20} />
+                        <input
+                          name="email"
+                          type="email"
+                          placeholder="e.g. john@email.com"
+                          value={form.email}
+                          onChange={handleChange}
+                          className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-brand-teal-500/20 focus:border-brand-teal-500 outline-none transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
+                          required
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  {/* Email Input */}
-                  <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
-                      Email Address <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative group">
-                      <Mail className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500 transition-colors" size={20} />
-                      <input
-                        name="email"
-                        type="email"
-                        placeholder="e.g. john@email.com"
-                        value={form.email}
-                        onChange={handleChange}
-                        className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-brand-teal-500/20 focus:border-brand-teal-500 outline-none transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
-                        required
-                      />
-                    </div>
-                  </div>
-
+                  {/* Row 2: Course & Batch */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Course Select */}
                     <div className="space-y-2">
