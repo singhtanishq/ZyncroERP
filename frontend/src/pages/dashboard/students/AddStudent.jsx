@@ -33,7 +33,6 @@ export default function AddStudent() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Helper to check if Step 1 is valid (Name and Email are required)
   const isStep1Valid = form.name.trim() !== "" && form.email.trim() !== "";
 
   const [courses, setCourses] = useState([]);
@@ -96,15 +95,15 @@ export default function AddStudent() {
   };
 
   return (
-    <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8 pt-0 space-y-8 animate-fade-in">
+    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8 pt-0 space-y-8 animate-fade-in">
       
       {/* Decorative Background Glows */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
-      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-teal-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-blue-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
 
       {/* HEADER */}
       <div className="relative z-10 flex flex-col gap-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-[11px] font-bold tracking-widest text-blue-600 dark:text-blue-400 uppercase w-max mb-1">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal-500/10 border border-brand-teal-500/20 text-[11px] font-bold tracking-widest text-brand-teal-600 dark:text-brand-teal-400 uppercase w-max mb-1">
           <UserPlus size={14} strokeWidth={2.5} />
           Student Onboarding
         </div>
@@ -116,270 +115,272 @@ export default function AddStudent() {
         </p>
       </div>
 
-      {/* STEPPER */}
-      <div className="relative z-10 py-2">
-        <div className="flex items-center w-full max-w-2xl mx-auto">
-            {STEPS.map((label, index) => {
-                const stepNum = index + 1;
-                const isActive = stepNum === step;
-                const isCompleted = stepNum < step;
-                const isLastStep = index === STEPS.length - 1;
+      <div className="max-w-4xl space-y-8">
+        {/* STEPPER */}
+        <div className="relative z-10 py-2">
+          <div className="flex items-center w-full">
+              {STEPS.map((label, index) => {
+                  const stepNum = index + 1;
+                  const isActive = stepNum === step;
+                  const isCompleted = stepNum < step;
+                  const isLastStep = index === STEPS.length - 1;
 
-                return (
-                    <Fragment key={index}>
-                        {/* Step Circle & Label */}
-                        <div className="relative flex flex-col items-center shrink-0 z-10">
-                            <div
-                                className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 border-2 
-                                ${isActive 
-                                    ? "bg-blue-600 border-blue-600 text-white scale-110 shadow-lg shadow-blue-500/25" 
-                                    : isCompleted 
-                                    ? "bg-blue-600 border-blue-600 text-white" 
-                                    : "bg-[rgb(var(--zx-surface))] border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text-muted))]"
-                                }`}
-                            >
-                                {isCompleted ? <Check size={18} strokeWidth={3} /> : stepNum}
-                            </div>
-                            
-                            {/* Floating Label */}
-                            <span className={`absolute top-14 text-[10px] font-bold uppercase tracking-widest transition-colors duration-300 w-max text-center hidden sm:block ${isActive ? "text-blue-600 dark:text-blue-400" : "text-[rgb(var(--zx-text-muted))]"}`}>
-                                {label}
-                            </span>
-                        </div>
+                  return (
+                      <Fragment key={index}>
+                          {/* Step Circle & Label */}
+                          <div className="relative flex flex-col items-center shrink-0 z-10">
+                              <div
+                                  className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 border-2 
+                                  ${isActive 
+                                      ? "bg-brand-teal-600 border-brand-teal-600 text-white scale-110 shadow-lg shadow-brand-teal-500/25" 
+                                      : isCompleted 
+                                      ? "bg-brand-teal-600 border-brand-teal-600 text-white" 
+                                      : "bg-[rgb(var(--zx-surface))] border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text-muted))]"
+                                  }`}
+                              >
+                                  {isCompleted ? <Check size={18} strokeWidth={3} /> : stepNum}
+                              </div>
+                              
+                              {/* Floating Label */}
+                              <span className={`absolute top-14 text-[10px] font-bold uppercase tracking-widest transition-colors duration-300 w-max text-center hidden sm:block ${isActive ? "text-brand-teal-600 dark:text-brand-teal-400" : "text-[rgb(var(--zx-text-muted))]"}`}>
+                                  {label}
+                              </span>
+                          </div>
 
-                        {/* Connector Line */}
-                        {!isLastStep && (
-                            <div className={`flex-1 h-[2px] mx-2 rounded-full transition-colors duration-500 ease-out 
-                                ${stepNum < step ? "bg-blue-600" : "bg-[rgb(var(--zx-border))]"}
-                            `} />
-                        )}
-                    </Fragment>
-                );
-            })}
+                          {/* Connector Line */}
+                          {!isLastStep && (
+                              <div className={`flex-1 h-[2px] mx-2 rounded-full transition-colors duration-500 ease-out 
+                                  ${stepNum < step ? "bg-brand-teal-600" : "bg-[rgb(var(--zx-border))]"}
+                              `} />
+                          )}
+                      </Fragment>
+                  );
+              })}
+          </div>
         </div>
-      </div>
 
-      {/* Main Form Card */}
-      <div className="relative z-10 bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] rounded-3xl shadow-sm p-6 sm:p-8 min-h-[400px] flex flex-col mt-8">
-        
-        {/* STEP 1: Details */}
-        {step === 1 && (
-          <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-            <h3 className="text-xs font-extrabold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest border-b border-[rgb(var(--zx-border))] pb-4 mb-6 flex items-center gap-2">
-              <User size={16} /> Student Information
-            </h3>
+        {/* Main Form Card */}
+        <div className="relative z-10 bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] rounded-3xl shadow-sm p-6 sm:p-8 min-h-[400px] flex flex-col">
+          
+          {/* STEP 1: Details */}
+          {step === 1 && (
+            <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+              <h3 className="text-xs font-extrabold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest border-b border-[rgb(var(--zx-border))] pb-4 mb-6 flex items-center gap-2">
+                <User size={16} /> Student Information
+              </h3>
 
-            <div className="space-y-6">
-              {/* Name Input */}
-              <div className="space-y-2">
-                <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
-                  Full Name <span className="text-red-500">*</span>
-                </label>
-                <div className="relative group">
-                  <User className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-blue-500 transition-colors" size={20} />
-                  <input
-                    name="name"
-                    placeholder="e.g. John Doe"
-                    value={form.name}
-                    onChange={handleChange}
-                    className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Email Input */}
-              <div className="space-y-2">
-                <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
-                  Email Address <span className="text-red-500">*</span>
-                </label>
-                <div className="relative group">
-                  <Mail className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-blue-500 transition-colors" size={20} />
-                  <input
-                    name="email"
-                    type="email"
-                    placeholder="e.g. john@email.com"
-                    value={form.email}
-                    onChange={handleChange}
-                    className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Course Select */}
+              <div className="space-y-6">
+                {/* Name Input */}
                 <div className="space-y-2">
                   <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
-                    Course
+                    Full Name <span className="text-red-500">*</span>
                   </label>
                   <div className="relative group">
-                    <BookOpen className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-blue-500 transition-colors" size={20} />
-                    <select
-                      name="course_id"
-                      value={form.course_id}
+                    <User className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500 transition-colors" size={20} />
+                    <input
+                      name="name"
+                      placeholder="e.g. John Doe"
+                      value={form.name}
                       onChange={handleChange}
-                      className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-10 py-3.5 text-[14px] appearance-none bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all cursor-pointer font-medium hover:border-[rgb(var(--zx-border-hover))]"
-                    >
-                      <option value="">Select Course</option>
-                      {courses.map((c) => (
-                        <option key={c.id} value={c.id}>{c.name}</option>
-                      ))}
-                    </select>
-                    <div className="absolute right-4 top-4 pointer-events-none text-[rgb(var(--zx-text-muted))]">
-                      <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
-                    </div>
+                      className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-brand-teal-500/20 focus:border-brand-teal-500 outline-none transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
+                      required
+                    />
                   </div>
                 </div>
 
-                {/* Batch Select */}
+                {/* Email Input */}
                 <div className="space-y-2">
                   <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
-                    Batch
+                    Email Address <span className="text-red-500">*</span>
                   </label>
                   <div className="relative group">
-                    <Layers className={`absolute left-4 top-3.5 transition-colors ${!form.course_id ? 'text-[rgb(var(--zx-border))]' : 'text-[rgb(var(--zx-text-muted))] group-focus-within:text-blue-500'}`} size={20} />
-                    <select
-                      name="batch_id"
-                      value={form.batch_id}
+                    <Mail className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500 transition-colors" size={20} />
+                    <input
+                      name="email"
+                      type="email"
+                      placeholder="e.g. john@email.com"
+                      value={form.email}
                       onChange={handleChange}
-                      className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-10 py-3.5 text-[14px] appearance-none bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer hover:border-[rgb(var(--zx-border-hover))]"
-                      disabled={!form.course_id}
-                    >
-                      <option value="">Select Batch</option>
-                      {batches.map((b) => (
-                        <option key={b.id} value={b.id}>
-                          {b.name} ({b.start_year}-{b.end_year})
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute right-4 top-4 pointer-events-none text-[rgb(var(--zx-text-muted))]">
+                      className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-brand-teal-500/20 focus:border-brand-teal-500 outline-none transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Course Select */}
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
+                      Course
+                    </label>
+                    <div className="relative group">
+                      <BookOpen className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500 transition-colors" size={20} />
+                      <select
+                        name="course_id"
+                        value={form.course_id}
+                        onChange={handleChange}
+                        className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-10 py-3.5 text-[14px] appearance-none bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-brand-teal-500/20 focus:border-brand-teal-500 outline-none transition-all cursor-pointer font-medium hover:border-[rgb(var(--zx-border-hover))]"
+                      >
+                        <option value="">Select Course</option>
+                        {courses.map((c) => (
+                          <option key={c.id} value={c.id}>{c.name}</option>
+                        ))}
+                      </select>
+                      <div className="absolute right-4 top-4 pointer-events-none text-[rgb(var(--zx-text-muted))]">
                         <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Batch Select */}
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
+                      Batch
+                    </label>
+                    <div className="relative group">
+                      <Layers className={`absolute left-4 top-3.5 transition-colors ${!form.course_id ? 'text-[rgb(var(--zx-border))]' : 'text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500'}`} size={20} />
+                      <select
+                        name="batch_id"
+                        value={form.batch_id}
+                        onChange={handleChange}
+                        className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-10 py-3.5 text-[14px] appearance-none bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-brand-teal-500/20 focus:border-brand-teal-500 outline-none transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer hover:border-[rgb(var(--zx-border-hover))]"
+                        disabled={!form.course_id}
+                      >
+                        <option value="">Select Batch</option>
+                        {batches.map((b) => (
+                          <option key={b.id} value={b.id}>
+                            {b.name} ({b.start_year}-{b.end_year})
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute right-4 top-4 pointer-events-none text-[rgb(var(--zx-text-muted))]">
+                          <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
+                      </div>
                     </div>
                   </div>
                 </div>
+
+                {/* Step 1 Actions */}
+                <div className="pt-6">
+                  <button
+                    disabled={!isStep1Valid}
+                    onClick={() => {
+                      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                      if (!emailRegex.test(form.email)) {
+                        setMessage("Please enter a valid email address");
+                        return;
+                      }
+                      setMessage("");
+                      setStep(2);
+                    }}
+                    className={`w-full flex items-center justify-center gap-2 rounded-2xl py-4 text-[15px] font-bold transition-all ${
+                      isStep1Valid
+                        ? "bg-brand-teal-600 text-white hover:bg-brand-teal-700 shadow-lg shadow-brand-teal-500/20 active:scale-[0.98]"
+                        : "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] cursor-not-allowed border border-[rgb(var(--zx-border))]"
+                    }`}
+                  >
+                    Continue to Preview <ArrowRight size={20} />
+                  </button>
+                  
+                  {message && (
+                    <div className="flex items-center justify-center gap-2 text-[13px] font-medium text-amber-600 mt-6 bg-amber-500/10 p-3 rounded-xl border border-amber-500/20 animate-in slide-in-from-top-2">
+                      <AlertCircle size={16} /> {message}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 2: Preview */}
+          {step === 2 && (
+            <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+              <h3 className="text-xs font-extrabold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest border-b border-[rgb(var(--zx-border))] pb-4 mb-6 flex items-center gap-2">
+                <CheckCircle2 size={16} /> Review Details
+              </h3>
+
+              <div className="bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] rounded-3xl overflow-hidden divide-y divide-[rgb(var(--zx-border))] mb-8">
+                <Preview label="Full Name" value={form.name} icon={<User size={18} />} />
+                <Preview label="Email Address" value={form.email} icon={<Mail size={18} />} />
+                <Preview 
+                    label="Course" 
+                    value={courses.find(c => c.id == form.course_id)?.name || <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>} 
+                    icon={<BookOpen size={18} />} 
+                  />
+                  <Preview 
+                    label="Batch" 
+                    value={batches.find(b => b.id == form.batch_id)?.name || <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>} 
+                    icon={<Layers size={18} />} 
+                  />
               </div>
 
-              {/* Step 1 Actions */}
-              <div className="pt-6">
+              <div className="flex gap-4">
                 <button
-                  disabled={!isStep1Valid}
-                  onClick={() => {
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!emailRegex.test(form.email)) {
-                      setMessage("Please enter a valid email address");
-                      return;
-                    }
-                    setMessage("");
-                    setStep(2);
-                  }}
-                  className={`w-full flex items-center justify-center gap-2 rounded-2xl py-4 text-[15px] font-bold transition-all ${
-                    isStep1Valid
-                      ? "bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/20 active:scale-[0.98]"
-                      : "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] cursor-not-allowed border border-[rgb(var(--zx-border))]"
+                  onClick={() => setStep(1)}
+                  className="flex-1 flex items-center justify-center gap-2 bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] rounded-2xl py-4 text-[15px] font-bold hover:bg-[rgb(var(--zx-surface-hover))] transition-colors"
+                >
+                  <ArrowLeft size={18} /> Back
+                </button>
+                <button
+                  onClick={() => setStep(3)}
+                  className="flex-[2] flex items-center justify-center gap-2 bg-brand-teal-600 text-white rounded-2xl py-4 text-[15px] font-bold hover:bg-brand-teal-700 shadow-lg shadow-brand-teal-500/20 transition-all active:scale-[0.98]"
+                >
+                  Confirm Details <Check size={18} />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 3: Confirm */}
+          {step === 3 && (
+            <div className="animate-in fade-in slide-in-from-right-4 duration-300 text-center flex-1 flex flex-col justify-center py-6">
+              <div className="w-20 h-20 bg-amber-500/10 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 text-amber-500 border border-amber-500/20">
+                <AlertCircle size={36} strokeWidth={2.5} />
+              </div>
+              
+              <h1 className="text-2xl font-extrabold text-[rgb(var(--zx-text))] tracking-tight mb-3">
+                Confirm Action
+              </h1>
+              <p className="text-[rgb(var(--zx-text-muted))] text-[15px] leading-relaxed mb-10 max-w-sm mx-auto">
+                New login credentials will be generated and sent to <span className="font-bold text-[rgb(var(--zx-text))]">{form.email}</span>. <br/>Are you sure you want to proceed?
+              </p>
+
+              <div className="flex gap-4 max-w-md mx-auto w-full">
+                <button
+                  onClick={() => setStep(2)}
+                  className="flex-1 flex items-center justify-center gap-2 bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] rounded-2xl py-4 text-[15px] font-bold hover:bg-[rgb(var(--zx-surface-hover))] transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={submit}
+                  disabled={loading}
+                  className="flex-1 flex items-center justify-center gap-2 bg-amber-500 text-white rounded-2xl py-4 text-[15px] font-bold hover:bg-amber-600 shadow-lg shadow-amber-500/20 transition-all disabled:opacity-70 disabled:cursor-not-allowed active:scale-[0.98]"
+                >
+                  {loading ? (
+                    <><Loader2 size={18} className="animate-spin" /> Processing...</>
+                  ) : (
+                    <>Create Student <Save size={18} /></>
+                  )}
+                </button>
+              </div>
+
+              {message && (
+                <div
+                  className={`mt-8 p-4 rounded-xl text-[14px] font-bold flex items-center justify-center gap-2 max-w-md mx-auto w-full animate-in fade-in slide-in-from-bottom-2 ${
+                    message.toLowerCase().includes("exists") ||
+                    message.toLowerCase().includes("failed")
+                      ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20"
+                      : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
                   }`}
                 >
-                  Continue to Preview <ArrowRight size={20} />
-                </button>
-                
-                {message && (
-                  <div className="flex items-center justify-center gap-2 text-[13px] font-medium text-amber-600 mt-6 bg-amber-500/10 p-3 rounded-xl border border-amber-500/20 animate-in slide-in-from-top-2">
-                    <AlertCircle size={16} /> {message}
-                  </div>
-                )}
-              </div>
+                  {message.toLowerCase().includes("exists") ? <AlertCircle size={18} /> : <CheckCircle2 size={18} />}
+                  {message}
+                </div>
+              )}
             </div>
-          </div>
-        )}
-
-        {/* STEP 2: Preview */}
-        {step === 2 && (
-          <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-            <h3 className="text-xs font-extrabold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest border-b border-[rgb(var(--zx-border))] pb-4 mb-6 flex items-center gap-2">
-              <CheckCircle2 size={16} /> Review Details
-            </h3>
-
-            <div className="bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] rounded-3xl overflow-hidden divide-y divide-[rgb(var(--zx-border))] mb-8">
-              <Preview label="Full Name" value={form.name} icon={<User size={18} />} />
-              <Preview label="Email Address" value={form.email} icon={<Mail size={18} />} />
-              <Preview 
-                  label="Course" 
-                  value={courses.find(c => c.id == form.course_id)?.name || <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>} 
-                  icon={<BookOpen size={18} />} 
-                />
-                <Preview 
-                  label="Batch" 
-                  value={batches.find(b => b.id == form.batch_id)?.name || <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>} 
-                  icon={<Layers size={18} />} 
-                />
-            </div>
-
-            <div className="flex gap-4">
-              <button
-                onClick={() => setStep(1)}
-                className="flex-1 flex items-center justify-center gap-2 bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] rounded-2xl py-4 text-[15px] font-bold hover:bg-[rgb(var(--zx-surface-hover))] transition-colors"
-              >
-                <ArrowLeft size={18} /> Back
-              </button>
-              <button
-                onClick={() => setStep(3)}
-                className="flex-[2] flex items-center justify-center gap-2 bg-blue-600 text-white rounded-2xl py-4 text-[15px] font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98]"
-              >
-                Confirm Details <Check size={18} />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* STEP 3: Confirm */}
-        {step === 3 && (
-          <div className="animate-in fade-in slide-in-from-right-4 duration-300 text-center flex-1 flex flex-col justify-center py-6">
-            <div className="w-20 h-20 bg-amber-500/10 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 text-amber-500 border border-amber-500/20">
-              <AlertCircle size={36} strokeWidth={2.5} />
-            </div>
-            
-            <h1 className="text-2xl font-extrabold text-[rgb(var(--zx-text))] tracking-tight mb-3">
-              Confirm Action
-            </h1>
-            <p className="text-[rgb(var(--zx-text-muted))] text-[15px] leading-relaxed mb-10 max-w-sm mx-auto">
-              New login credentials will be generated and sent to <span className="font-bold text-[rgb(var(--zx-text))]">{form.email}</span>. <br/>Are you sure you want to proceed?
-            </p>
-
-            <div className="flex gap-4 max-w-md mx-auto w-full">
-              <button
-                onClick={() => setStep(2)}
-                className="flex-1 flex items-center justify-center gap-2 bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] rounded-2xl py-4 text-[15px] font-bold hover:bg-[rgb(var(--zx-surface-hover))] transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={submit}
-                disabled={loading}
-                className="flex-1 flex items-center justify-center gap-2 bg-amber-500 text-white rounded-2xl py-4 text-[15px] font-bold hover:bg-amber-600 shadow-lg shadow-amber-500/20 transition-all disabled:opacity-70 disabled:cursor-not-allowed active:scale-[0.98]"
-              >
-                {loading ? (
-                  <><Loader2 size={18} className="animate-spin" /> Processing...</>
-                ) : (
-                  <>Create Student <Save size={18} /></>
-                )}
-              </button>
-            </div>
-
-            {message && (
-              <div
-                className={`mt-8 p-4 rounded-xl text-[14px] font-bold flex items-center justify-center gap-2 max-w-md mx-auto w-full animate-in fade-in slide-in-from-bottom-2 ${
-                  message.toLowerCase().includes("exists") ||
-                  message.toLowerCase().includes("failed")
-                    ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20"
-                    : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
-                }`}
-              >
-                {message.toLowerCase().includes("exists") ? <AlertCircle size={18} /> : <CheckCircle2 size={18} />}
-                {message}
-              </div>
-            )}
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Toast Notification */}
@@ -402,8 +403,8 @@ export default function AddStudent() {
 function Preview({ label, value, icon }) {
   return (
     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center px-6 py-5 hover:bg-[rgb(var(--zx-surface))] transition-colors group gap-2">
-      <div className="flex items-center gap-3 text-[rgb(var(--zx-text-muted))] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-        <div className="p-2.5 bg-[rgb(var(--zx-surface))] rounded-xl border border-[rgb(var(--zx-border))] shadow-sm group-hover:border-blue-500/30 group-hover:bg-blue-500/10 transition-all">
+      <div className="flex items-center gap-3 text-[rgb(var(--zx-text-muted))] group-hover:text-brand-teal-600 dark:group-hover:text-brand-teal-400 transition-colors">
+        <div className="p-2.5 bg-[rgb(var(--zx-surface))] rounded-xl border border-[rgb(var(--zx-border))] shadow-sm group-hover:border-brand-teal-500/30 group-hover:bg-brand-teal-500/10 transition-all">
             {icon}
         </div>
         <span className="text-[11px] font-bold uppercase tracking-widest">{label}</span>
