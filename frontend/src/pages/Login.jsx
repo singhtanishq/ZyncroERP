@@ -15,7 +15,7 @@ import {
   Mail, Lock, Eye, EyeOff, ShieldCheck, 
   ArrowRight, Calendar, Globe, Phone, KeyRound, 
   AlertCircle, CheckCircle2, ChevronLeft, LogOut,
-  BarChart3, Users
+  BarChart3, Users, LayoutDashboard, Fingerprint
 } from "lucide-react";
 
 export default function LoginPage() {
@@ -410,345 +410,305 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-slate-50 font-sans p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen flex w-full bg-white font-sans overflow-hidden">
       
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-[20%] -left-[10%] w-[80%] sm:w-[50%] h-[50%] rounded-full bg-violet-400/30 blur-[100px] sm:blur-[120px] mix-blend-multiply animate-blob"></div>
-        <div className="absolute top-[20%] -right-[10%] w-[70%] sm:w-[40%] h-[50%] rounded-full bg-cyan-300/30 blur-[100px] sm:blur-[120px] mix-blend-multiply animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-[20%] left-[20%] w-[90%] sm:w-[60%] h-[50%] rounded-full bg-yellow-200/30 blur-[100px] sm:blur-[120px] mix-blend-multiply animate-blob animation-delay-4000"></div>
-      </div>
-
-      <div className="absolute inset-0 z-0 bg-grid-pattern pointer-events-none opacity-60"></div>
-
-      <style>{`
-        /* Blob Animations */
-        @keyframes blob {
-          0% { transform: translate(0px, 0px) scale(1); }
-          33% { transform: translate(30px, -50px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.9); }
-          100% { transform: translate(0px, 0px) scale(1); }
-        }
-        .animate-blob {
-          animation: blob 10s infinite alternate ease-in-out;
-        }
-        .animation-delay-2000 { animation-delay: 2s; }
-        .animation-delay-4000 { animation-delay: 4s; }
-
-        /* Modern Abstract Grid */
-        .bg-grid-pattern {
-          background-size: 40px 40px;
-          background-image: 
-            linear-gradient(to right, rgba(15, 23, 42, 0.04) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
-        }
-
-        /* Abstract Floating Animations for Right Panel */
-        @keyframes float {
-          0% { transform: translateY(0px) rotate(var(--rotation, 0deg)); }
-          50% { transform: translateY(-15px) rotate(var(--rotation, 0deg)); }
-          100% { transform: translateY(0px) rotate(var(--rotation, 0deg)); }
-        }
-        .animate-float-slow {
-          animation: float 6s ease-in-out infinite;
-        }
-        .animate-float-slower {
-          animation: float 8s ease-in-out infinite;
-        }
-
-        /* Custom Glass Input Autosense Fix */
-        input:-webkit-autofill,
-        input:-webkit-autofill:hover, 
-        input:-webkit-autofill:focus, 
-        input:-webkit-autofill:active{
-            -webkit-box-shadow: 0 0 0 30px white inset !important;
-            -webkit-text-fill-color: #0f172a !important;
-            border-radius: 0.75rem;
-        }
-      `}</style>
-
-      {/* Main Glass Card */}
-      <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col lg:flex-row rounded-3xl sm:rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] overflow-hidden bg-white/60 backdrop-blur-2xl border border-white/40 min-h-[75vh]">
+      {/* 
+        =========================================
+        LEFT SIDE: Form Area
+        =========================================
+      */}
+      <div className="w-full lg:w-[45%] flex flex-col justify-center relative px-6 sm:px-12 lg:px-20 xl:px-28 z-10 bg-white shadow-[10px_0_30px_rgba(0,0,0,0.03)]">
         
-        {/* Left Side: Form Area */}
-        <div className="w-full lg:w-[45%] flex flex-col justify-between p-6 sm:p-10 lg:p-14 bg-white/80 shrink-0">
-          <div>
-            <div className="mb-8 sm:mb-12">
-              <img
-                src="/assets/logos/logo_color.png"
-                alt="Zyncro ERP logo"
-                className="h-12 sm:h-14 w-auto object-contain drop-shadow-sm"
-              />
-            </div>
+        <div className="w-full max-w-md mx-auto">
+          {/* Logo Section */}
+          <div className="mb-10">
+            <img
+              src="/assets/logos/logo_color.png"
+              alt="Zyncro ERP logo"
+              className="h-14 sm:h-16 w-auto object-contain"
+            />
+          </div>
 
-            <div className="space-y-2 mb-8 sm:mb-10">
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                {isPending
-                  ? `Hi, ${pendingUser?.name ?? ""}`
-                  : user
-                  ? `Welcome, ${user.name}`
-                  : "Welcome back"}
-              </h2>
-              {!user && !isPending && (
-                <p className="text-sm sm:text-base text-slate-500 font-medium">
-                  Enter your credentials to access your account
-                </p>
-              )}
-            </div>
-
-            {loading ? (
-              <div className="py-16 flex flex-col items-center justify-center space-y-4">
-                <div className="w-10 h-10 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin"></div>
-                <p className="text-slate-500 font-medium animate-pulse">Checking session...</p>
-              </div>
-            ) : !user && !isPending ? (
-              // --- NORMAL LOGIN FORM ---
-              <form id="login-form" onSubmit={handleLogin} className="space-y-5 sm:space-y-6">
-                <div className="space-y-1.5">
-                  <label htmlFor="email" className="block text-sm font-semibold text-slate-700">
-                    Email address
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                      <Mail size={18} />
-                    </div>
-                    <input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      placeholder="you@company.com"
-                      className="w-full rounded-xl pl-11 pr-4 py-3 sm:py-3.5 bg-white/50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-brand-teal-500/50 focus:border-violet-500 outline-none transition-all shadow-sm text-sm sm:text-base"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label htmlFor="password" className="block text-sm font-semibold text-slate-700">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                      <Lock size={18} />
-                    </div>
-                    <input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      placeholder="Enter your password"
-                      className="w-full rounded-xl pl-11 pr-12 py-3 sm:py-3.5 bg-white/50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-brand-teal-500/50 focus:border-violet-500 outline-none transition-all shadow-sm text-sm sm:text-base"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleShowPasswordToggle}
-                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
-                    >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
-                  <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer group">
-                    
-                  </label>
-
-                  <button
-                    type="button"
-                    onClick={openForgotModal}
-                    className="text-sm font-semibold text-brand-teal-600 hover:text-brand-teal-700 transition-colors self-start sm:self-auto"
-                  >
-                    Forgot password?
-                  </button>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isLoginDisabled}
-                  className="w-full flex items-center justify-center gap-2 bg-brand-teal-500 hover:bg-brand-teal-600 text-white font-bold py-3.5 rounded-xl shadow-[0_4px_14px_rgba(21,150,144,0.35)] hover:shadow-[0_6px_20px_rgba(21,150,144,0.45)] hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-brand-teal-500 disabled:shadow-none disabled:transform-none"
-                >
-                  {submitting ? (
-                    <div className="w-5 h-5 border-2 border-slate-900/30 border-t-slate-900 rounded-full animate-spin" />
-                  ) : (
-                    <>Sign In <ArrowRight size={18} /></>
-                  )}
-                </button>
-              </form>
-            ) : isPending ? (
-              // --- 2FA PENDING STATE ---
-              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="p-4 bg-violet-50/50 rounded-2xl border border-violet-100 mb-6">
-                  <div className="flex items-center gap-3 mb-2">
-                    <ShieldCheck className="text-brand-teal-600 shrink-0" size={24} />
-                    <h3 className="text-base sm:text-lg font-bold text-slate-800">Two-Step Verification</h3>
-                  </div>
-                  <p className="text-sm text-slate-600 leading-relaxed">
-                    Protecting your account is our priority. Please authenticate using your email address to continue.
-                  </p>
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-center gap-3">
-                  <button
-                    onClick={handleVerifyEmail}
-                    disabled={verificationSent || sendingOtp}
-                    className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-6 rounded-xl shadow-lg shadow-slate-900/20 hover:-translate-y-0.5 transition-all disabled:opacity-70 disabled:cursor-not-allowed text-sm sm:text-base"
-                  >
-                    {sendingOtp ? (
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    ) : verificationSent ? (
-                      <CheckCircle2 size={18} className="text-green-400 shrink-0" />
-                    ) : (
-                      <Mail size={18} className="shrink-0" />
-                    )}
-                    {sendingOtp ? "Sending..." : verificationSent ? "Code Sent" : "Send Verification Code"}
-                  </button>
-
-                  <button
-                    onClick={handleBackFromPending}
-                    className="w-full sm:w-auto px-6 py-3 font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition-all text-sm sm:text-base"
-                  >
-                    Cancel
-                  </button>
-                </div>
-
-                {verificationSent && (
-                  <p className="text-sm text-slate-500 mt-4 bg-white/50 p-3 rounded-xl border border-slate-100 break-all">
-                    A code was sent to <strong className="text-slate-800 break-normal">{pendingUser?.email}</strong>. Please check your inbox.
-                  </p>
-                )}
-              </div>
-            ) : (
-              // --- ALREADY LOGGED IN ---
-              <div className="space-y-6 animate-in fade-in duration-500">
-                <div className="p-6 bg-green-50/50 rounded-2xl border border-green-100 text-center space-y-3">
-                  <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <CheckCircle2 size={32} />
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-800">You're signed in!</h3>
-                  <p className="text-slate-600 text-sm">
-                    Logged in as <strong className="text-slate-900">{user?.name}</strong>
-                  </p>
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-center gap-3 mt-6">
-                  <button
-                    onClick={() => navigate("/dashboard-role")}
-                    className="w-full sm:w-auto flex-1 bg-brand-teal-500 hover:bg-brand-teal-600 text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-brand-teal-600/20 hover:-translate-y-0.5 transition-all"
-                  >
-                    Go to Dashboard
-                  </button>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full sm:w-auto p-3.5 bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-red-600 rounded-xl transition-colors flex items-center justify-center gap-2"
-                    title="Logout"
-                  >
-                    <LogOut size={20} /> <span className="sm:hidden font-semibold">Logout</span>
-                  </button>
-                </div>
-              </div>
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-slate-900 tracking-tight">
+              {isPending
+                ? `Verify your identity`
+                : user
+                ? `Welcome back, ${user.name}`
+                : "Sign in to your account"}
+            </h2>
+            {!user && !isPending && (
+              <p className="text-slate-500 mt-2 text-[15px]">
+                Enter your credentials to access the secure portal.
+              </p>
             )}
-
-            {/* Error Message Display */}
-            {msg && !submitting && (
-              <div className="mt-6 p-4 rounded-xl bg-red-50/80 border border-red-100 flex items-start gap-3 animate-in slide-in-from-top-2">
-                <AlertCircle className="text-red-500 shrink-0 mt-0.5" size={18} />
-                <p className="text-sm text-red-700 font-medium">{msg}</p>
-              </div>
+            {isPending && (
+              <p className="text-slate-500 mt-2 text-[15px]">
+                Hi {pendingUser?.name ?? ""}, we need to verify it's you.
+              </p>
             )}
           </div>
 
+          {loading ? (
+            <div className="py-20 flex flex-col items-center justify-center space-y-4">
+              <div className="w-10 h-10 border-2 border-slate-100 border-t-teal-600 rounded-full animate-spin"></div>
+              <p className="text-slate-500 font-medium text-sm">Authenticating session...</p>
+            </div>
+          ) : !user && !isPending ? (
+            
+            // --- NORMAL LOGIN FORM ---
+            <form id="login-form" onSubmit={handleLogin} className="space-y-5">
+              
+              <div className="space-y-1.5">
+                <label htmlFor="email" className="block text-sm font-medium text-slate-700">
+                  Work Email
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <Mail size={18} />
+                  </div>
+                  <input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    placeholder="name@organization.com"
+                    className="w-full rounded-lg pl-10 pr-4 py-3 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 transition-all text-[15px] shadow-sm bg-white"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label htmlFor="password" className="block text-sm font-medium text-slate-700">
+                  Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <Lock size={18} />
+                  </div>
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    placeholder="Enter your password"
+                    className="w-full rounded-lg pl-10 pr-12 py-3 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 transition-all text-[15px] shadow-sm bg-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleShowPasswordToggle}
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-1">
+                <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+                  {/* Future Remember Me checkbox could go here */}
+                </label>
+                <button
+                  type="button"
+                  onClick={openForgotModal}
+                  className="text-sm font-semibold text-teal-600 hover:text-teal-700 transition-colors"
+                >
+                  Forgot password?
+                </button>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoginDisabled}
+                className="w-full flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 rounded-lg transition-colors shadow-sm mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {submitting ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <>Sign In <ArrowRight size={18} /></>
+                )}
+              </button>
+            </form>
+          ) : isPending ? (
+            
+            // --- 2FA PENDING STATE ---
+            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="p-5 bg-slate-50 rounded-xl border border-slate-100 mb-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <ShieldCheck className="text-teal-600 shrink-0" size={20} />
+                  <h3 className="text-[15px] font-semibold text-slate-900">Security Check Required</h3>
+                </div>
+                <p className="text-sm text-slate-600 leading-relaxed">
+                  To keep your organization's data safe, we require two-step authentication. Send a secure code to your email to continue.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={handleVerifyEmail}
+                  disabled={verificationSent || sendingOtp}
+                  className="w-full flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 px-6 rounded-lg transition-colors shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {sendingOtp ? (
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : verificationSent ? (
+                    <CheckCircle2 size={18} className="text-white shrink-0" />
+                  ) : (
+                    <Mail size={18} className="shrink-0" />
+                  )}
+                  {sendingOtp ? "Sending..." : verificationSent ? "Code Sent" : "Send Verification Code"}
+                </button>
+
+                <button
+                  onClick={handleBackFromPending}
+                  className="w-full px-6 py-3 font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors"
+                >
+                  Cancel & Go Back
+                </button>
+              </div>
+
+              {verificationSent && (
+                <p className="text-sm text-slate-500 mt-4 text-center">
+                  Code sent to <strong className="text-slate-800">{pendingUser?.email}</strong>.
+                </p>
+              )}
+            </div>
+          ) : (
+            
+            // --- ALREADY LOGGED IN ---
+            <div className="space-y-6 animate-in fade-in duration-500">
+              <div className="p-6 bg-teal-50/50 rounded-xl border border-teal-100 text-center space-y-3">
+                <div className="w-14 h-14 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <CheckCircle2 size={28} />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900">Authentication Active</h3>
+                <p className="text-slate-600 text-sm">
+                  You are currently logged in as <strong className="text-slate-900 block mt-1">{user?.name}</strong>
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-3 mt-6">
+                <button
+                  onClick={() => navigate("/dashboard-role")}
+                  className="w-full flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 rounded-lg transition-colors shadow-sm"
+                >
+                  <LayoutDashboard size={18} /> Continue to Dashboard
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="w-full p-3 font-medium text-slate-600 hover:text-red-600 hover:bg-red-50 border border-transparent rounded-lg transition-colors flex items-center justify-center gap-2"
+                >
+                  <LogOut size={18} /> Sign Out
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Error Message */}
+          {msg && !submitting && (
+            <div className="mt-6 p-4 rounded-lg bg-red-50 border border-red-100 flex items-start gap-3 animate-in slide-in-from-top-2">
+              <AlertCircle className="text-red-600 shrink-0 mt-0.5" size={18} />
+              <p className="text-sm text-red-800 font-medium leading-relaxed">{msg}</p>
+            </div>
+          )}
+
           {!user && !isPending && (
-            <div className="mt-10 sm:mt-12 text-center text-sm font-medium text-slate-500">
+            <div className="mt-12 text-center text-sm text-slate-500">
               Don't have an account?{" "}
-              <Link to="/register" className="text-brand-teal-600 font-bold hover:text-brand-teal-700 hover:underline transition-all">
-                Register here
+              <Link to="/register" className="text-teal-600 font-semibold hover:text-teal-700 hover:underline transition-all">
+                Request Access
               </Link>
             </div>
           )}
         </div>
+      </div>
 
-        {/* Right Side: Enterprise brand panel */}
-        <div className="hidden lg:flex flex-1 relative flex-col justify-between bg-gradient-to-br from-brand-blue-800 via-brand-blue-700 to-brand-teal-800 overflow-hidden min-h-[400px] p-12">
+      {/* 
+        =========================================
+        RIGHT SIDE: Enterprise Brand Panel
+        =========================================
+      */}
+      <div className="hidden lg:flex flex-col justify-between w-[55%] bg-slate-900 relative overflow-hidden">
+        
+        {/* Subtle, premium abstract background geometry */}
+        <div className="absolute inset-0 z-0 opacity-20">
+          <svg className="absolute w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+          </svg>
+        </div>
+        
+        {/* Soft elegant glows */}
+        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-teal-600/20 blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-blue-600/10 blur-[120px] pointer-events-none" />
 
-          {/* Subtle brand texture */}
-          <div className="absolute inset-0 opacity-[0.07] pointer-events-none bg-grid-pattern" style={{ backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.5) 1px, transparent 1px)', backgroundSize: '44px 44px' }} />
-          <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-brand-teal-400/20 blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-brand-blue-400/20 blur-3xl pointer-events-none" />
-
-          <div className="relative z-10">
-            <img
-              src="/assets/logos/logo_lite.png"
-              alt="Zyncro ERP"
-              className="h-14 w-auto object-contain"
-            />
-            <p className="mt-6 text-3xl font-bold text-white tracking-tight leading-snug">
-              One platform for your
-              <br />
-              entire organization.
-            </p>
-            <p className="mt-4 text-sm leading-relaxed text-white/70 max-w-sm">
-              Students, faculty, franchises and teams — admissions, learning,
-              exams, finance and communication, managed in one secure ERP.
-            </p>
+        <div className="relative z-10 flex flex-col justify-center flex-grow p-16 xl:p-24 max-w-3xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 text-xs font-semibold tracking-wide text-teal-300 uppercase mb-8 w-max">
+            <Fingerprint size={14} /> Enterprise Grade Security
           </div>
+          
+          <h1 className="text-4xl xl:text-5xl font-bold text-white tracking-tight leading-[1.15] mb-6">
+            Centralized intelligence for modern institutions.
+          </h1>
+          <p className="text-lg text-slate-300 leading-relaxed mb-12 max-w-xl">
+            Streamline operations, unify data, and empower your teams. Zyncro ERP provides role-scoped access and real-time analytics in one secure ecosystem.
+          </p>
 
-          <div className="relative z-10 space-y-5">
+          <div className="space-y-6">
             {[
-              { icon: Users, title: "Every role, one system", text: "Dedicated dashboards for admins, faculty, students, franchises and employees." },
-              { icon: ShieldCheck, title: "Secure by design", text: "Two-step authentication with one-time codes and role-scoped access." },
-              { icon: BarChart3, title: "Decisions from real data", text: "Live revenue, enrollment and attendance reporting." },
+              { icon: Users, title: "Role-Based Access Control", text: "Dedicated, secure environments for administrators, faculty, and students." },
+              { icon: ShieldCheck, title: "Bank-Grade Encryption", text: "End-to-end security protocols with mandatory two-factor authentication." },
+              { icon: BarChart3, title: "Real-Time Telemetry", text: "Live reporting on enrollment, performance, and financial metrics." },
             ].map(({ icon: Icon, title, text }) => (
               <div key={title} className="flex items-start gap-4">
-                <div className="p-2.5 rounded-xl bg-white/10 border border-white/10 backdrop-blur-sm shrink-0">
-                  <Icon size={18} className="text-brand-teal-300" />
+                <div className="p-3 rounded-lg bg-slate-800/50 border border-slate-700/50 text-teal-400 shrink-0">
+                  <Icon size={20} />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-white">{title}</p>
-                  <p className="text-xs text-white/60 mt-0.5 leading-relaxed max-w-xs">{text}</p>
+                  <h4 className="text-[15px] font-semibold text-white mb-1">{title}</h4>
+                  <p className="text-sm text-slate-400 leading-relaxed">{text}</p>
                 </div>
               </div>
             ))}
           </div>
+        </div>
 
-          <div className="relative z-10 flex items-center justify-between">
-            <span className="text-[11px] text-white/50 font-medium">
-              © {new Date().getFullYear()} Zyncro ERP
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 text-[10px] font-bold tracking-widest text-white/80 uppercase">
-              <ShieldCheck size={12} />
-              Secure System
-            </span>
+        <div className="relative z-10 p-10 xl:px-24 flex items-center justify-between text-sm text-slate-500">
+          <span>© {new Date().getFullYear()} Zyncro ERP. All rights reserved.</span>
+          <div className="flex gap-4">
+            <span className="hover:text-slate-300 cursor-pointer transition-colors">Privacy Policy</span>
+            <span className="hover:text-slate-300 cursor-pointer transition-colors">Terms of Service</span>
           </div>
         </div>
       </div>
 
-      {/* Global Toast for Success Messages */}
+      {/* Global Toast */}
       {successMsg && (
-        <div className="fixed top-4 sm:top-8 right-4 sm:right-8 z-[100] bg-slate-900/90 backdrop-blur-md border border-slate-700 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top-8 max-w-[90vw] sm:max-w-md">
-          <CheckCircle2 className="text-green-400 shrink-0" size={20} />
+        <div className="fixed top-6 right-6 z-[100] bg-slate-900 text-white px-5 py-3.5 rounded-lg shadow-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-4">
+          <CheckCircle2 className="text-teal-400 shrink-0" size={18} />
           <span className="font-medium text-sm">{successMsg}</span>
         </div>
       )}
 
       {/* --- OTP MODAL --- */}
       {otpOpen && isPending && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onClick={() => setOtpOpen(false)} />
-          <div className="relative bg-white rounded-[1.5rem] sm:rounded-[2rem] p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-brand-teal-500/10 text-brand-teal-600 rounded-2xl flex items-center justify-center mb-5 sm:mb-6">
-              <KeyRound size={24} className="sm:w-7 sm:h-7" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200 relative">
+            <div className="w-12 h-12 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center mb-6">
+              <KeyRound size={24} />
             </div>
-            <h4 className="text-xl sm:text-2xl font-bold text-slate-900 mb-2">Enter OTP</h4>
-            <p className="text-sm text-slate-500 mb-6 sm:mb-8 leading-relaxed">
-              We've sent a 6-digit verification code to
-              <strong className="text-slate-800 break-all block">
-                {pendingUser?.email ?? email}
-              </strong>
+            <h4 className="text-2xl font-bold text-slate-900 mb-2">Verify it's you</h4>
+            <p className="text-[15px] text-slate-500 mb-8">
+              Enter the 6-digit verification code sent to <strong className="text-slate-800">{pendingUser?.email ?? email}</strong>
             </p>
 
-            <form onSubmit={handleSubmitOtp} className="space-y-5 sm:space-y-6">
+            <form onSubmit={handleSubmitOtp} className="space-y-6">
               <div>
                 <input
                   type="text"
@@ -756,35 +716,37 @@ export default function LoginPage() {
                   maxLength={6}
                   value={otpCode}
                   onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
-                  className="w-full text-center text-2xl sm:text-3xl tracking-[0.3em] sm:tracking-[0.5em] font-bold rounded-xl py-3 sm:py-4 bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-brand-teal-500 focus:border-violet-500 outline-none transition-all"
+                  className="w-full text-center text-3xl tracking-[0.5em] font-bold rounded-lg py-4 border border-slate-200 text-slate-900 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 transition-all shadow-sm bg-white"
                   placeholder="------"
                   autoFocus
                 />
               </div>
 
-              {otpError && <div className="text-sm font-medium text-red-500 text-center">{otpError}</div>}
+              {otpError && <div className="text-sm font-medium text-red-600 text-center bg-red-50 py-2 rounded-md">{otpError}</div>}
 
               <button
                 type="submit"
                 disabled={verifyingOtp}
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all disabled:opacity-70 text-sm sm:text-base"
+                className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 rounded-lg shadow-sm transition-colors disabled:opacity-70 text-[15px]"
               >
-                {verifyingOtp ? "Verifying Code..." : "Verify & Sign In"}
+                {verifyingOtp ? "Verifying..." : "Verify & Sign In"}
               </button>
 
-              <div className="text-center">
-                <p className="text-sm text-slate-600">
+              <div className="text-center pt-2">
+                <p className="text-sm text-slate-500">
                   Didn't receive a code?{" "}
-                  <span
+                  <button
+                    type="button"
                     onClick={() => { if (resendCountdown === 0) handleVerifyEmail(); }}
-                    className={`font-semibold ${
+                    disabled={resendCountdown > 0}
+                    className={`font-semibold transition-colors ${
                       resendCountdown > 0
                         ? "text-slate-400 cursor-not-allowed"
-                        : "text-brand-teal-600 hover:text-brand-teal-700 cursor-pointer"
+                        : "text-teal-600 hover:text-teal-700"
                     }`}
                   >
                     {resendCountdown > 0 ? `Resend in ${resendCountdown}s` : "Resend"}
-                  </span>
+                  </button>
                 </p>
               </div>
             </form>
@@ -794,58 +756,58 @@ export default function LoginPage() {
 
       {/* --- FORGOT PASSWORD MODAL --- */}
       {forgotOpen && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={closeForgotModal} />
-          
-          <div className="relative bg-white rounded-[1.5rem] sm:rounded-[2rem] p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
-
-            <div className="flex items-center justify-between mb-6 sm:mb-8">
-              <div className="flex flex-col gap-1">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto relative">
+            
+            {/* Header */}
+            <div className="flex items-start justify-between mb-8">
+              <div>
                 {forgotStep !== "email" && (
-                  <button type="button" onClick={() => setForgotStep(forgotStep === "otp" ? "security" : forgotStep === "reset" ? "otp" : "email")} className="text-slate-400 hover:text-slate-800 transition-colors -ml-2 p-1 mb-1 sm:mb-2">
-                    <ChevronLeft size={20} />
+                  <button 
+                    type="button" 
+                    onClick={() => setForgotStep(forgotStep === "otp" ? "security" : forgotStep === "reset" ? "otp" : "email")} 
+                    className="flex items-center text-sm text-slate-500 hover:text-slate-900 mb-3 transition-colors"
+                  >
+                    <ChevronLeft size={16} className="mr-1" /> Back
                   </button>
                 )}
-                <h4 className="text-xl sm:text-2xl font-bold text-slate-900">
+                <h4 className="text-2xl font-bold text-slate-900">
                   {forgotStep === "email" ? "Reset Password" : 
                    forgotStep === "security" ? "Verify Identity" : 
                    forgotStep === "otp" ? "Enter Code" : "New Password"}
                 </h4>
               </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center shrink-0">
-                <Lock size={18} className="sm:w-5 sm:h-5" />
-              </div>
+              <button onClick={closeForgotModal} className="text-slate-400 hover:text-slate-600 p-1">
+                ✕
+              </button>
             </div>
 
             {/* STEP 1: EMAIL */}
             {forgotStep === "email" && (
-              <form onSubmit={handleForgotStart} className="space-y-4 sm:space-y-5">
-                <p className="text-sm text-slate-500 mb-2">
-                  Enter your registered email address. We'll ask a few security questions to verify it's you.
+              <form onSubmit={handleForgotStart} className="space-y-5">
+                <p className="text-[15px] text-slate-500 mb-2">
+                  Enter the email address associated with your account.
                 </p>
                 <div>
-                  <label className="block text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Email Address</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Email Address</label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                     <input
                       type="email"
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
-                      className="w-full pl-11 pr-4 py-3 sm:py-3.5 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:ring-2 focus:ring-brand-teal-500 outline-none transition-all text-sm sm:text-base"
-                      placeholder="you@company.com"
+                      className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 transition-all text-[15px] shadow-sm bg-white"
+                      placeholder="name@organization.com"
                       required
                     />
                   </div>
                 </div>
 
-                {forgotError && <p className="text-sm text-red-500 font-medium">{forgotError}</p>}
+                {forgotError && <p className="text-sm text-red-600 font-medium bg-red-50 p-2 rounded-md">{forgotError}</p>}
 
-                <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4">
-                  <button type="button" onClick={closeForgotModal} className="w-full sm:w-auto px-6 py-3 sm:py-3.5 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors text-sm sm:text-base">
-                    Cancel
-                  </button>
-                  <button type="submit" disabled={forgotLoading} className="w-full sm:flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 sm:py-3.5 rounded-xl transition-all disabled:opacity-70 text-sm sm:text-base">
-                    {forgotLoading ? "Checking..." : "Continue"}
+                <div className="pt-2">
+                  <button type="submit" disabled={forgotLoading} className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 rounded-lg transition-colors shadow-sm disabled:opacity-70 text-[15px]">
+                    {forgotLoading ? "Locating account..." : "Continue"}
                   </button>
                 </div>
               </form>
@@ -854,32 +816,32 @@ export default function LoginPage() {
             {/* STEP 2: SECURITY */}
             {forgotStep === "security" && (
               <form onSubmit={handleForgotSecurity} className="space-y-4">
-                <p className="text-sm text-slate-500 mb-2">
-                  Please answer these security questions to confirm your identity.
+                <p className="text-[15px] text-slate-500 mb-2">
+                  Answer the following questions to confirm it's you.
                 </p>
 
                 <div>
-                  <label className="block text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Date of Birth</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Date of Birth</label>
                   <div className="relative">
-                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                    <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                     <input
                       type="date"
                       value={forgotDob}
                       onChange={(e) => setForgotDob(e.target.value)}
-                      className="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:ring-2 focus:ring-brand-teal-500 outline-none transition-all text-sm sm:text-base"
+                      className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 transition-all text-[15px] shadow-sm bg-white"
                       required
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Country</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Country</label>
                   <div className="relative">
-                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                    <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                     <select
                       value={forgotCountry}
                       onChange={(e) => setForgotCountry(e.target.value)}
-                      className="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:ring-2 focus:ring-brand-teal-500 outline-none transition-all appearance-none text-sm sm:text-base"
+                      className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 transition-all appearance-none text-[15px] shadow-sm bg-white"
                       required
                     >
                       <option value="">Select country</option>
@@ -891,23 +853,23 @@ export default function LoginPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Mobile Number</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Mobile Number</label>
                   <div className="flex gap-2">
-                    <div className="w-20 sm:w-24 relative shrink-0">
+                    <div className="w-24 relative shrink-0">
                       <input
                         type="text"
                         value={forgotDialCode}
                         readOnly
-                        className="w-full py-3 text-center rounded-xl bg-slate-100 border border-slate-200 text-slate-500 font-medium cursor-not-allowed text-sm sm:text-base"
+                        className="w-full py-3 text-center rounded-lg bg-slate-50 border border-slate-200 text-slate-500 cursor-not-allowed text-[15px]"
                       />
                     </div>
                     <div className="relative flex-1">
-                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                      <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                       <input
                         type="tel"
                         value={forgotMobile}
                         onChange={(e) => setForgotMobile(e.target.value)}
-                        className="w-full pl-9 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:ring-2 focus:ring-brand-teal-500 outline-none transition-all text-sm sm:text-base"
+                        className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 transition-all text-[15px] shadow-sm bg-white"
                         placeholder="98765 43210"
                         required
                       />
@@ -915,10 +877,10 @@ export default function LoginPage() {
                   </div>
                 </div>
 
-                {forgotError && <p className="text-sm text-red-500 font-medium">{forgotError}</p>}
+                {forgotError && <p className="text-sm text-red-600 font-medium bg-red-50 p-2 rounded-md">{forgotError}</p>}
 
-                <div className="pt-2 sm:pt-4">
-                  <button type="submit" disabled={forgotLoading} className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 sm:py-3.5 rounded-xl transition-all disabled:opacity-70 text-sm sm:text-base">
+                <div className="pt-4">
+                  <button type="submit" disabled={forgotLoading} className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 rounded-lg transition-colors shadow-sm disabled:opacity-70 text-[15px]">
                     {forgotLoading ? "Verifying..." : "Send Verification Code"}
                   </button>
                 </div>
@@ -927,9 +889,9 @@ export default function LoginPage() {
 
             {/* STEP 3: OTP */}
             {forgotStep === "otp" && (
-              <form onSubmit={handleForgotVerify} className="space-y-5 sm:space-y-6">
-                <p className="text-sm text-slate-500">
-                  We've sent a 6-digit code to <strong className="text-slate-800 break-all">{forgotEmail}</strong>.
+              <form onSubmit={handleForgotVerify} className="space-y-6">
+                <p className="text-[15px] text-slate-500">
+                  We've sent a secure code to <strong className="text-slate-800">{forgotEmail}</strong>.
                 </p>
                 
                 <input
@@ -938,14 +900,15 @@ export default function LoginPage() {
                   maxLength={6}
                   value={forgotOtp}
                   onChange={(e) => setForgotOtp(e.target.value.replace(/\D/g, ""))}
-                  className="w-full text-center text-2xl sm:text-3xl tracking-[0.3em] sm:tracking-[0.5em] font-bold rounded-xl py-3 sm:py-4 bg-slate-50 border border-slate-200 focus:bg-white focus:ring-2 focus:ring-brand-teal-500 outline-none transition-all"
+                  className="w-full text-center text-3xl tracking-[0.5em] font-bold rounded-lg py-4 border border-slate-200 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 transition-all shadow-sm bg-white"
                   placeholder="------"
                   required
+                  autoFocus
                 />
 
-                {forgotError && <p className="text-sm text-red-500 font-medium text-center">{forgotError}</p>}
+                {forgotError && <p className="text-sm text-red-600 font-medium text-center bg-red-50 py-2 rounded-md">{forgotError}</p>}
 
-                <button type="submit" disabled={forgotLoading} className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 sm:py-3.5 rounded-xl transition-all disabled:opacity-70 text-sm sm:text-base">
+                <button type="submit" disabled={forgotLoading} className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 rounded-lg transition-colors shadow-sm disabled:opacity-70 text-[15px]">
                   {forgotLoading ? "Verifying..." : "Verify Code"}
                 </button>
               </form>
@@ -953,41 +916,49 @@ export default function LoginPage() {
 
             {/* STEP 4: RESET */}
             {forgotStep === "reset" && (
-              <form onSubmit={handleForgotReset} className="space-y-4 sm:space-y-5">
-                <p className="text-sm text-slate-500 mb-4">
+              <form onSubmit={handleForgotReset} className="space-y-5">
+                <p className="text-[15px] text-slate-500 mb-2">
                   Create a strong, new password for your account.
                 </p>
                 
-                <div className="space-y-3">
-                  <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                    <input
-                      type="password"
-                      value={forgotNewPassword}
-                      onChange={(e) => setForgotNewPassword(e.target.value)}
-                      className="w-full pl-11 pr-4 py-3 sm:py-3.5 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:ring-2 focus:ring-brand-teal-500 outline-none transition-all text-sm sm:text-base"
-                      placeholder="New password"
-                      required
-                    />
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">New Password</label>
+                    <div className="relative">
+                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                      <input
+                        type="password"
+                        value={forgotNewPassword}
+                        onChange={(e) => setForgotNewPassword(e.target.value)}
+                        className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 transition-all text-[15px] shadow-sm bg-white"
+                        placeholder="Must be at least 8 characters"
+                        required
+                      />
+                    </div>
                   </div>
-                  <div className="relative">
-                    <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                    <input
-                      type="password"
-                      value={forgotConfirmPassword}
-                      onChange={(e) => setForgotConfirmPassword(e.target.value)}
-                      className="w-full pl-11 pr-4 py-3 sm:py-3.5 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:ring-2 focus:ring-brand-teal-500 outline-none transition-all text-sm sm:text-base"
-                      placeholder="Confirm new password"
-                      required
-                    />
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Confirm Password</label>
+                    <div className="relative">
+                      <ShieldCheck className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                      <input
+                        type="password"
+                        value={forgotConfirmPassword}
+                        onChange={(e) => setForgotConfirmPassword(e.target.value)}
+                        className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 transition-all text-[15px] shadow-sm bg-white"
+                        placeholder="Re-enter password"
+                        required
+                      />
+                    </div>
                   </div>
                 </div>
 
-                {forgotError && <p className="text-sm text-red-500 font-medium">{forgotError}</p>}
+                {forgotError && <p className="text-sm text-red-600 font-medium bg-red-50 p-2 rounded-md">{forgotError}</p>}
 
-                <button type="submit" disabled={forgotLoading} className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 sm:py-3.5 rounded-xl transition-all disabled:opacity-70 mt-2 text-sm sm:text-base">
-                  {forgotLoading ? "Saving..." : "Save New Password"}
-                </button>
+                <div className="pt-2">
+                  <button type="submit" disabled={forgotLoading} className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 rounded-lg transition-colors shadow-sm disabled:opacity-70 text-[15px]">
+                    {forgotLoading ? "Saving..." : "Save New Password"}
+                  </button>
+                </div>
               </form>
             )}
           </div>
