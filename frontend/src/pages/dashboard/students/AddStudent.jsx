@@ -11,7 +11,8 @@ import {
   AlertCircle, 
   CheckCircle2,
   Save,
-  Loader2
+  Loader2,
+  UserPlus
 } from "lucide-react";
 
 const STEPS = ["Details", "Preview", "Confirm"];
@@ -95,22 +96,29 @@ export default function AddStudent() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 font-sans animate-fade-in">
+    <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8 pt-0 space-y-8 animate-fade-in">
       
+      {/* Decorative Background Glows */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+
       {/* HEADER */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 tracking-tight flex items-center gap-3">
-            <User className="text-indigo-600" size={32} />
-            Add New Student
+      <div className="relative z-10 flex flex-col gap-2">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-[11px] font-bold tracking-widest text-blue-600 dark:text-blue-400 uppercase w-max mb-1">
+          <UserPlus size={14} strokeWidth={2.5} />
+          Student Onboarding
+        </div>
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300">
+          Add New Student
         </h1>
-        <p className="text-slate-500 mt-2 text-sm max-w-xl">
-            Register a new student, assign courses, and generate credentials.
+        <p className="text-[rgb(var(--zx-text-muted))] text-[15px] max-w-2xl leading-relaxed mt-1">
+          Register a new student, assign courses, and generate credentials.
         </p>
       </div>
 
       {/* STEPPER */}
-      <div className="mb-12">
-        <div className="flex items-center w-full">
+      <div className="relative z-10 py-2">
+        <div className="flex items-center w-full max-w-2xl mx-auto">
             {STEPS.map((label, index) => {
                 const stepNum = index + 1;
                 const isActive = stepNum === step;
@@ -122,27 +130,27 @@ export default function AddStudent() {
                         {/* Step Circle & Label */}
                         <div className="relative flex flex-col items-center shrink-0 z-10">
                             <div
-                                className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 border-4 
+                                className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 border-2 
                                 ${isActive 
-                                    ? "bg-white border-indigo-600 text-indigo-600 scale-110 shadow-lg shadow-indigo-100" 
+                                    ? "bg-blue-600 border-blue-600 text-white scale-110 shadow-lg shadow-blue-500/25" 
                                     : isCompleted 
-                                    ? "bg-indigo-600 border-indigo-600 text-white" 
-                                    : "bg-white border-slate-200 text-slate-400"
+                                    ? "bg-blue-600 border-blue-600 text-white" 
+                                    : "bg-[rgb(var(--zx-surface))] border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text-muted))]"
                                 }`}
                             >
                                 {isCompleted ? <Check size={18} strokeWidth={3} /> : stepNum}
                             </div>
                             
                             {/* Floating Label */}
-                            <span className={`absolute top-12 text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 w-max text-center hidden sm:block ${isActive ? "text-indigo-600" : "text-slate-400"}`}>
+                            <span className={`absolute top-14 text-[10px] font-bold uppercase tracking-widest transition-colors duration-300 w-max text-center hidden sm:block ${isActive ? "text-blue-600 dark:text-blue-400" : "text-[rgb(var(--zx-text-muted))]"}`}>
                                 {label}
                             </span>
                         </div>
 
                         {/* Connector Line */}
                         {!isLastStep && (
-                            <div className={`flex-1 h-1 mx-2 rounded-full transition-colors duration-500 ease-out 
-                                ${stepNum < step ? "bg-indigo-600" : "bg-slate-200"}
+                            <div className={`flex-1 h-[2px] mx-2 rounded-full transition-colors duration-500 ease-out 
+                                ${stepNum < step ? "bg-blue-600" : "bg-[rgb(var(--zx-border))]"}
                             `} />
                         )}
                     </Fragment>
@@ -152,25 +160,29 @@ export default function AddStudent() {
       </div>
 
       {/* Main Form Card */}
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-xl shadow-slate-200/40 p-8 min-h-[400px] flex flex-col">
+      <div className="relative z-10 bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] rounded-3xl shadow-sm p-6 sm:p-8 min-h-[400px] flex flex-col mt-8">
         
         {/* STEP 1: Details */}
         {step === 1 && (
-          <div className="animate-in fade-in slide-in-from-right-8 duration-300">
-            <h3 className="text-lg font-bold text-slate-800 border-b border-slate-100 pb-3 mb-6">Student Information</h3>
+          <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+            <h3 className="text-xs font-extrabold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest border-b border-[rgb(var(--zx-border))] pb-4 mb-6 flex items-center gap-2">
+              <User size={16} /> Student Information
+            </h3>
 
             <div className="space-y-6">
               {/* Name Input */}
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Full Name <span className="text-red-500">*</span></label>
+                <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
+                  Full Name <span className="text-red-500">*</span>
+                </label>
                 <div className="relative group">
-                  <User className="absolute left-4 top-3.5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={20} />
+                  <User className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-blue-500 transition-colors" size={20} />
                   <input
                     name="name"
                     placeholder="e.g. John Doe"
                     value={form.name}
                     onChange={handleChange}
-                    className="w-full border border-slate-300 rounded-xl pl-12 pr-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all bg-white font-medium text-slate-700 shadow-sm placeholder:text-slate-400"
+                    className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
                     required
                   />
                 </div>
@@ -178,16 +190,18 @@ export default function AddStudent() {
 
               {/* Email Input */}
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Email Address <span className="text-red-500">*</span></label>
+                <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
+                  Email Address <span className="text-red-500">*</span>
+                </label>
                 <div className="relative group">
-                  <Mail className="absolute left-4 top-3.5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={20} />
+                  <Mail className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-blue-500 transition-colors" size={20} />
                   <input
                     name="email"
                     type="email"
                     placeholder="e.g. john@email.com"
                     value={form.email}
                     onChange={handleChange}
-                    className="w-full border border-slate-300 rounded-xl pl-12 pr-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all bg-white font-medium text-slate-700 shadow-sm placeholder:text-slate-400"
+                    className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
                     required
                   />
                 </div>
@@ -196,21 +210,23 @@ export default function AddStudent() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Course Select */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Course</label>
+                  <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
+                    Course
+                  </label>
                   <div className="relative group">
-                    <BookOpen className="absolute left-4 top-3.5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={20} />
+                    <BookOpen className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-blue-500 transition-colors" size={20} />
                     <select
                       name="course_id"
                       value={form.course_id}
                       onChange={handleChange}
-                      className="w-full border border-slate-300 rounded-xl pl-12 pr-10 py-3 text-sm appearance-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all bg-white font-medium text-slate-600 shadow-sm cursor-pointer hover:border-indigo-300"
+                      className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-10 py-3.5 text-[14px] appearance-none bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all cursor-pointer font-medium hover:border-[rgb(var(--zx-border-hover))]"
                     >
                       <option value="">Select Course</option>
                       {courses.map((c) => (
                         <option key={c.id} value={c.id}>{c.name}</option>
                       ))}
                     </select>
-                    <div className="absolute right-4 top-4 pointer-events-none text-slate-400 opacity-70">
+                    <div className="absolute right-4 top-4 pointer-events-none text-[rgb(var(--zx-text-muted))]">
                       <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
                     </div>
                   </div>
@@ -218,14 +234,16 @@ export default function AddStudent() {
 
                 {/* Batch Select */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Batch</label>
+                  <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
+                    Batch
+                  </label>
                   <div className="relative group">
-                    <Layers className={`absolute left-4 top-3.5 transition-colors ${!form.course_id ? 'text-slate-300' : 'text-slate-400 group-focus-within:text-indigo-500'}`} size={20} />
+                    <Layers className={`absolute left-4 top-3.5 transition-colors ${!form.course_id ? 'text-[rgb(var(--zx-border))]' : 'text-[rgb(var(--zx-text-muted))] group-focus-within:text-blue-500'}`} size={20} />
                     <select
                       name="batch_id"
                       value={form.batch_id}
                       onChange={handleChange}
-                      className="w-full border border-slate-300 rounded-xl pl-12 pr-10 py-3 text-sm appearance-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all bg-white font-medium text-slate-600 shadow-sm disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed cursor-pointer hover:border-indigo-300"
+                      className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-10 py-3.5 text-[14px] appearance-none bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer hover:border-[rgb(var(--zx-border-hover))]"
                       disabled={!form.course_id}
                     >
                       <option value="">Select Batch</option>
@@ -235,7 +253,7 @@ export default function AddStudent() {
                         </option>
                       ))}
                     </select>
-                    <div className="absolute right-4 top-4 pointer-events-none text-slate-400 opacity-70">
+                    <div className="absolute right-4 top-4 pointer-events-none text-[rgb(var(--zx-text-muted))]">
                         <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
                     </div>
                   </div>
@@ -255,18 +273,18 @@ export default function AddStudent() {
                     setMessage("");
                     setStep(2);
                   }}
-                  className={`w-full flex items-center justify-center gap-2 rounded-xl py-3.5 font-bold transition-all ${
+                  className={`w-full flex items-center justify-center gap-2 rounded-2xl py-4 text-[15px] font-bold transition-all ${
                     isStep1Valid
-                      ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-200 active:scale-[0.98]"
-                      : "bg-slate-200 text-slate-400 cursor-not-allowed shadow-none"
+                      ? "bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/20 active:scale-[0.98]"
+                      : "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] cursor-not-allowed border border-[rgb(var(--zx-border))]"
                   }`}
                 >
                   Continue to Preview <ArrowRight size={20} />
                 </button>
                 
                 {message && (
-                  <div className="flex items-center justify-center gap-2 text-sm font-medium text-rose-600 mt-6 bg-rose-50 p-3 rounded-xl border border-rose-100 animate-in slide-in-from-top-2">
-                    <AlertCircle size={18} /> {message}
+                  <div className="flex items-center justify-center gap-2 text-[13px] font-medium text-amber-600 mt-6 bg-amber-500/10 p-3 rounded-xl border border-amber-500/20 animate-in slide-in-from-top-2">
+                    <AlertCircle size={16} /> {message}
                   </div>
                 )}
               </div>
@@ -276,20 +294,22 @@ export default function AddStudent() {
 
         {/* STEP 2: Preview */}
         {step === 2 && (
-          <div className="animate-in fade-in slide-in-from-right-8 duration-300">
-            <h3 className="text-lg font-bold text-slate-800 border-b border-slate-100 pb-3 mb-6">Review Details</h3>
+          <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+            <h3 className="text-xs font-extrabold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest border-b border-[rgb(var(--zx-border))] pb-4 mb-6 flex items-center gap-2">
+              <CheckCircle2 size={16} /> Review Details
+            </h3>
 
-            <div className="bg-slate-50 border border-slate-100 rounded-2xl overflow-hidden divide-y divide-slate-200/60 mb-8 shadow-inner">
+            <div className="bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] rounded-3xl overflow-hidden divide-y divide-[rgb(var(--zx-border))] mb-8">
               <Preview label="Full Name" value={form.name} icon={<User size={18} />} />
               <Preview label="Email Address" value={form.email} icon={<Mail size={18} />} />
               <Preview 
                   label="Course" 
-                  value={courses.find(c => c.id == form.course_id)?.name || <span className="text-slate-400 italic">Not Selected</span>} 
+                  value={courses.find(c => c.id == form.course_id)?.name || <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>} 
                   icon={<BookOpen size={18} />} 
                 />
                 <Preview 
                   label="Batch" 
-                  value={batches.find(b => b.id == form.batch_id)?.name || <span className="text-slate-400 italic">Not Selected</span>} 
+                  value={batches.find(b => b.id == form.batch_id)?.name || <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>} 
                   icon={<Layers size={18} />} 
                 />
             </div>
@@ -297,13 +317,13 @@ export default function AddStudent() {
             <div className="flex gap-4">
               <button
                 onClick={() => setStep(1)}
-                className="flex-1 flex items-center justify-center gap-2 bg-white border border-slate-300 text-slate-700 rounded-xl py-3.5 font-bold hover:bg-slate-50 hover:text-slate-900 transition-colors shadow-sm"
+                className="flex-1 flex items-center justify-center gap-2 bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] rounded-2xl py-4 text-[15px] font-bold hover:bg-[rgb(var(--zx-surface-hover))] transition-colors"
               >
                 <ArrowLeft size={18} /> Back
               </button>
               <button
                 onClick={() => setStep(3)}
-                className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 text-white rounded-xl py-3.5 font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all active:scale-[0.98]"
+                className="flex-[2] flex items-center justify-center gap-2 bg-blue-600 text-white rounded-2xl py-4 text-[15px] font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98]"
               >
                 Confirm Details <Check size={18} />
               </button>
@@ -313,27 +333,29 @@ export default function AddStudent() {
 
         {/* STEP 3: Confirm */}
         {step === 3 && (
-          <div className="animate-in fade-in slide-in-from-right-8 duration-300 text-center flex-1 flex flex-col justify-center">
-            <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-6 text-amber-500 border border-amber-100 shadow-sm">
-              <AlertCircle size={40} />
+          <div className="animate-in fade-in slide-in-from-right-4 duration-300 text-center flex-1 flex flex-col justify-center py-6">
+            <div className="w-20 h-20 bg-amber-500/10 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 text-amber-500 border border-amber-500/20">
+              <AlertCircle size={36} strokeWidth={2.5} />
             </div>
             
-            <h1 className="text-2xl font-bold text-slate-900 mb-3">Confirm Action</h1>
-            <p className="text-slate-600 text-base leading-relaxed mb-10 max-w-sm mx-auto">
-              New login credentials will be generated and sent to <span className="font-bold text-slate-900">{form.email}</span>. <br/>Are you sure you want to proceed?
+            <h1 className="text-2xl font-extrabold text-[rgb(var(--zx-text))] tracking-tight mb-3">
+              Confirm Action
+            </h1>
+            <p className="text-[rgb(var(--zx-text-muted))] text-[15px] leading-relaxed mb-10 max-w-sm mx-auto">
+              New login credentials will be generated and sent to <span className="font-bold text-[rgb(var(--zx-text))]">{form.email}</span>. <br/>Are you sure you want to proceed?
             </p>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 max-w-md mx-auto w-full">
               <button
                 onClick={() => setStep(2)}
-                className="flex-1 flex items-center justify-center gap-2 bg-white border border-slate-300 text-slate-700 rounded-xl py-3.5 font-bold hover:bg-slate-50 transition-colors shadow-sm"
+                className="flex-1 flex items-center justify-center gap-2 bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] rounded-2xl py-4 text-[15px] font-bold hover:bg-[rgb(var(--zx-surface-hover))] transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={submit}
                 disabled={loading}
-                className="flex-1 flex items-center justify-center gap-2 bg-amber-500 text-white rounded-xl py-3.5 font-bold hover:bg-amber-600 shadow-lg shadow-amber-200 transition-all disabled:opacity-70 disabled:cursor-not-allowed active:scale-[0.98]"
+                className="flex-1 flex items-center justify-center gap-2 bg-amber-500 text-white rounded-2xl py-4 text-[15px] font-bold hover:bg-amber-600 shadow-lg shadow-amber-500/20 transition-all disabled:opacity-70 disabled:cursor-not-allowed active:scale-[0.98]"
               >
                 {loading ? (
                   <><Loader2 size={18} className="animate-spin" /> Processing...</>
@@ -345,11 +367,11 @@ export default function AddStudent() {
 
             {message && (
               <div
-                className={`mt-8 p-4 rounded-xl text-sm font-medium flex items-center justify-center gap-2 animate-in fade-in slide-in-from-bottom-2 ${
+                className={`mt-8 p-4 rounded-xl text-[14px] font-bold flex items-center justify-center gap-2 max-w-md mx-auto w-full animate-in fade-in slide-in-from-bottom-2 ${
                   message.toLowerCase().includes("exists") ||
                   message.toLowerCase().includes("failed")
-                    ? "bg-rose-50 text-rose-700 border border-rose-100"
-                    : "bg-emerald-50 text-emerald-700 border border-emerald-100"
+                    ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20"
+                    : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
                 }`}
               >
                 {message.toLowerCase().includes("exists") ? <AlertCircle size={18} /> : <CheckCircle2 size={18} />}
@@ -363,11 +385,11 @@ export default function AddStudent() {
       {/* Toast Notification */}
       {showToast && (
         <div className="fixed bottom-8 right-8 z-50 animate-in slide-in-from-bottom-5 duration-300">
-            <div className="bg-slate-900 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700/50">
-                <div className="bg-emerald-500 rounded-full p-1">
-                    <Check size={14} className="text-white" strokeWidth={3} />
+            <div className="bg-[rgb(var(--zx-text))] text-[rgb(var(--zx-surface))] px-6 py-4 rounded-2xl shadow-2xl shadow-black/20 flex items-center gap-3">
+                <div className="bg-emerald-500 rounded-full p-1 text-white">
+                    <Check size={14} strokeWidth={3} />
                 </div>
-                <div className="text-sm font-semibold tracking-wide">Student added successfully</div>
+                <div className="text-[14px] font-bold tracking-wide">Student added successfully</div>
             </div>
         </div>
       )}
@@ -379,14 +401,14 @@ export default function AddStudent() {
 
 function Preview({ label, value, icon }) {
   return (
-    <div className="flex justify-between items-center px-8 py-5 hover:bg-slate-50 transition-colors group">
-      <div className="flex items-center gap-3 text-slate-500 group-hover:text-indigo-600 transition-colors">
-        <div className="p-2 bg-white rounded-lg border border-slate-200 shadow-sm group-hover:border-indigo-200 group-hover:shadow-indigo-100 transition-all">
+    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center px-6 py-5 hover:bg-[rgb(var(--zx-surface))] transition-colors group gap-2">
+      <div className="flex items-center gap-3 text-[rgb(var(--zx-text-muted))] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+        <div className="p-2.5 bg-[rgb(var(--zx-surface))] rounded-xl border border-[rgb(var(--zx-border))] shadow-sm group-hover:border-blue-500/30 group-hover:bg-blue-500/10 transition-all">
             {icon}
         </div>
-        <span className="text-sm font-bold uppercase tracking-wide">{label}</span>
+        <span className="text-[11px] font-bold uppercase tracking-widest">{label}</span>
       </div>
-      <span className="font-bold text-slate-800 text-right text-base">{value}</span>
+      <span className="font-bold text-[rgb(var(--zx-text))] text-[15px] sm:text-right">{value}</span>
     </div>
   );
 }
