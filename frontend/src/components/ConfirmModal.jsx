@@ -1,8 +1,29 @@
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertTriangle, X } from "lucide-react";
 
 export default function ConfirmModal({ open, onClose, onConfirm, title, message }) {
-  return (
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const onKey = (e) => {
+      if (e.key === "Escape") onClose?.();
+    };
+
+    document.addEventListener("keydown", onKey);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <motion.div
@@ -67,6 +88,7 @@ export default function ConfirmModal({ open, onClose, onConfirm, title, message 
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
