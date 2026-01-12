@@ -311,18 +311,24 @@ export default function AddStudent() {
                 </h3>
 
                 <div className="bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] rounded-3xl overflow-hidden divide-y divide-[rgb(var(--zx-border))] mb-8">
+                  
                   <Preview label="Full Name" value={form.name} icon={<User size={18} />} />
                   <Preview label="Email Address" value={form.email} icon={<Mail size={18} />} />
-                  <Preview 
-                      label="Course" 
-                      value={courses.find(c => c.id == form.course_id)?.name || <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>} 
-                      icon={<BookOpen size={18} />} 
-                    />
-                    <Preview 
-                      label="Batch" 
-                      value={batches.find(b => b.id == form.batch_id)?.name || <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>} 
-                      icon={<Layers size={18} />} 
-                    />
+                  
+                  {/* Stacked Layout for Course and Batch */}
+                  <div className="grid grid-cols-2 divide-x divide-[rgb(var(--zx-border))]">
+                    <PreviewStacked 
+                        label="Course" 
+                        value={courses.find(c => c.id == form.course_id)?.name || <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>} 
+                        icon={<BookOpen size={18} />} 
+                      />
+                      <PreviewStacked 
+                        label="Batch" 
+                        value={batches.find(b => b.id == form.batch_id)?.name || <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>} 
+                        icon={<Layers size={18} />} 
+                      />
+                  </div>
+
                 </div>
 
                 <div className="flex gap-4">
@@ -345,7 +351,7 @@ export default function AddStudent() {
             {/* STEP 3: Confirm */}
             {step === 3 && (
               <div className="animate-in fade-in slide-in-from-right-4 duration-300 text-center flex-1 flex flex-col justify-center py-6">
-                <div className="w-20 h-20 bg-amber-500/10 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 text-amber-500 border border-amber-500/20">
+                <div className="w-20 h-20 bg-brand-teal-500/10 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 text-brand-teal-600 dark:text-brand-teal-400 border border-brand-teal-500/20">
                   <AlertCircle size={36} strokeWidth={2.5} />
                 </div>
                 
@@ -366,7 +372,7 @@ export default function AddStudent() {
                   <button
                     onClick={submit}
                     disabled={loading}
-                    className="flex-1 flex items-center justify-center gap-2 bg-amber-500 text-white rounded-2xl py-4 text-[15px] font-bold hover:bg-amber-600 shadow-lg shadow-amber-500/20 transition-all disabled:opacity-70 disabled:cursor-not-allowed active:scale-[0.98]"
+                    className="flex-1 flex items-center justify-center gap-2 bg-brand-teal-600 text-white rounded-2xl py-4 text-[15px] font-bold hover:bg-brand-teal-700 shadow-lg shadow-brand-teal-500/20 transition-all disabled:opacity-70 disabled:cursor-not-allowed active:scale-[0.98]"
                   >
                     {loading ? (
                       <><Loader2 size={18} className="animate-spin" /> Processing...</>
@@ -423,6 +429,20 @@ function Preview({ label, value, icon }) {
         <span className="text-[11px] font-bold uppercase tracking-widest">{label}</span>
       </div>
       <span className="font-bold text-[rgb(var(--zx-text))] text-[15px] sm:text-right">{value}</span>
+    </div>
+  );
+}
+
+function PreviewStacked({ label, value, icon }) {
+  return (
+    <div className="flex flex-col px-6 py-5 hover:bg-[rgb(var(--zx-surface))] transition-colors group gap-3">
+      <div className="flex items-center gap-3 text-[rgb(var(--zx-text-muted))] group-hover:text-brand-teal-600 dark:group-hover:text-brand-teal-400 transition-colors">
+        <div className="p-2.5 bg-[rgb(var(--zx-surface))] rounded-xl border border-[rgb(var(--zx-border))] shadow-sm group-hover:border-brand-teal-500/30 group-hover:bg-brand-teal-500/10 transition-all">
+            {icon}
+        </div>
+        <span className="text-[11px] font-bold uppercase tracking-widest">{label}</span>
+      </div>
+      <span className="font-bold text-[rgb(var(--zx-text))] text-[15px]">{value}</span>
     </div>
   );
 }
