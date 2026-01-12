@@ -312,20 +312,20 @@ export default function AddStudent() {
 
                 <div className="bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] rounded-3xl overflow-hidden divide-y divide-[rgb(var(--zx-border))] mb-8">
                   
-                  <Preview label="Full Name" value={form.name} icon={<User size={18} />} />
-                  <Preview label="Email Address" value={form.email} icon={<Mail size={18} />} />
+                  <Preview label="Full Name" value={form.name} icon={<User size={16} />} />
+                  <Preview label="Email Address" value={form.email} icon={<Mail size={16} />} />
                   
                   {/* Stacked Layout for Course and Batch */}
                   <div className="grid grid-cols-2 divide-x divide-[rgb(var(--zx-border))]">
                     <PreviewStacked 
                         label="Course" 
                         value={courses.find(c => c.id == form.course_id)?.name || <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>} 
-                        icon={<BookOpen size={18} />} 
+                        icon={<BookOpen size={16} />} 
                       />
                       <PreviewStacked 
                         label="Batch" 
                         value={batches.find(b => b.id == form.batch_id)?.name || <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>} 
-                        icon={<Layers size={18} />} 
+                        icon={<Layers size={16} />} 
                       />
                   </div>
 
@@ -334,13 +334,13 @@ export default function AddStudent() {
                 <div className="flex gap-4">
                   <button
                     onClick={() => setStep(1)}
-                    className="flex-1 flex items-center justify-center gap-2 bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] rounded-2xl py-4 text-[15px] font-bold hover:bg-[rgb(var(--zx-surface-hover))] transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] rounded-2xl py-3.5 text-[15px] font-bold hover:bg-[rgb(var(--zx-surface-hover))] transition-colors"
                   >
                     <ArrowLeft size={18} /> Back
                   </button>
                   <button
                     onClick={() => setStep(3)}
-                    className="flex-[2] flex items-center justify-center gap-2 bg-brand-teal-600 text-white rounded-2xl py-4 text-[15px] font-bold hover:bg-brand-teal-700 shadow-lg shadow-brand-teal-500/20 transition-all active:scale-[0.98]"
+                    className="flex-[2] flex items-center justify-center gap-2 bg-brand-teal-600 text-white rounded-2xl py-3.5 text-[15px] font-bold hover:bg-brand-teal-700 shadow-lg shadow-brand-teal-500/20 transition-all active:scale-[0.98]"
                   >
                     Confirm Details <Check size={18} />
                   </button>
@@ -421,28 +421,28 @@ export default function AddStudent() {
 
 function Preview({ label, value, icon }) {
   return (
-    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center px-6 py-5 hover:bg-[rgb(var(--zx-surface))] transition-colors group gap-2">
+    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center px-6 py-3.5 hover:bg-[rgb(var(--zx-surface))] transition-colors group gap-1">
       <div className="flex items-center gap-3 text-[rgb(var(--zx-text-muted))] group-hover:text-brand-teal-600 dark:group-hover:text-brand-teal-400 transition-colors">
-        <div className="p-2.5 bg-[rgb(var(--zx-surface))] rounded-xl border border-[rgb(var(--zx-border))] shadow-sm group-hover:border-brand-teal-500/30 group-hover:bg-brand-teal-500/10 transition-all">
+        <div className="p-2 bg-[rgb(var(--zx-surface))] rounded-lg border border-[rgb(var(--zx-border))] shadow-sm group-hover:border-brand-teal-500/30 group-hover:bg-brand-teal-500/10 transition-all">
             {icon}
         </div>
         <span className="text-[11px] font-bold uppercase tracking-widest">{label}</span>
       </div>
-      <span className="font-bold text-[rgb(var(--zx-text))] text-[15px] sm:text-right">{value}</span>
+      <span className="font-bold text-[rgb(var(--zx-text))] text-[14px] sm:text-right">{value}</span>
     </div>
   );
 }
 
 function PreviewStacked({ label, value, icon }) {
   return (
-    <div className="flex flex-col px-6 py-5 hover:bg-[rgb(var(--zx-surface))] transition-colors group gap-3">
-      <div className="flex items-center gap-3 text-[rgb(var(--zx-text-muted))] group-hover:text-brand-teal-600 dark:group-hover:text-brand-teal-400 transition-colors">
-        <div className="p-2.5 bg-[rgb(var(--zx-surface))] rounded-xl border border-[rgb(var(--zx-border))] shadow-sm group-hover:border-brand-teal-500/30 group-hover:bg-brand-teal-500/10 transition-all">
+    <div className="flex flex-col px-6 py-3.5 hover:bg-[rgb(var(--zx-surface))] transition-colors group gap-1.5">
+      <div className="flex items-center gap-2.5 text-[rgb(var(--zx-text-muted))] group-hover:text-brand-teal-600 dark:group-hover:text-brand-teal-400 transition-colors">
+        <div className="p-2 bg-[rgb(var(--zx-surface))] rounded-lg border border-[rgb(var(--zx-border))] shadow-sm group-hover:border-brand-teal-500/30 group-hover:bg-brand-teal-500/10 transition-all">
             {icon}
         </div>
         <span className="text-[11px] font-bold uppercase tracking-widest">{label}</span>
       </div>
-      <span className="font-bold text-[rgb(var(--zx-text))] text-[15px]">{value}</span>
+      <span className="font-bold text-[rgb(var(--zx-text))] text-[14px] line-clamp-1">{value}</span>
     </div>
   );
 }
