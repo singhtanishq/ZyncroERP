@@ -16,10 +16,10 @@ import {
   Smartphone,
   Globe,
   Hash,
-  Save,
-  AlertTriangle
+  Save
 } from "lucide-react";
 import api from "../../../lib/api/apiClient";
+import ConfirmModal from "../../../components/ConfirmModal";
 import AppModal from "../../../components/common/AppModal";
 import { useToast } from "../../../components/common/ToastProvider";
 
@@ -209,7 +209,6 @@ export default function ManageStudents() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState(() => {});
   const [confirmText, setConfirmText] = useState("");
-  const [confirmTitle, setConfirmTitle] = useState("");
 
   const [toast, setToast] = useState("");
 
@@ -286,7 +285,6 @@ export default function ManageStudents() {
   };
 
   const confirmResetLogin = (userId) => {
-    setConfirmTitle("Reset Login Credentials");
     setConfirmText(
       "Are you sure you want to reset credentials? New login details will be emailed to the student."
     );
@@ -509,64 +507,21 @@ export default function ManageStudents() {
         onUpdated={onUpdated}
       />
 
-      {/* Replaced ConfirmModal with AppModal for proper alignment and background blurring */}
-      <AppModal 
-        open={deleteOpen} 
-        onClose={() => setDeleteOpen(false)} 
-        title="Remove Student" 
-        size="sm"
-        footer={
-          <>
-            <button onClick={() => setDeleteOpen(false)} className="px-5 py-2.5 rounded-xl border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text-muted))] text-sm font-semibold hover:bg-[rgb(var(--zx-surface-hover))] transition-colors">
-              Cancel
-            </button>
-            <button
-              onClick={confirmDelete}
-              className="px-6 py-2.5 rounded-xl bg-rose-600 text-white text-sm font-semibold hover:bg-rose-700 shadow-sm transition-all active:scale-95"
-            >
-              Yes, Remove
-            </button>
-          </>
-        }
-      >
-        <div className="flex flex-col items-center text-center py-2 space-y-3">
-          <div className="w-12 h-12 bg-rose-500/10 text-rose-500 rounded-2xl flex items-center justify-center border border-rose-500/20">
-            <AlertTriangle size={24} />
-          </div>
-          <p className="text-[rgb(var(--zx-text))] text-sm leading-relaxed font-medium">
-            This will permanently delete the student and their login access. This action cannot be undone.
-          </p>
-        </div>
-      </AppModal>
+      <ConfirmModal
+        open={deleteOpen}
+        onClose={() => setDeleteOpen(false)}
+        onConfirm={confirmDelete}
+        title="Remove Student"
+        message="This will permanently delete the student and their login access. This action cannot be undone."
+      />
 
-      <AppModal 
-        open={confirmOpen} 
-        onClose={() => setConfirmOpen(false)} 
-        title={confirmTitle} 
-        size="sm"
-        footer={
-          <>
-            <button onClick={() => setConfirmOpen(false)} className="px-5 py-2.5 rounded-xl border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text-muted))] text-sm font-semibold hover:bg-[rgb(var(--zx-surface-hover))] transition-colors">
-              Cancel
-            </button>
-            <button
-              onClick={confirmAction}
-              className="px-6 py-2.5 rounded-xl bg-brand-teal-500 text-white text-sm font-semibold hover:bg-brand-teal-600 shadow-sm transition-all active:scale-95"
-            >
-              Confirm
-            </button>
-          </>
-        }
-      >
-        <div className="flex flex-col items-center text-center py-2 space-y-3">
-          <div className="w-12 h-12 bg-brand-teal-500/10 text-brand-teal-500 rounded-2xl flex items-center justify-center border border-brand-teal-500/20">
-            <KeyRound size={24} />
-          </div>
-          <p className="text-[rgb(var(--zx-text))] text-sm leading-relaxed font-medium">
-            {confirmText}
-          </p>
-        </div>
-      </AppModal>
+      <ConfirmModal
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={confirmAction}
+        title="Reset Login Credentials"
+        message={confirmText}
+      />
 
       {/* TOAST NOTIFICATION */}
       <AnimatePresence>
