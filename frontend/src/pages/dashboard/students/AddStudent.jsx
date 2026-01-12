@@ -191,7 +191,7 @@ export default function AddStudent() {
                           placeholder="e.g. John Doe"
                           value={form.name}
                           onChange={handleChange}
-                          className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-brand-teal-500/20 focus:border-brand-teal-500 outline-none transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
+                          className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:border-brand-teal-500 focus:outline-none focus:ring-0 transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
                           required
                         />
                       </div>
@@ -210,7 +210,7 @@ export default function AddStudent() {
                           placeholder="e.g. john@email.com"
                           value={form.email}
                           onChange={handleChange}
-                          className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-brand-teal-500/20 focus:border-brand-teal-500 outline-none transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
+                          className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:border-brand-teal-500 focus:outline-none focus:ring-0 transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
                           required
                         />
                       </div>
@@ -230,7 +230,7 @@ export default function AddStudent() {
                           name="course_id"
                           value={form.course_id}
                           onChange={handleChange}
-                          className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-10 py-3.5 text-[14px] appearance-none bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-brand-teal-500/20 focus:border-brand-teal-500 outline-none transition-all cursor-pointer font-medium hover:border-[rgb(var(--zx-border-hover))]"
+                          className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-10 py-3.5 text-[14px] appearance-none bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:border-brand-teal-500 focus:outline-none focus:ring-0 transition-all cursor-pointer font-medium hover:border-[rgb(var(--zx-border-hover))]"
                         >
                           <option value="">Select Course</option>
                           {courses.map((c) => (
@@ -254,7 +254,7 @@ export default function AddStudent() {
                           name="batch_id"
                           value={form.batch_id}
                           onChange={handleChange}
-                          className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-10 py-3.5 text-[14px] appearance-none bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:ring-2 focus:ring-brand-teal-500/20 focus:border-brand-teal-500 outline-none transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer hover:border-[rgb(var(--zx-border-hover))]"
+                          className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-10 py-3.5 text-[14px] appearance-none bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:border-brand-teal-500 focus:outline-none focus:ring-0 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer hover:border-[rgb(var(--zx-border-hover))]"
                           disabled={!form.course_id}
                         >
                           <option value="">Select Batch</option>
