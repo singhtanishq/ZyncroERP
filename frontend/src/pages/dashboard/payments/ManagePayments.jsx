@@ -21,13 +21,15 @@ import StatusBadge from "../../../components/common/StatusBadge";
  * been retired — all payment activity is managed inside the ERP.
  */
 
+// Removed dark: classes for colors since your app relies on CSS variables for dark mode.
+// Switched hardcoded colors to universal mid-tones (500) for perfect visibility on both light and dark.
 const MODULES = [
   {
     to: "/dashboard/payments/student-fees",
     icon: Users,
     title: "Student Fees",
     description: "Track per-student fee status and record payments against enrollments.",
-    color: "text-blue-600 dark:text-blue-400",
+    color: "text-blue-500",
     bg: "bg-blue-500/10",
     border: "group-hover:border-blue-500/30",
   },
@@ -36,7 +38,7 @@ const MODULES = [
     icon: Building2,
     title: "Franchise Payments",
     description: "Manage franchise revenue sharing, dues and the commission rate.",
-    color: "text-purple-600 dark:text-purple-400",
+    color: "text-purple-500",
     bg: "bg-purple-500/10",
     border: "group-hover:border-purple-500/30",
   },
@@ -45,7 +47,7 @@ const MODULES = [
     icon: Wallet,
     title: "Faculty Payouts",
     description: "Review salaries and mark monthly faculty payouts as paid.",
-    color: "text-emerald-600 dark:text-emerald-400",
+    color: "text-emerald-500",
     bg: "bg-emerald-500/10",
     border: "group-hover:border-emerald-500/30",
   },
@@ -54,7 +56,7 @@ const MODULES = [
     icon: History,
     title: "Payment History",
     description: "Browse recorded payment activity across the organization.",
-    color: "text-brand-teal-600 dark:text-brand-teal-400",
+    color: "text-brand-teal-500",
     bg: "bg-brand-teal-500/10",
     border: "group-hover:border-brand-teal-500/30",
   },
@@ -85,19 +87,22 @@ export default function ManagePayments() {
   }, []);
 
   return (
+    // Strictly removed all top padding/spacing (pt-0)
     <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8 pt-0 space-y-8 animate-fade-in">
       
-      {/* Decorative Background Glows - kept very subtle */}
+      {/* Decorative Background Glows */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-teal-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
       <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-blue-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
 
       {/* HEADER */}
       <div className="relative z-10 flex flex-col gap-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal-500/10 border border-brand-teal-500/20 text-[11px] font-bold tracking-widest text-brand-teal-600 dark:text-brand-teal-400 uppercase w-max mb-1">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal-500/10 border border-brand-teal-500/20 text-[11px] font-bold tracking-widest text-brand-teal-500 uppercase w-max mb-1">
           <CreditCard size={14} strokeWidth={2.5} />
           Financial Hub
         </div>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300">
+        
+        {/* Replaced fixed Slate/White gradient with your native CSS variable for perfect dark mode flipping */}
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[rgb(var(--zx-text))]">
           Payment Management
         </h1>
         <p className="text-[rgb(var(--zx-text-muted))] text-[15px] max-w-2xl leading-relaxed mt-1">
@@ -118,7 +123,7 @@ export default function ManagePayments() {
               <span className="text-xs font-bold uppercase tracking-widest text-[rgb(var(--zx-text-muted))]">
                 Total Revenue
               </span>
-              <div className="p-2.5 rounded-xl bg-brand-teal-500/10 text-brand-teal-600 dark:text-brand-teal-400">
+              <div className="p-2.5 rounded-xl bg-brand-teal-500/10 text-brand-teal-500">
                 <TrendingUp size={20} strokeWidth={2.5} />
               </div>
             </div>
@@ -138,7 +143,7 @@ export default function ManagePayments() {
               <span className="text-xs font-bold uppercase tracking-widest text-[rgb(var(--zx-text-muted))]">
                 Pending Payments
               </span>
-              <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+              <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-500">
                 <Clock size={20} strokeWidth={2.5} />
               </div>
             </div>
@@ -158,7 +163,7 @@ export default function ManagePayments() {
               <span className="text-xs font-bold uppercase tracking-widest text-[rgb(var(--zx-text-muted))]">
                 Active Franchises
               </span>
-              <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
+              <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-500">
                 <Building2 size={20} strokeWidth={2.5} />
               </div>
             </div>
@@ -214,7 +219,7 @@ export default function ManagePayments() {
               <Receipt size={16} /> Recent Ledger Activity
             </h2>
             {recentPayments.length > 0 && (
-              <Link to="/dashboard/payments/history" className="text-xs font-bold text-brand-teal-600 hover:text-brand-teal-700 dark:text-brand-teal-400 uppercase tracking-wider flex items-center gap-1 transition-colors">
+              <Link to="/dashboard/payments/history" className="text-xs font-bold text-brand-teal-500 hover:text-brand-teal-600 uppercase tracking-wider flex items-center gap-1 transition-colors">
                 View All <ChevronRight size={14} strokeWidth={2.5} />
               </Link>
             )}
