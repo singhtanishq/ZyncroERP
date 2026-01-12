@@ -16,10 +16,10 @@ import {
   Smartphone,
   Globe,
   Hash,
-  Save
+  Save,
+  AlertTriangle
 } from "lucide-react";
 import api from "../../../lib/api/apiClient";
-import ConfirmModal from "../../../components/ConfirmModal";
 import AppModal from "../../../components/common/AppModal";
 import { useToast } from "../../../components/common/ToastProvider";
 
@@ -58,7 +58,7 @@ function ViewStudentModal({ open, onClose, student }) {
   const DetailRow = ({ label, value, icon: Icon }) => (
     <div className="flex flex-col gap-1">
       <span className="text-[10px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">{label}</span>
-      <div className="flex items-center gap-3 bg-[rgb(var(--zx-bg))] border border-[rgb(var(--zx-border))] px-4 py-3 rounded-xl">
+      <div className="flex items-center gap-3 bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] px-4 py-3 rounded-xl">
         {Icon && <Icon size={16} className="text-[rgb(var(--zx-text-muted))] shrink-0" />}
         <span className="text-sm font-semibold text-[rgb(var(--zx-text))] break-all">{value || "N/A"}</span>
       </div>
@@ -68,7 +68,7 @@ function ViewStudentModal({ open, onClose, student }) {
   return (
     <AppModal open={open} onClose={onClose} title="Student Details" size="md"
       footer={
-        <button onClick={onClose} className="px-6 py-2.5 rounded-xl bg-brand-blue-700 text-white text-sm font-semibold hover:bg-brand-blue-800 transition-all active:scale-95">
+        <button onClick={onClose} className="px-6 py-2.5 rounded-xl bg-brand-teal-500 text-white text-sm font-semibold hover:bg-brand-teal-600 transition-all active:scale-95">
           Close
         </button>
       }
@@ -98,10 +98,10 @@ function ViewStudentModal({ open, onClose, student }) {
 function ModalInput({ label, value, onChange, type = "text" }) {
   return (
     <div className="space-y-1.5">
-      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">{label}</label>
+      <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">{label}</label>
       <input
         type={type}
-        className="w-full bg-[rgb(var(--zx-bg))] border border-[rgb(var(--zx-border))] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-teal-500/40 focus:border-brand-teal-500 transition-all font-semibold text-[rgb(var(--zx-text))]"
+        className="w-full bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-[rgb(var(--zx-text))]"
         value={value || ""}
         onChange={e => onChange(e.target.value)}
       />
@@ -209,6 +209,7 @@ export default function ManageStudents() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState(() => {});
   const [confirmText, setConfirmText] = useState("");
+  const [confirmTitle, setConfirmTitle] = useState("");
 
   const [toast, setToast] = useState("");
 
@@ -285,6 +286,7 @@ export default function ManageStudents() {
   };
 
   const confirmResetLogin = (userId) => {
+    setConfirmTitle("Reset Login Credentials");
     setConfirmText(
       "Are you sure you want to reset credentials? New login details will be emailed to the student."
     );
@@ -322,16 +324,23 @@ export default function ManageStudents() {
   const gridLayout = "grid grid-cols-[100px_2fr_2.5fr_1.5fr_1.5fr_40px] gap-4 items-center";
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-8 animate-fade-in font-sans">
+    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8 pt-0 space-y-8 animate-fade-in font-sans">
       
+      {/* Decorative Background Glows */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-teal-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-blue-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+
       {/* HEADER SECTION */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight flex items-center gap-3">
-            <User className="text-blue-600" size={32} />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal-500/10 border border-brand-teal-500/20 text-[11px] font-bold tracking-widest text-brand-teal-500 uppercase w-max mb-1">
+            <User size={14} strokeWidth={2.5} />
+            Student Hub
+          </div>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[rgb(var(--zx-text))]">
             Student Directory
           </h1>
-          <p className="text-slate-500 mt-2 text-sm max-w-xl">
+          <p className="text-[rgb(var(--zx-text-muted))] mt-1 text-[15px] max-w-xl leading-relaxed">
             Manage student enrollments, profiles, and access credentials.
           </p>
         </div>
@@ -339,22 +348,22 @@ export default function ManageStudents() {
         <div className="relative w-full md:w-80 group">
           <Search
             size={18}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500 transition-colors"
           />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search name, email, phone, or SID..."
-            className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm placeholder:text-slate-400"
+            className="w-full pl-10 pr-4 py-3 bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] rounded-xl text-sm focus:outline-none focus:border-brand-teal-500 transition-all shadow-sm placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium text-[rgb(var(--zx-text))]"
           />
         </div>
       </div>
 
       {/* TABLE CONTAINER */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-xl shadow-slate-200/40 overflow-hidden min-h-[400px]">
+      <div className="bg-[rgb(var(--zx-surface))] rounded-3xl border border-[rgb(var(--zx-border))] overflow-hidden shadow-sm relative z-10">
         
         {/* TABLE HEADERS */}
-        <div className={`${gridLayout} px-6 py-4 bg-slate-50/80 border-b border-slate-100 text-xs font-bold text-slate-400 uppercase tracking-wider backdrop-blur-sm`}>
+        <div className={`${gridLayout} px-6 py-4 bg-[rgb(var(--zx-surface-hover))] border-b border-[rgb(var(--zx-border))] text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider`}>
           <div>SID</div>
           <div>Name</div>
           <div>Email Address</div>
@@ -365,61 +374,61 @@ export default function ManageStudents() {
 
         {/* LOADING STATE */}
         {loading && (
-          <div className="p-20 flex flex-col items-center justify-center text-slate-400 space-y-3">
-             <div className="w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-600 rounded-full animate-spin"></div>
-             <span className="font-medium">Loading students...</span>
+          <div className="p-20 flex flex-col items-center justify-center text-[rgb(var(--zx-text-muted))] space-y-3">
+             <div className="w-8 h-8 border-4 border-brand-teal-500/30 border-t-brand-teal-500 rounded-full animate-spin"></div>
+             <span className="font-medium text-sm">Loading students...</span>
           </div>
         )}
 
         {/* EMPTY STATE */}
         {!loading && filteredStudents.length === 0 && (
-          <div className="py-20 text-center text-slate-400 flex flex-col items-center justify-center bg-slate-50/30">
-            <div className="w-16 h-16 bg-white border border-slate-200 rounded-full flex items-center justify-center mb-4 shadow-sm">
-                <User size={24} className="text-slate-300" />
+          <div className="py-20 text-center flex flex-col items-center justify-center bg-[rgb(var(--zx-surface))]">
+            <div className="w-16 h-16 bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] rounded-2xl flex items-center justify-center mb-4 text-[rgb(var(--zx-text-muted))] shadow-sm">
+                <User size={24} />
             </div>
-            <p className="text-lg font-bold text-slate-600">No students found</p>
-            <p className="text-sm">Adjust your search query to find students.</p>
+            <p className="text-[17px] font-bold text-[rgb(var(--zx-text))]">No students found</p>
+            <p className="text-[14px] text-[rgb(var(--zx-text-muted))] mt-1">Adjust your search query to find students.</p>
           </div>
         )}
 
         {/* LIST */}
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-[rgb(var(--zx-border))]">
           {!loading && filteredStudents.map((s) => {
             const expanded = expandedId === s.student_id;
 
             return (
-              <div key={s.student_id} className="group transition-colors bg-white">
+              <div key={s.student_id} className="group transition-colors bg-[rgb(var(--zx-surface))]">
                 {/* ROW */}
                 <div
                   onClick={() => toggleExpand(s.student_id)}
-                  className={`${gridLayout} px-6 py-5 cursor-pointer transition-all duration-200 border-l-[3px] ${
+                  className={`${gridLayout} px-6 py-4 cursor-pointer transition-all duration-200 border-l-[3px] ${
                     expanded 
-                    ? "bg-indigo-50/30 border-l-indigo-600" 
-                    : "hover:bg-slate-50/50 border-l-transparent"
+                    ? "bg-brand-teal-500/5 border-l-brand-teal-500" 
+                    : "hover:bg-[rgb(var(--zx-surface-hover))] border-l-transparent"
                   }`}
                 >
-                  <div className="font-mono text-slate-500 text-xs font-bold bg-slate-100 px-2 py-1 rounded border border-slate-200 inline-block w-fit">
+                  <div className="font-mono text-[rgb(var(--zx-text-muted))] text-xs font-semibold bg-[rgb(var(--zx-surface-hover))] px-2.5 py-1 rounded-lg border border-[rgb(var(--zx-border))] inline-block w-fit">
                     {s.sid}
                   </div>
                   
-                  <div className="font-bold text-slate-800 text-sm md:text-base">{s.name}</div>
+                  <div className="font-bold text-[rgb(var(--zx-text))] text-sm md:text-base">{s.name}</div>
                   
-                  <div className="text-sm text-slate-500 font-medium truncate pr-4">{s.email}</div>
+                  <div className="text-sm text-[rgb(var(--zx-text-muted))] font-medium truncate pr-4">{s.email}</div>
 
-                  <div className="text-sm text-slate-600 font-medium truncate pr-4">
-                    {s.mobile ? s.mobile : <span className="text-slate-300 italic">-</span>}
+                  <div className="text-sm text-[rgb(var(--zx-text))] font-medium truncate pr-4">
+                    {s.mobile ? s.mobile : <span className="text-[rgb(var(--zx-text-muted))] italic">-</span>}
                   </div>
                   
-                  <div className="text-sm font-medium text-slate-700">
+                  <div className="text-sm font-medium text-[rgb(var(--zx-text))]">
                     {s.admission_date ? (
                       formatDate(s.admission_date)
                     ) : (
-                      <span className="text-slate-300 italic">-</span>
+                      <span className="text-[rgb(var(--zx-text-muted))] italic">-</span>
                     )}
                   </div>
 
                   <div className="flex items-center justify-center">
-                    <div className={`p-1.5 rounded-full transition-all duration-300 ${expanded ? 'bg-indigo-100 text-indigo-600 rotate-180' : 'text-slate-300 group-hover:bg-slate-100 group-hover:text-slate-500'}`}>
+                    <div className={`p-1.5 rounded-full transition-all duration-300 ${expanded ? 'bg-brand-teal-500/10 text-brand-teal-500 rotate-180' : 'text-[rgb(var(--zx-text-muted))] group-hover:bg-[rgb(var(--zx-surface-hover))] group-hover:text-[rgb(var(--zx-text))]'}`}>
                        <ChevronDown size={16} />
                     </div>
                   </div>
@@ -433,16 +442,16 @@ export default function ManageStudents() {
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.3, ease: [0.04, 0.62, 0.23, 0.98] }}
-                      className="overflow-hidden bg-slate-50/50 border-b border-slate-100 shadow-inner"
+                      className="overflow-hidden bg-[rgb(var(--zx-surface-hover))] border-b border-[rgb(var(--zx-border))] shadow-inner"
                     >
                       <div className="px-6 py-4 flex flex-wrap gap-3 items-center justify-end" onClick={(e) => e.stopPropagation()}>
-                        <span className="text-xs font-bold text-slate-400 mr-auto uppercase tracking-wide flex items-center gap-2">
+                        <span className="text-xs font-bold text-[rgb(var(--zx-text-muted))] mr-auto uppercase tracking-wider flex items-center gap-2">
                           <User size={14} /> Student Actions:
                         </span>
 
                         <button
                           onClick={() => openView(s.student_id)}
-                          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 shadow-sm text-sm font-semibold hover:border-indigo-300 hover:text-indigo-600 hover:shadow-md transition-all"
+                          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] shadow-sm text-sm font-semibold hover:border-brand-teal-500/40 hover:text-brand-teal-500 hover:shadow-md transition-all"
                         >
                           <Eye size={16} />
                           View Details
@@ -450,7 +459,7 @@ export default function ManageStudents() {
 
                         <button
                           onClick={() => openEdit(s.student_id)}
-                          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 shadow-sm text-sm font-semibold hover:border-amber-300 hover:text-amber-600 hover:shadow-md transition-all"
+                          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] shadow-sm text-sm font-semibold hover:border-brand-teal-500/40 hover:text-brand-teal-500 hover:shadow-md transition-all"
                         >
                           <Pencil size={16} />
                           Edit Profile
@@ -458,20 +467,20 @@ export default function ManageStudents() {
 
                         <button
                           onClick={() => confirmResetLogin(s.user_id)}
-                          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 shadow-sm text-sm font-semibold hover:border-purple-300 hover:text-purple-600 hover:shadow-md transition-all"
+                          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] shadow-sm text-sm font-semibold hover:border-brand-teal-500/40 hover:text-brand-teal-500 hover:shadow-md transition-all"
                         >
                           <KeyRound size={16} />
                           Reset Credentials
                         </button>
 
-                        <div className="w-px h-6 bg-slate-300 mx-1"></div>
+                        <div className="w-px h-6 bg-[rgb(var(--zx-border))] mx-1"></div>
 
                         <button
                           onClick={() => {
                             setDeleteTarget(s.student_id);
                             setDeleteOpen(true);
                           }}
-                          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-red-100 text-red-600 shadow-sm text-sm font-semibold hover:bg-red-50 hover:border-red-200 hover:shadow-md transition-all"
+                          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[rgb(var(--zx-surface))] border border-rose-500/20 text-rose-500 shadow-sm text-sm font-semibold hover:bg-rose-500/10 hover:border-rose-500/30 hover:shadow-md transition-all"
                         >
                           <Trash2 size={16} />
                           Remove
@@ -500,21 +509,64 @@ export default function ManageStudents() {
         onUpdated={onUpdated}
       />
 
-      <ConfirmModal
-        open={deleteOpen}
-        onClose={() => setDeleteOpen(false)}
-        onConfirm={confirmDelete}
-        title="Remove Student"
-        message="This will permanently delete the student and their login access. This action cannot be undone."
-      />
+      {/* Replaced ConfirmModal with AppModal for proper alignment and background blurring */}
+      <AppModal 
+        open={deleteOpen} 
+        onClose={() => setDeleteOpen(false)} 
+        title="Remove Student" 
+        size="sm"
+        footer={
+          <>
+            <button onClick={() => setDeleteOpen(false)} className="px-5 py-2.5 rounded-xl border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text-muted))] text-sm font-semibold hover:bg-[rgb(var(--zx-surface-hover))] transition-colors">
+              Cancel
+            </button>
+            <button
+              onClick={confirmDelete}
+              className="px-6 py-2.5 rounded-xl bg-rose-600 text-white text-sm font-semibold hover:bg-rose-700 shadow-sm transition-all active:scale-95"
+            >
+              Yes, Remove
+            </button>
+          </>
+        }
+      >
+        <div className="flex flex-col items-center text-center py-2 space-y-3">
+          <div className="w-12 h-12 bg-rose-500/10 text-rose-500 rounded-2xl flex items-center justify-center border border-rose-500/20">
+            <AlertTriangle size={24} />
+          </div>
+          <p className="text-[rgb(var(--zx-text))] text-sm leading-relaxed font-medium">
+            This will permanently delete the student and their login access. This action cannot be undone.
+          </p>
+        </div>
+      </AppModal>
 
-      <ConfirmModal
-        open={confirmOpen}
-        onClose={() => setConfirmOpen(false)}
-        onConfirm={confirmAction}
-        title="Reset Login Credentials"
-        message={confirmText}
-      />
+      <AppModal 
+        open={confirmOpen} 
+        onClose={() => setConfirmOpen(false)} 
+        title={confirmTitle} 
+        size="sm"
+        footer={
+          <>
+            <button onClick={() => setConfirmOpen(false)} className="px-5 py-2.5 rounded-xl border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text-muted))] text-sm font-semibold hover:bg-[rgb(var(--zx-surface-hover))] transition-colors">
+              Cancel
+            </button>
+            <button
+              onClick={confirmAction}
+              className="px-6 py-2.5 rounded-xl bg-brand-teal-500 text-white text-sm font-semibold hover:bg-brand-teal-600 shadow-sm transition-all active:scale-95"
+            >
+              Confirm
+            </button>
+          </>
+        }
+      >
+        <div className="flex flex-col items-center text-center py-2 space-y-3">
+          <div className="w-12 h-12 bg-brand-teal-500/10 text-brand-teal-500 rounded-2xl flex items-center justify-center border border-brand-teal-500/20">
+            <KeyRound size={24} />
+          </div>
+          <p className="text-[rgb(var(--zx-text))] text-sm leading-relaxed font-medium">
+            {confirmText}
+          </p>
+        </div>
+      </AppModal>
 
       {/* TOAST NOTIFICATION */}
       <AnimatePresence>
@@ -523,12 +575,12 @@ export default function ManageStudents() {
             initial={{ opacity: 0, y: 20, x: 0 }}
             animate={{ opacity: 1, y: 0, x: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-8 right-8 z-50 bg-slate-900 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700/50"
+            className="fixed bottom-8 right-8 z-50 bg-[rgb(var(--zx-text))] text-[rgb(var(--zx-surface))] px-6 py-4 rounded-2xl shadow-2xl shadow-black/20 flex items-center gap-3 border border-[rgb(var(--zx-border))]"
           >
-            <div className="bg-emerald-500 rounded-full p-1">
-              <CheckCircle2 size={14} className="text-white" strokeWidth={3} />
+            <div className="bg-emerald-500 rounded-full p-1 text-white">
+              <CheckCircle2 size={14} strokeWidth={3} />
             </div>
-            <span className="text-sm font-semibold tracking-wide">{toast}</span>
+            <span className="text-[14px] font-bold tracking-wide">{toast}</span>
           </motion.div>
         )}
       </AnimatePresence>
