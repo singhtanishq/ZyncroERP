@@ -242,7 +242,7 @@ export default function EnrollmentDetailsDrawer({
         title="Enrollment Details"
         size="xl"
       >
-        <div className="space-y-6">
+        <div className="space-y-6 bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))]">
           {/* STUDENT OVERVIEW */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <Info label="Student" value={enrollment.student?.user?.name} />
@@ -254,10 +254,10 @@ export default function EnrollmentDetailsDrawer({
           </div>
 
           {/* DOCUMENTS */}
-          <div className="bg-[rgb(var(--zx-surface-hover))]/40 border border-[rgb(var(--zx-border))] rounded-2xl p-4 sm:p-5">
+          <div className="bg-[rgb(var(--zx-surface-hover))]/40 dark:bg-slate-900/40 border border-[rgb(var(--zx-border))] dark:border-slate-800 rounded-2xl p-4 sm:p-5">
             <div className="flex items-center gap-2 mb-3">
               <FileText size={16} className="text-brand-teal-500" />
-              <h3 className="font-bold text-sm sm:text-base text-[rgb(var(--zx-text))]">
+              <h3 className="font-bold text-sm sm:text-base text-[rgb(var(--zx-text))] dark:text-white">
                 Documents Verification
               </h3>
             </div>
@@ -277,20 +277,20 @@ export default function EnrollmentDetailsDrawer({
                 return (
                   <div
                     key={type.key}
-                    className="border border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface))] rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+                    className="border border-[rgb(var(--zx-border))] dark:border-slate-800 bg-[rgb(var(--zx-surface))] dark:bg-slate-900 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
                   >
                     <div>
-                      <div className="font-semibold text-xs sm:text-sm text-[rgb(var(--zx-text))]">
+                      <div className="font-semibold text-xs sm:text-sm text-[rgb(var(--zx-text))] dark:text-white">
                         {type.label}
                         {type.mandatory && <span className="text-rose-500 ml-1">*</span>}
                       </div>
 
-                      <div className="text-[10px] font-bold mt-0.5 text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">
+                      <div className="text-[10px] font-bold mt-0.5 text-[rgb(var(--zx-text-muted))] dark:text-slate-400 uppercase tracking-wider">
                         {uploaded ? doc.verification_status : "Not Uploaded"}
                       </div>
 
                       {doc?.remarks && (
-                        <div className="text-[11px] font-medium text-rose-500 mt-1 bg-rose-500/10 px-2 py-0.5 rounded inline-block">
+                        <div className="text-[11px] font-medium text-rose-500 mt-1 bg-rose-500/10 border border-rose-500/20 px-2 py-0.5 rounded-lg inline-block">
                           {doc.remarks}
                         </div>
                       )}
@@ -303,7 +303,7 @@ export default function EnrollmentDetailsDrawer({
                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                           hasPhysicalFile
                             ? "bg-brand-teal-500/10 text-brand-teal-500 border border-brand-teal-500/20 hover:bg-brand-teal-500/20"
-                            : "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] cursor-not-allowed"
+                            : "bg-[rgb(var(--zx-surface-hover))] dark:bg-slate-800 text-[rgb(var(--zx-text-muted))] dark:text-slate-500 cursor-not-allowed"
                         }`}
                       >
                         {hasPhysicalFile ? "View" : "NA"}
@@ -315,7 +315,7 @@ export default function EnrollmentDetailsDrawer({
                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                           !disableVerifyBtn
                             ? "bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm"
-                            : "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] cursor-not-allowed"
+                            : "bg-[rgb(var(--zx-surface-hover))] dark:bg-slate-800 text-[rgb(var(--zx-text-muted))] dark:text-slate-500 cursor-not-allowed"
                         }`}
                       >
                         Verify
@@ -327,7 +327,7 @@ export default function EnrollmentDetailsDrawer({
                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                           !disableRejectBtn
                             ? "bg-rose-600 text-white hover:bg-rose-700 shadow-sm"
-                            : "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] cursor-not-allowed"
+                            : "bg-[rgb(var(--zx-surface-hover))] dark:bg-slate-800 text-[rgb(var(--zx-text-muted))] dark:text-slate-500 cursor-not-allowed"
                         }`}
                       >
                         Reject
@@ -338,7 +338,7 @@ export default function EnrollmentDetailsDrawer({
                         onClick={() => setOverrideConfirm(true)}
                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shadow-sm ${
                           paymentProofVerified
-                            ? "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] cursor-not-allowed"
+                            ? "bg-[rgb(var(--zx-surface-hover))] dark:bg-slate-800 text-[rgb(var(--zx-text-muted))] dark:text-slate-500 cursor-not-allowed"
                             : "bg-amber-600 text-white hover:bg-amber-700"
                         }`}                       
                       >
@@ -352,10 +352,10 @@ export default function EnrollmentDetailsDrawer({
           </div>
 
           {/* PAYMENTS */}
-          <div className="bg-[rgb(var(--zx-surface-hover))]/40 border border-[rgb(var(--zx-border))] rounded-2xl p-4 sm:p-5">
+          <div className="bg-[rgb(var(--zx-surface-hover))]/40 dark:bg-slate-900/40 border border-[rgb(var(--zx-border))] dark:border-slate-800 rounded-2xl p-4 sm:p-5">
             <div className="flex items-center gap-2 mb-3">
               <CreditCard size={16} className="text-brand-teal-500" />
-              <h3 className="font-bold text-sm sm:text-base text-[rgb(var(--zx-text))]">Payments</h3>
+              <h3 className="font-bold text-sm sm:text-base text-[rgb(var(--zx-text))] dark:text-white">Payments</h3>
             </div>
 
             <div className="grid grid-cols-3 gap-3 mb-4">
@@ -372,7 +372,7 @@ export default function EnrollmentDetailsDrawer({
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="Enter amount"
-                className="flex-1 bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] rounded-xl px-3.5 py-2.5 text-xs sm:text-sm outline-none focus:border-brand-teal-500 transition-all font-medium text-[rgb(var(--zx-text))] placeholder:text-[rgb(var(--zx-text-muted))]/60"
+                className="flex-1 bg-[rgb(var(--zx-surface))] dark:bg-slate-900 border border-[rgb(var(--zx-border))] dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm outline-none focus:border-brand-teal-500 transition-all font-medium text-[rgb(var(--zx-text))] dark:text-white placeholder:text-[rgb(var(--zx-text-muted))]/60 dark:placeholder:text-slate-500"
               />
 
               <button
@@ -381,7 +381,7 @@ export default function EnrollmentDetailsDrawer({
                 className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
                   canMarkPaid
                     ? "bg-brand-teal-500 hover:bg-brand-teal-600 text-white shadow-md shadow-brand-teal-500/20"
-                    : "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border border-[rgb(var(--zx-border))] cursor-not-allowed"
+                    : "bg-[rgb(var(--zx-surface-hover))] dark:bg-slate-800 text-[rgb(var(--zx-text-muted))] dark:text-slate-500 border border-[rgb(var(--zx-border))] dark:border-slate-700 cursor-not-allowed"
                 }`}
               >
                 Mark Paid
@@ -396,10 +396,10 @@ export default function EnrollmentDetailsDrawer({
           </div>
 
           {/* ENROLLMENT FINAL ACTIONS */}
-          <div className="bg-[rgb(var(--zx-surface-hover))]/40 border border-[rgb(var(--zx-border))] rounded-2xl p-4 sm:p-5">
+          <div className="bg-[rgb(var(--zx-surface-hover))]/40 dark:bg-slate-900/40 border border-[rgb(var(--zx-border))] dark:border-slate-800 rounded-2xl p-4 sm:p-5">
             <div className="flex items-center gap-2 mb-3">
               <ShieldCheck size={16} className="text-emerald-500" />
-              <h3 className="font-bold text-sm sm:text-base text-[rgb(var(--zx-text))]">
+              <h3 className="font-bold text-sm sm:text-base text-[rgb(var(--zx-text))] dark:text-white">
                 Final Enrollment Actions
               </h3>
             </div>
@@ -411,7 +411,7 @@ export default function EnrollmentDetailsDrawer({
                 className={`py-3 rounded-xl flex items-center justify-center gap-1.5 text-xs sm:text-sm font-semibold transition-all ${
                   canApprove
                     ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20"
-                    : "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border border-[rgb(var(--zx-border))] cursor-not-allowed"
+                    : "bg-[rgb(var(--zx-surface-hover))] dark:bg-slate-800 text-[rgb(var(--zx-text-muted))] dark:text-slate-500 border border-[rgb(var(--zx-border))] dark:border-slate-700 cursor-not-allowed"
                 }`}
               >
                 <CheckCircle2 size={16} />
@@ -424,7 +424,7 @@ export default function EnrollmentDetailsDrawer({
                 className={`py-3 rounded-xl flex items-center justify-center gap-1.5 text-xs sm:text-sm font-semibold transition-all ${
                   !isRejected && !isCompleted
                     ? "bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-600/20"
-                    : "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border border-[rgb(var(--zx-border))] cursor-not-allowed"
+                    : "bg-[rgb(var(--zx-surface-hover))] dark:bg-slate-800 text-[rgb(var(--zx-text-muted))] dark:text-slate-500 border border-[rgb(var(--zx-border))] dark:border-slate-700 cursor-not-allowed"
                 }`}
               >
                 <XCircle size={16} />
@@ -437,7 +437,7 @@ export default function EnrollmentDetailsDrawer({
                 className={`py-3 rounded-xl flex items-center justify-center gap-1.5 text-xs sm:text-sm font-semibold transition-all ${
                   canComplete
                     ? "bg-brand-teal-500 hover:bg-brand-teal-600 text-white shadow-md shadow-brand-teal-500/20"
-                    : "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border border-[rgb(var(--zx-border))] cursor-not-allowed"
+                    : "bg-[rgb(var(--zx-surface-hover))] dark:bg-slate-800 text-[rgb(var(--zx-text-muted))] dark:text-slate-500 border border-[rgb(var(--zx-border))] dark:border-slate-700 cursor-not-allowed"
                 }`}
               >
                 <GraduationCap size={16} />
@@ -451,44 +451,44 @@ export default function EnrollmentDetailsDrawer({
       {/* DOCUMENT PREVIEW MODAL */}
       {previewDoc && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-8 bg-slate-950/60 backdrop-blur-sm transition-opacity">
-          <div className="bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] shadow-2xl rounded-3xl w-full max-w-5xl flex flex-col overflow-hidden h-[85vh] animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-[rgb(var(--zx-surface))] dark:bg-slate-900 border border-[rgb(var(--zx-border))] dark:border-slate-800 shadow-2xl rounded-3xl w-full max-w-5xl flex flex-col overflow-hidden h-[85vh] animate-in fade-in zoom-in-95 duration-200">
             
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface-hover))]/50">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[rgb(var(--zx-border))] dark:border-slate-800 bg-[rgb(var(--zx-surface-hover))]/50 dark:bg-slate-800/50">
               <div className="flex items-center gap-3">
                 <FileText size={20} className="text-brand-teal-500" />
-                <h3 className="font-bold text-[rgb(var(--zx-text))] text-lg tracking-tight">
+                <h3 className="font-bold text-[rgb(var(--zx-text))] dark:text-white text-lg tracking-tight">
                   Document Preview
-                  <span className="ml-3 text-xs font-semibold px-2.5 py-1 rounded-full bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">
+                  <span className="ml-3 text-xs font-semibold px-2.5 py-1 rounded-full bg-[rgb(var(--zx-surface-hover))] dark:bg-slate-800 border border-[rgb(var(--zx-border))] dark:border-slate-700 text-[rgb(var(--zx-text-muted))] dark:text-slate-400 uppercase tracking-wider">
                     {previewDoc.document_type?.replace("_", " ")}
                   </span>
                 </h3>
               </div>
               <button 
                 onClick={closePreview} 
-                className="p-2 rounded-xl text-[rgb(var(--zx-text-muted))] hover:bg-[rgb(var(--zx-surface-hover))] hover:text-[rgb(var(--zx-text))] transition-colors"
+                className="p-2 rounded-xl text-[rgb(var(--zx-text-muted))] dark:text-slate-400 hover:bg-[rgb(var(--zx-surface-hover))] dark:hover:bg-slate-800 hover:text-[rgb(var(--zx-text))] dark:hover:text-white transition-colors"
               >
                 <X size={20} />
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="flex-1 bg-[rgb(var(--zx-surface-hover))]/30 p-4 md:p-6 overflow-hidden">
+            <div className="flex-1 bg-[rgb(var(--zx-surface-hover))]/30 dark:bg-slate-950/40 p-4 md:p-6 overflow-hidden">
               <iframe
                 src={previewUrl}
-                className="w-full h-full rounded-2xl border border-[rgb(var(--zx-border))] shadow-sm bg-[rgb(var(--zx-surface))]"
+                className="w-full h-full rounded-2xl border border-[rgb(var(--zx-border))] dark:border-slate-800 shadow-sm bg-[rgb(var(--zx-surface))] dark:bg-slate-900"
                 title="Document Preview"
               />
             </div>
 
             {/* Modal Footer Actions */}
-            <div className="px-6 py-4 border-t border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface-hover))]/50 flex justify-center gap-4">
+            <div className="px-6 py-4 border-t border-[rgb(var(--zx-border))] dark:border-slate-800 bg-[rgb(var(--zx-surface-hover))]/50 dark:bg-slate-800/50 flex justify-center gap-4">
               <button
                 disabled={busy || previewDoc.verification_status === "verified"}
                 onClick={() => verifyDocument(previewDoc)}
                 className={`px-8 py-3 rounded-xl font-semibold transition-all flex items-center gap-2 ${
                   previewDoc.verification_status === "verified"
-                    ? "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border border-[rgb(var(--zx-border))] cursor-not-allowed"
+                    ? "bg-[rgb(var(--zx-surface-hover))] dark:bg-slate-800 text-[rgb(var(--zx-text-muted))] dark:text-slate-500 border border-[rgb(var(--zx-border))] dark:border-slate-700 cursor-not-allowed"
                     : "bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/20"
                 }`}
               >
@@ -500,7 +500,7 @@ export default function EnrollmentDetailsDrawer({
                 onClick={() => rejectDocument(previewDoc)}
                 className={`px-8 py-3 rounded-xl font-semibold transition-all flex items-center gap-2 ${
                   previewDoc.verification_status === "verified" || previewDoc.verification_status === "rejected"
-                    ? "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border border-[rgb(var(--zx-border))] cursor-not-allowed"
+                    ? "bg-[rgb(var(--zx-surface-hover))] dark:bg-slate-800 text-[rgb(var(--zx-text-muted))] dark:text-slate-500 border border-[rgb(var(--zx-border))] dark:border-slate-700 cursor-not-allowed"
                     : "bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/20"
                 }`}
               >
@@ -525,11 +525,11 @@ export default function EnrollmentDetailsDrawer({
 
 function Info({ label, value }) {
   return (
-    <div className="border border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface))] rounded-xl p-3 transition-all">
-      <div className="text-[10px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider mb-0.5">
+    <div className="border border-[rgb(var(--zx-border))] dark:border-slate-800 bg-[rgb(var(--zx-surface))] dark:bg-slate-900 rounded-xl p-3 transition-all">
+      <div className="text-[10px] font-bold text-[rgb(var(--zx-text-muted))] dark:text-slate-400 uppercase tracking-wider mb-0.5">
         {label}
       </div>
-      <div className="font-semibold text-[rgb(var(--zx-text))] text-xs sm:text-sm truncate">
+      <div className="font-semibold text-[rgb(var(--zx-text))] dark:text-white text-xs sm:text-sm truncate">
         {value || "-"}
       </div>
     </div>
