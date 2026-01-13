@@ -138,14 +138,18 @@ export default function EnrollmentCenter() {
   }, [form.student_id, students]);
 
   return (
-    <div className="max-w-[1600px] mx-auto p-6 md:p-8 font-sans overflow-x-hidden pb-24">
+    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8 pt-0 space-y-8 animate-fade-in font-sans">
       {/* Custom Scrollbar */}
       <style>{`
         .custom-dashboard-scroll::-webkit-scrollbar { height: 8px; width: 8px; }
         .custom-dashboard-scroll::-webkit-scrollbar-track { background: transparent; }
-        .custom-dashboard-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .custom-dashboard-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .custom-dashboard-scroll::-webkit-scrollbar-thumb { background: rgb(var(--zx-border)); border-radius: 10px; }
+        .custom-dashboard-scroll::-webkit-scrollbar-thumb:hover { background: rgb(var(--zx-text-muted)); }
       `}</style>
+
+      {/* Decorative Background Glows */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-teal-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-blue-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
 
       <motion.div
         variants={containerVariants}
@@ -154,23 +158,26 @@ export default function EnrollmentCenter() {
         className="space-y-8"
       >
         {/* HEADER */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
-              <Users className="text-blue-600" size={32} />
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal-500/10 border border-brand-teal-500/20 text-[11px] font-bold tracking-widest text-brand-teal-500 uppercase w-max mb-1">
+              <Users size={14} strokeWidth={2.5} />
+              Admissions Hub
+            </div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[rgb(var(--zx-text))]">
               Enrollment Center
             </h1>
-            <p className="text-slate-500 mt-2 text-sm max-w-xl">
+            <p className="text-[rgb(var(--zx-text-muted))] mt-1 text-[15px] max-w-xl leading-relaxed">
               Review and manage student applications, verify academic documentation, and process enrollment payments.
             </p>
           </div>
 
           <button
             onClick={() => setShowForm(!showForm)}
-            className={`inline-flex items-center gap-2 px-5 py-3 rounded-xl font-semibold transition-all active:scale-95 ${
+            className={`inline-flex items-center gap-2 px-5 py-3 rounded-2xl font-semibold transition-all active:scale-95 shadow-sm ${
               showForm
-                ? "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                : "bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20"
+                ? "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text))] border border-[rgb(var(--zx-border))]"
+                : "bg-brand-teal-500 text-white hover:bg-brand-teal-600 shadow-lg shadow-brand-teal-500/20"
             }`}
           >
             {showForm ? <XCircle size={18} /> : <Plus size={18} />}
@@ -186,15 +193,15 @@ export default function EnrollmentCenter() {
               animate={{ opacity: 1, height: "auto", overflow: "visible" }}
               exit={{ opacity: 0, height: 0, overflow: "hidden" }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="bg-white border border-slate-200 rounded-2xl shadow-sm"
+              className="bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] rounded-3xl shadow-sm relative z-10"
             >
-              <div className="p-6">
-                <h3 className="text-lg font-bold text-slate-800 mb-6">Create New Enrollment</h3>
+              <div className="p-6 sm:p-8">
+                <h3 className="text-lg font-bold text-[rgb(var(--zx-text))] mb-6 pb-4 border-b border-[rgb(var(--zx-border))]">Create New Enrollment</h3>
                 
                 <div className="flex flex-col gap-6">
                   {/* STUDENT SELECTION SECTION */}
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">
+                    <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
                       Applicant Profile
                     </label>
                     
@@ -203,20 +210,20 @@ export default function EnrollmentCenter() {
                       <motion.div 
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="flex items-start justify-between p-4 rounded-xl border border-indigo-200 bg-indigo-50/40"
+                        className="flex items-start justify-between p-4 rounded-2xl border border-brand-teal-500/30 bg-brand-teal-500/5"
                       >
                         <div className="flex gap-4 items-center">
-                          <div className="bg-indigo-100 text-indigo-600 p-3 rounded-full hidden sm:block">
+                          <div className="bg-brand-teal-500/10 text-brand-teal-500 p-3 rounded-xl hidden sm:block border border-brand-teal-500/20">
                             <UserCheck size={24} />
                           </div>
                           <div className="flex flex-col gap-1">
-                            <span className="inline-flex items-center text-[11px] font-bold text-indigo-700 bg-indigo-100/50 px-2 py-0.5 rounded border border-indigo-200 uppercase tracking-widest w-fit">
+                            <span className="inline-flex items-center text-[10px] font-bold text-brand-teal-500 bg-brand-teal-500/10 px-2 py-0.5 rounded border border-brand-teal-500/20 uppercase tracking-widest w-fit">
                               SID: {selectedStudent.sid || selectedStudent.student_id}
                             </span>
-                            <span className="text-base font-bold text-slate-800">
+                            <span className="text-base font-bold text-[rgb(var(--zx-text))]">
                               NAME: {selectedStudent.name}
                             </span>
-                            <span className="text-sm font-medium text-slate-600">
+                            <span className="text-sm font-medium text-[rgb(var(--zx-text-muted))]">
                               EMAIL: {selectedStudent.email}
                             </span>
                           </div>
@@ -224,7 +231,7 @@ export default function EnrollmentCenter() {
                         
                         <button
                           onClick={() => setForm({ ...form, student_id: "" })}
-                          className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-rose-600 bg-white hover:bg-rose-50 border border-slate-200 px-3 py-2 rounded-lg transition-colors"
+                          className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[rgb(var(--zx-text-muted))] hover:text-rose-500 bg-[rgb(var(--zx-surface))] hover:bg-rose-500/10 border border-[rgb(var(--zx-border))] px-3 py-2 rounded-xl transition-colors"
                         >
                           <XCircle size={14} /> Change
                         </button>
@@ -234,7 +241,7 @@ export default function EnrollmentCenter() {
                       <select
                         value={form.student_id}
                         onChange={(e) => setForm({ ...form, student_id: e.target.value })}
-                        className="w-full px-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all font-medium text-slate-700"
+                        className="w-full px-4 py-3.5 rounded-xl border border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface))] focus:outline-none focus:border-brand-teal-500 transition-all font-medium text-[rgb(var(--zx-text))]"
                       >
                         <option value="">Select Student</option>
                         {students.map((s) => (
@@ -249,13 +256,13 @@ export default function EnrollmentCenter() {
                   {/* COURSE AND BATCH SELECTION SECTION */}
                   <div className="grid md:grid-cols-2 gap-6 pt-2">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">
+                      <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
                         Course Target
                       </label>
                       <select
                         value={form.course_id}
                         onChange={(e) => setForm({ ...form, course_id: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all font-medium text-slate-700"
+                        className="w-full px-4 py-3.5 rounded-xl border border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface))] focus:outline-none focus:border-brand-teal-500 transition-all font-medium text-[rgb(var(--zx-text))]"
                       >
                         <option value="">Select Course</option>
                         {courses.map((c) => (
@@ -267,14 +274,14 @@ export default function EnrollmentCenter() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">
+                      <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
                         Cohort Batch
                       </label>
                       <select
                         value={form.batch_id}
                         onChange={(e) => setForm({ ...form, batch_id: e.target.value })}
                         disabled={!form.course_id}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all font-medium text-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full px-4 py-3.5 rounded-xl border border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface))] focus:outline-none focus:border-brand-teal-500 transition-all font-medium text-[rgb(var(--zx-text))] disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <option value="">Select Batch</option>
                         {batches.map((b) => (
@@ -287,11 +294,11 @@ export default function EnrollmentCenter() {
                   </div>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end">
+                <div className="mt-8 pt-6 border-t border-[rgb(var(--zx-border))] flex justify-end">
                   <button
                     onClick={createEnrollment}
                     disabled={saving || !form.student_id || !form.course_id || !form.batch_id}
-                    className="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3.5 rounded-xl font-semibold hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-600/20 active:scale-95"
                   >
                     {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
                     {saving ? "Processing..." : "Confirm & Save Enrollment"}
@@ -303,62 +310,56 @@ export default function EnrollmentCenter() {
         </AnimatePresence>
 
         {/* KPI CARDS */}
-        <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 relative z-10">
           <Card
             title="Pending Review"
             value={stats.pending}
-            icon={<Clock3 size={24} strokeWidth={2.5} />}
-            colorClass="from-amber-500 to-orange-400"
-            lightClass="bg-amber-50 text-amber-600"
+            icon={<Clock3 size={20} strokeWidth={2.5} />}
+            lightClass="bg-amber-500/10 text-amber-500"
           />
           <Card
             title="Active Students"
             value={stats.active}
-            icon={<CheckCircle2 size={24} strokeWidth={2.5} />}
-            colorClass="from-emerald-500 to-teal-400"
-            lightClass="bg-emerald-50 text-emerald-600"
+            icon={<CheckCircle2 size={20} strokeWidth={2.5} />}
+            lightClass="bg-emerald-500/10 text-emerald-500"
           />
           <Card
             title="Completed"
             value={stats.completed}
-            icon={<GraduationCap size={24} strokeWidth={2.5} />}
-            colorClass="from-blue-600 to-indigo-500"
-            lightClass="bg-blue-50 text-blue-600"
+            icon={<GraduationCap size={20} strokeWidth={2.5} />}
+            lightClass="bg-blue-500/10 text-blue-500"
           />
           <Card
             title="Cancelled"
             value={stats.cancelled}
-            icon={<XCircle size={24} strokeWidth={2.5} />}
-            colorClass="from-rose-500 to-pink-500"
-            lightClass="bg-rose-50 text-rose-600"
+            icon={<XCircle size={20} strokeWidth={2.5} />}
+            lightClass="bg-rose-500/10 text-rose-500"
           />
         </motion.div>
 
-        {/* SEARCH BAR (Sticky) */}
-        <motion.div variants={itemVariants} className="bg-white/90 backdrop-blur-xl p-4 rounded-2xl border border-slate-200 shadow-sm sticky top-4 z-30 transition-all">
-          <div className="relative group w-full">
-            <Search
-              size={20}
-              className="absolute left-4 top-3.5 text-slate-400 group-focus-within:text-indigo-600 transition-colors"
-            />
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by student name, email, or SID..."
-              className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all font-medium text-slate-700 placeholder:text-slate-400"
-            />
-          </div>
+        {/* SIMPLIFIED SEARCH BAR */}
+        <motion.div variants={itemVariants} className="relative group w-full z-20">
+          <Search
+            size={18}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500 transition-colors"
+          />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by student name, email, or SID..."
+            className="w-full pl-11 pr-4 py-3 rounded-2xl border border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface))] focus:outline-none focus:border-brand-teal-500 transition-all font-medium text-[rgb(var(--zx-text))] placeholder:text-[rgb(var(--zx-text-muted))]/60 shadow-sm"
+          />
         </motion.div>
 
         {/* DATA TABLE */}
-        <motion.div variants={itemVariants} className="bg-white rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/40 overflow-hidden flex flex-col min-h-[500px]">
-          <div className="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between shrink-0">
-            <h3 className="font-bold text-slate-800 text-lg flex items-center gap-2">
-              <ShieldCheck size={18} className="text-indigo-500" />
+        <motion.div variants={itemVariants} className="bg-[rgb(var(--zx-surface))] rounded-3xl border border-[rgb(var(--zx-border))] shadow-sm overflow-hidden flex flex-col min-h-[500px] relative z-10">
+          <div className="px-6 py-5 border-b border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface-hover))] flex items-center justify-between shrink-0">
+            <h3 className="font-bold text-[rgb(var(--zx-text))] text-lg flex items-center gap-2">
+              <ShieldCheck size={18} className="text-brand-teal-500" />
               Enrollment Ledger
             </h3>
             {filtered.length > 0 && !loading && (
-              <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+              <span className="bg-brand-teal-500/10 border border-brand-teal-500/20 text-brand-teal-500 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-widest">
                 {filtered.length} Records
               </span>
             )}
@@ -366,66 +367,66 @@ export default function EnrollmentCenter() {
 
           <div className="overflow-x-auto flex-1 custom-dashboard-scroll">
             <table className="w-full text-left border-collapse whitespace-nowrap">
-              <thead className="bg-white border-b border-slate-100 sticky top-0 z-10">
+              <thead className="bg-[rgb(var(--zx-surface))] border-b border-[rgb(var(--zx-border))] sticky top-0 z-10">
                 <tr>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">SID</th>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Student Profile</th>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Program</th>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-4 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">SID</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Student Profile</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Program</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-right text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[rgb(var(--zx-border))]">
                 {loading ? (
                   <tr>
                     <td colSpan="5" className="px-6 py-32 text-center">
-                      <div className="flex flex-col items-center justify-center space-y-3 text-slate-400">
-                        <Loader2 size={40} className="animate-spin text-indigo-500" />
+                      <div className="flex flex-col items-center justify-center space-y-3 text-[rgb(var(--zx-text-muted))]">
+                        <Loader2 size={40} className="animate-spin text-brand-teal-500" />
                         <span className="font-bold tracking-widest text-sm">Fetching Enrollments...</span>
                       </div>
                     </td>
                   </tr>
                 ) : filtered.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="px-6 py-32 text-center text-slate-400">
+                    <td colSpan="5" className="px-6 py-32 text-center text-[rgb(var(--zx-text-muted))]">
                       <div className="flex flex-col items-center justify-center">
                         <Inbox size={48} className="mb-4 opacity-20" />
-                        <p className="text-lg font-medium text-slate-600">No records found</p>
+                        <p className="text-lg font-bold text-[rgb(var(--zx-text))]">No records found</p>
                         <p className="text-sm mt-1">Try adjusting your search criteria.</p>
                       </div>
                     </td>
                   </tr>
                 ) : (
                   filtered.map((row) => (
-                    <tr key={row.id} className="hover:bg-slate-50 transition-colors group">
-                      <td className="px-6 py-5">
-                        <span className="font-mono text-slate-600 text-xs font-bold bg-slate-100 px-2.5 py-1 rounded border border-slate-200">
+                    <tr key={row.id} className="hover:bg-[rgb(var(--zx-surface-hover))] transition-colors group">
+                      <td className="px-6 py-4">
+                        <span className="font-mono text-[rgb(var(--zx-text-muted))] text-xs font-semibold bg-[rgb(var(--zx-surface-hover))] px-2.5 py-1 rounded-lg border border-[rgb(var(--zx-border))]">
                           {row.sid || "N/A"}
                         </span>
                       </td>
 
-                      <td className="px-6 py-5">
+                      <td className="px-6 py-4">
                         <div className="flex flex-col gap-0.5">
-                          <span className="font-bold text-slate-800 text-base">{row.name}</span>
-                          <span className="text-sm font-medium text-slate-500">{row.email}</span>
+                          <span className="font-bold text-[rgb(var(--zx-text))] text-sm md:text-base">{row.name}</span>
+                          <span className="text-sm font-medium text-[rgb(var(--zx-text-muted))]">{row.email}</span>
                         </div>
                       </td>
 
-                      <td className="px-6 py-5">
+                      <td className="px-6 py-4">
                         <div className="flex flex-col gap-0.5">
-                          <span className="font-semibold text-slate-800 text-sm">{row.course_name}</span>
-                          <span className="text-sm font-medium text-slate-500">{row.batch_name}</span>
+                          <span className="font-semibold text-[rgb(var(--zx-text))] text-sm">{row.course_name}</span>
+                          <span className="text-sm font-medium text-[rgb(var(--zx-text-muted))]">{row.batch_name}</span>
                         </div>
                       </td>
 
-                      <td className="px-6 py-5">
+                      <td className="px-6 py-4">
                         <StatusBadge status={row.status} />
                       </td>
 
-                      <td className="px-6 py-5 text-right">
+                      <td className="px-6 py-4 text-right">
                         <button
                           onClick={() => openEnrollment(row.id)}
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-colors shadow-sm active:scale-95"
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-brand-teal-500 bg-brand-teal-500/10 border border-brand-teal-500/20 hover:bg-brand-teal-500/20 transition-all shadow-sm active:scale-95"
                         >
                           <Eye size={14} /> View
                         </button>
@@ -439,7 +440,7 @@ export default function EnrollmentCenter() {
         </motion.div>
       </motion.div>
 
-      {/* ENROLLMENT DRAWER */}
+      {/* ENROLLMENT MODAL */}
       <EnrollmentDetailsDrawer
         open={drawerOpen}
         enrollment={selected}
@@ -452,18 +453,21 @@ export default function EnrollmentCenter() {
 
 // ================= REUSABLE UI COMPONENTS =================
 
-function Card({ title, value, icon, colorClass, lightClass }) {
+function Card({ title, value, icon, lightClass }) {
   return (
-    <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-xl shadow-slate-200/40 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
-      <div className={`absolute -right-6 -top-6 w-32 h-32 bg-gradient-to-br ${colorClass} rounded-full opacity-10 group-hover:scale-150 transition-transform duration-700 blur-2xl`}></div>
-      <div className="flex flex-col gap-4 relative z-10">
-        <div className={`w-12 h-12 rounded-2xl ${lightClass} flex items-center justify-center shadow-sm shrink-0`}>
+    <div className="group relative p-6 rounded-3xl border border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface))] hover:shadow-xl hover:shadow-brand-teal-500/5 transition-all duration-300 hover:-translate-y-1">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-bold uppercase tracking-widest text-[rgb(var(--zx-text-muted))]">
+          {title}
+        </span>
+        <div className={`p-2.5 rounded-xl ${lightClass}`}>
           {icon}
         </div>
-        <div>
-          <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-1 truncate">{title}</p>
-          <h3 className="text-3xl font-black text-slate-800 tracking-tight truncate">{value}</h3>
-        </div>
+      </div>
+      <div className="mt-4">
+        <p className="text-3xl font-extrabold text-[rgb(var(--zx-text))] tracking-tight">
+          {value}
+        </p>
       </div>
     </div>
   );
@@ -474,7 +478,7 @@ function StatusBadge({ status }) {
 
   if (s === "active" || s === "completed" || s === "paid" || s === "success") {
     return (
-      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest border bg-emerald-50 text-emerald-700 border-emerald-200">
+      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest border bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
         {status}
       </span>
     );
@@ -482,7 +486,7 @@ function StatusBadge({ status }) {
 
   if (s === "pending" || s === "partial") {
     return (
-      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest border bg-amber-50 text-amber-700 border-amber-200">
+      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest border bg-amber-500/10 text-amber-600 border-amber-500/20">
         {status}
       </span>
     );
@@ -490,14 +494,14 @@ function StatusBadge({ status }) {
 
   if (s === "cancelled" || s === "failed" || s === "rejected") {
     return (
-      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest border bg-rose-50 text-rose-700 border-rose-200">
+      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest border bg-rose-500/10 text-rose-600 border-rose-500/20">
         {status}
       </span>
     );
   }
 
   return (
-    <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest border bg-slate-50 text-slate-700 border-slate-200">
+    <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest border bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border-[rgb(var(--zx-border))]">
       {status || "N/A"}
     </span>
   );
