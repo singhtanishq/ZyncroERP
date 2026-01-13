@@ -56,7 +56,7 @@ export default function ManageAttendance({
         setCourses(data.filter((c) => c.status === "active"));
       })
       .catch(() => setCourses([]));
-  }, []);
+  }, [isFaculty]);
 
   /* ---------------- LOAD BATCHES ---------------- */
   useEffect(() => {
@@ -76,7 +76,7 @@ export default function ManageAttendance({
         setBatches(data.filter((b) => b.status === "active"));
       })
       .catch(() => setBatches([]));
-  }, [courseId]);
+  }, [courseId, isFaculty]);
 
   /* ---------------- RESTORE SESSIONS ON REFRESH ---------------- */
   useEffect(() => {
@@ -132,7 +132,7 @@ export default function ManageAttendance({
       persistSessions(updated);
       setLiveSession(null);
     },
-    [sessions, persistSessions]
+    [sessions, persistSessions, apiPrefix]
   );
 
   /* ---------------- LOAD REPORT ---------------- */
@@ -155,23 +155,30 @@ export default function ManageAttendance({
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-8 animate-fade-in font-sans pb-24">
+    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8 pt-0 space-y-8 animate-fade-in font-sans">
       {/* Custom Scrollbar for Report Table */}
       <style>{`
         .custom-dashboard-scroll::-webkit-scrollbar { height: 8px; width: 8px; }
         .custom-dashboard-scroll::-webkit-scrollbar-track { background: transparent; }
-        .custom-dashboard-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .custom-dashboard-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .custom-dashboard-scroll::-webkit-scrollbar-thumb { background: rgb(var(--zx-border)); border-radius: 10px; }
+        .custom-dashboard-scroll::-webkit-scrollbar-thumb:hover { background: rgb(var(--zx-text-muted)); }
       `}</style>
 
+      {/* Decorative Background Glows */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-teal-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-blue-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+
       {/* HEADER */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
-            <QrCode className="text-indigo-600" size={32} />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal-500/10 border border-brand-teal-500/20 text-[11px] font-bold tracking-widest text-brand-teal-500 uppercase w-max mb-1">
+            <QrCode size={14} strokeWidth={2.5} />
+            Attendance Hub
+          </div>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[rgb(var(--zx-text))]">
             Manage Attendance
           </h1>
-          <p className="text-slate-500 mt-2 text-sm max-w-xl">
+          <p className="text-[rgb(var(--zx-text-muted))] mt-1 text-[15px] max-w-xl leading-relaxed">
             Launch live QR code sessions for student check-ins and monitor historical attendance reports.
           </p>
         </div>
@@ -180,7 +187,7 @@ export default function ManageAttendance({
           {sessions.length > 0 && (
             <button
               onClick={() => setOngoingOpen(true)}
-              className="flex items-center gap-2 bg-white text-emerald-600 border border-emerald-200 px-5 py-2.5 rounded-xl font-bold hover:bg-emerald-50 transition-colors shadow-sm"
+              className="flex items-center gap-2 bg-[rgb(var(--zx-surface))] text-emerald-600 border border-emerald-500/20 px-5 py-3 rounded-2xl font-bold hover:bg-emerald-500/10 transition-colors shadow-sm"
             >
               <Activity size={18} className="animate-pulse" />
               Active Sessions ({sessions.length})
@@ -189,7 +196,7 @@ export default function ManageAttendance({
 
           <button
             onClick={() => setStartOpen(true)}
-            className="flex items-center gap-2 bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all active:scale-[0.98]"
+            className="flex items-center gap-2 bg-brand-teal-500 text-white px-6 py-3 rounded-2xl font-bold hover:bg-brand-teal-600 shadow-lg shadow-brand-teal-500/20 transition-all active:scale-[0.98]"
           >
             <PlayCircle size={18} />
             New Attendance
@@ -198,8 +205,8 @@ export default function ManageAttendance({
       </div>
 
       {/* FILTERS & CONTROLS */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-4 items-center sticky top-4 z-30 backdrop-blur-xl bg-white/90">
-        <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider px-2 shrink-0">
+      <div className="bg-[rgb(var(--zx-surface))]/90 p-4 rounded-2xl border border-[rgb(var(--zx-border))] shadow-sm flex flex-col md:flex-row gap-4 items-center sticky top-4 z-30 backdrop-blur-xl">
+        <div className="flex items-center gap-2 text-xs font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider px-2 shrink-0">
             <Filter size={16} /> Filter
         </div>
         
@@ -207,7 +214,7 @@ export default function ManageAttendance({
             {/* Course Select */}
             <div className="relative group">
                 <select
-                    className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 pl-10 pr-10 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all font-semibold text-sm cursor-pointer"
+                    className="w-full appearance-none bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] pl-10 pr-10 py-3 rounded-xl focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-sm cursor-pointer"
                     value={courseId}
                     onChange={(e) => {
                       setCourseId(e.target.value);
@@ -221,14 +228,14 @@ export default function ManageAttendance({
                     </option>
                     ))}
                 </select>
-                <BookOpen className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none group-hover:text-indigo-500 transition-colors" size={16} />
-                <ChevronDown className="absolute right-3.5 top-3.5 text-slate-400 pointer-events-none" size={16} />
+                <BookOpen className="absolute left-3.5 top-3.5 text-[rgb(var(--zx-text-muted))] pointer-events-none group-hover:text-brand-teal-500 transition-colors" size={16} />
+                <ChevronDown className="absolute right-3.5 top-3.5 text-[rgb(var(--zx-text-muted))] pointer-events-none" size={16} />
             </div>
 
             {/* Batch Select */}
             <div className="relative group">
                 <select
-                    className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 pl-10 pr-10 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all font-semibold text-sm cursor-pointer disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed"
+                    className="w-full appearance-none bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] pl-10 pr-10 py-3 rounded-xl focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     value={batchId}
                     onChange={(e) => {
                       setBatchId(e.target.value);
@@ -243,8 +250,8 @@ export default function ManageAttendance({
                     </option>
                     ))}
                 </select>
-                <Layers className={`absolute left-3.5 top-3.5 pointer-events-none transition-colors ${!courseId ? 'text-slate-300' : 'text-slate-400 group-hover:text-indigo-500'}`} size={16} />
-                <ChevronDown className={`absolute right-3.5 top-3.5 pointer-events-none transition-colors ${!courseId ? 'text-slate-300' : 'text-slate-400'}`} size={16} />
+                <Layers className={`absolute left-3.5 top-3.5 pointer-events-none transition-colors ${!courseId ? 'text-[rgb(var(--zx-border))]/60' : 'text-[rgb(var(--zx-text-muted))] group-hover:text-brand-teal-500'}`} size={16} />
+                <ChevronDown className={`absolute right-3.5 top-3.5 pointer-events-none transition-colors ${!courseId ? 'text-[rgb(var(--zx-border))]/60' : 'text-[rgb(var(--zx-text-muted))]'}`} size={16} />
             </div>
         </div>
 
@@ -253,8 +260,8 @@ export default function ManageAttendance({
           disabled={!courseId || !batchId || loadingReport}
           className={`flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-bold transition-all shadow-md active:scale-95 shrink-0 w-full md:w-auto ${
             !courseId || !batchId || loadingReport
-            ? "bg-slate-200 text-slate-400 cursor-not-allowed shadow-none"
-            : "bg-green-600 text-white hover:bg-green-700 shadow-slate-200"
+            ? "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border border-[rgb(var(--zx-border))] cursor-not-allowed shadow-none"
+            : "bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-600/20"
           }`}
         >
           {loadingReport ? (
@@ -266,16 +273,16 @@ export default function ManageAttendance({
       </div>
 
       {/* TABLE CONTAINER */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/40 overflow-hidden min-h-[400px] flex flex-col">
+      <div className="bg-[rgb(var(--zx-surface))] rounded-3xl border border-[rgb(var(--zx-border))] shadow-sm overflow-hidden min-h-[400px] flex flex-col relative z-10">
         
         {/* Table Toolbar */}
-        <div className="px-6 py-5 bg-slate-50/80 border-b border-slate-100 flex items-center justify-between backdrop-blur-sm">
-            <h2 className="font-bold text-slate-800 flex items-center gap-2">
-              <CalendarRange size={18} className="text-indigo-500" />
+        <div className="px-6 py-5 bg-[rgb(var(--zx-surface-hover))] border-b border-[rgb(var(--zx-border))] flex items-center justify-between">
+            <h2 className="font-bold text-[rgb(var(--zx-text))] flex items-center gap-2">
+              <CalendarRange size={18} className="text-brand-teal-500" />
               Attendance Report
             </h2>
             {reportData && (
-              <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+              <span className="bg-brand-teal-500/10 border border-brand-teal-500/20 text-brand-teal-500 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
                   {reportData.students.length} Students
               </span>
             )}
@@ -284,49 +291,49 @@ export default function ManageAttendance({
         {/* Content Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {!courseId || !batchId ? (
-            <div className="flex flex-col items-center justify-center py-24 text-slate-400 m-auto">
-              <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100 shadow-sm">
-                <Filter size={24} className="text-indigo-400" />
+            <div className="flex flex-col items-center justify-center py-24 text-[rgb(var(--zx-text-muted))] m-auto">
+              <div className="w-16 h-16 bg-[rgb(var(--zx-surface-hover))] rounded-2xl flex items-center justify-center mb-4 border border-[rgb(var(--zx-border))] shadow-sm">
+                <Filter size={24} className="text-brand-teal-500" />
               </div>
-              <p className="text-lg font-bold text-slate-600">Select Parameters</p>
+              <p className="text-lg font-bold text-[rgb(var(--zx-text))]">Select Parameters</p>
               <p className="text-sm mt-1">Choose a specific course and batch to view the roster.</p>
             </div>
           ) : loadingReport ? (
-            <div className="p-20 flex flex-col items-center justify-center text-slate-400 space-y-3">
-              <div className="w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-600 rounded-full animate-spin"></div>
+            <div className="p-20 flex flex-col items-center justify-center text-[rgb(var(--zx-text-muted))] space-y-3">
+              <div className="w-8 h-8 border-4 border-brand-teal-500/30 border-t-brand-teal-500 rounded-full animate-spin"></div>
               <span className="font-medium">Loading attendance...</span>
             </div>
           ) : !reportData ? (
-            <div className="flex flex-col items-center justify-center py-24 text-slate-400 m-auto">
-              <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100 shadow-sm">
-                <Search size={24} className="text-indigo-400" />
+            <div className="flex flex-col items-center justify-center py-24 text-[rgb(var(--zx-text-muted))] m-auto">
+              <div className="w-16 h-16 bg-[rgb(var(--zx-surface-hover))] rounded-2xl flex items-center justify-center mb-4 border border-[rgb(var(--zx-border))] shadow-sm">
+                <Search size={24} className="text-brand-teal-500" />
               </div>
-              <p className="text-lg font-bold text-slate-600">Ready to Fetch</p>
+              <p className="text-lg font-bold text-[rgb(var(--zx-text))]">Ready to Fetch</p>
               <p className="text-sm mt-1">Click "Fetch Report" to load attendance records.</p>
             </div>
           ) : reportData.students.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-24 text-slate-400 m-auto">
-              <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100 shadow-sm">
-                <Users size={24} className="text-indigo-400" />
+            <div className="flex flex-col items-center justify-center py-24 text-[rgb(var(--zx-text-muted))] m-auto">
+              <div className="w-16 h-16 bg-[rgb(var(--zx-surface-hover))] rounded-2xl flex items-center justify-center mb-4 border border-[rgb(var(--zx-border))] shadow-sm">
+                <Users size={24} className="text-brand-teal-500" />
               </div>
-              <p className="text-lg font-bold text-slate-600">No Students Enrolled</p>
+              <p className="text-lg font-bold text-[rgb(var(--zx-text))]">No Students Enrolled</p>
               <p className="text-sm mt-1">There are currently no students mapped to this batch.</p>
             </div>
           ) : (
             <div className="overflow-x-auto custom-dashboard-scroll">
               <table className="min-w-full text-left border-collapse">
-                <thead className="bg-white border-b border-slate-100">
+                <thead className="bg-[rgb(var(--zx-surface))] border-b border-[rgb(var(--zx-border))]">
                   <tr>
-                    <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider sticky left-0 bg-white z-10 border-r border-slate-100 shadow-[1px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                    <th className="px-6 py-4 text-xs font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider sticky left-0 bg-[rgb(var(--zx-surface))] z-10 border-r border-[rgb(var(--zx-border))]">
                       Student Details
                     </th>
                     {reportData.sessions.map((s) => (
-                      <th key={s.id} className="px-4 py-4 text-center text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap min-w-[120px]">
+                      <th key={s.id} className="px-4 py-4 text-center text-xs font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider whitespace-nowrap min-w-[120px]">
                         <div className="flex flex-col items-center gap-1">
-                          <span className="text-[10px] text-slate-400">
+                          <span className="text-[10px] text-[rgb(var(--zx-text-muted))]">
                              {new Date(s.starts_at).toLocaleDateString('en-US', { weekday: 'short' })}
                           </span>
-                          <span className="text-indigo-600">
+                          <span className="text-brand-teal-500 font-bold">
                              {new Date(s.starts_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                           </span>
                         </div>
@@ -334,16 +341,16 @@ export default function ManageAttendance({
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-[rgb(var(--zx-border))]">
                   {reportData.students.map((st) => (
-                    <tr key={st.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-4 sticky left-0 bg-white group-hover:bg-slate-50 border-r border-slate-100 shadow-[1px_0_5px_-2px_rgba(0,0,0,0.1)] z-10">
+                    <tr key={st.id} className="hover:bg-[rgb(var(--zx-surface-hover))] transition-colors">
+                      <td className="px-6 py-4 sticky left-0 bg-[rgb(var(--zx-surface))] group-hover:bg-[rgb(var(--zx-surface-hover))] border-r border-[rgb(var(--zx-border))] z-10">
                         <div className="flex flex-col gap-0.5">
-                          <span className="font-bold text-slate-800 text-base whitespace-nowrap">
+                          <span className="font-bold text-[rgb(var(--zx-text))] text-base whitespace-nowrap">
                             {st.name}
                           </span>
                           
-                          <span className="font-mono text-[12px] text-slate-500 tracking-tight">
+                          <span className="font-mono text-[12px] text-[rgb(var(--zx-text-muted))] tracking-tight">
                             #{st.sid}
                           </span>
                         </div>
@@ -354,15 +361,15 @@ export default function ManageAttendance({
                         return (
                           <td key={s.id} className="px-4 py-4 text-center">
                             {status === "present" ? (
-                              <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200" title="Present">
+                              <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" title="Present">
                                 <CheckCircle2 size={16} strokeWidth={3} />
                               </div>
                             ) : status === "absent" ? (
-                              <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-rose-50 text-rose-600 border border-rose-200" title="Absent">
+                              <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-rose-500/10 text-rose-600 border border-rose-500/20" title="Absent">
                                 <XCircle size={16} strokeWidth={3} />
                               </div>
                             ) : (
-                              <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-slate-400 border border-slate-200" title="Not Marked">
+                              <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border border-[rgb(var(--zx-border))]" title="Not Marked">
                                 <span className="text-xs font-bold">-</span>
                               </div>
                             )}
