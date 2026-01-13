@@ -93,8 +93,8 @@ export default function LiveQrModal({ session, onMinimize, onEnd }) {
           </button>
         </div>
 
-        {/* QR CONTAINER */}
-        <div className="p-4 relative group w-full flex justify-center">
+        {/* QR CONTAINER WITH PROPER VERTICAL SPACING */}
+        <div className="pt-2 pb-4 relative group w-full flex flex-col items-center">
             <div className="absolute inset-0 bg-brand-teal-500/5 blur-3xl opacity-50 group-hover:opacity-80 transition-opacity"></div>
             
             <div className="bg-white p-4 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-[rgb(var(--zx-border))] relative z-10">
@@ -114,7 +114,8 @@ export default function LiveQrModal({ session, onMinimize, onEnd }) {
                 <div className="absolute bottom-3 right-3 w-5 h-5 border-b-2 border-r-2 border-brand-teal-500 rounded-br-lg"></div>
             </div>
             
-            <div className="absolute bottom-1 flex items-center gap-1.5 text-[11px] font-bold text-brand-teal-500 uppercase tracking-widest opacity-80 bg-[rgb(var(--zx-surface))] px-3 py-1 rounded-full border border-[rgb(var(--zx-border))] shadow-sm">
+            {/* Properly spaced out below the card with relative layout */}
+            <div className="mt-4 flex items-center gap-1.5 text-[11px] font-bold text-brand-teal-500 uppercase tracking-widest bg-[rgb(var(--zx-surface))] px-3.5 py-1.5 rounded-full border border-[rgb(var(--zx-border))] shadow-sm relative z-10">
                 <ScanLine size={14} /> Scan with App
             </div>
         </div>
