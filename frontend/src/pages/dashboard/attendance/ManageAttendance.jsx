@@ -183,11 +183,12 @@ export default function ManageAttendance({
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-3">
+        {/* Buttons forced onto the same line using flex-row and shrink-0 */}
+        <div className="flex flex-row items-center gap-3 shrink-0">
           {sessions.length > 0 && (
             <button
               onClick={() => setOngoingOpen(true)}
-              className="flex items-center gap-2 bg-[rgb(var(--zx-surface))] text-emerald-600 border border-emerald-500/20 px-5 py-3 rounded-2xl font-bold hover:bg-emerald-500/10 transition-colors shadow-sm"
+              className="flex items-center gap-2 bg-[rgb(var(--zx-surface))] text-emerald-600 border border-emerald-500/20 px-4 sm:px-5 py-3 rounded-2xl font-bold hover:bg-emerald-500/10 transition-colors shadow-sm text-xs sm:text-sm whitespace-nowrap"
             >
               <Activity size={18} className="animate-pulse" />
               Active Sessions ({sessions.length})
@@ -196,7 +197,7 @@ export default function ManageAttendance({
 
           <button
             onClick={() => setStartOpen(true)}
-            className="flex items-center gap-2 bg-brand-teal-500 text-white px-6 py-3 rounded-2xl font-bold hover:bg-brand-teal-600 shadow-lg shadow-brand-teal-500/20 transition-all active:scale-[0.98]"
+            className="flex items-center gap-2 bg-brand-teal-500 text-white px-5 sm:px-6 py-3 rounded-2xl font-bold hover:bg-brand-teal-600 shadow-lg shadow-brand-teal-500/20 transition-all active:scale-[0.98] text-xs sm:text-sm whitespace-nowrap"
           >
             <PlayCircle size={18} />
             New Attendance
