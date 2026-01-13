@@ -9,18 +9,6 @@ const SIZES = {
   xl: "sm:max-w-4xl",
 };
 
-/**
- * Unified application modal.
- *
- * - Centered on desktop, bottom-sheet style on mobile
- * - Long content scrolls INSIDE the body; the modal never leaves the viewport
- * - ESC key and backdrop click close it; body scroll is locked while open
- * - Consistent header/footer chrome for every module
- *
- * Props:
- *   open, onClose, title, size ('sm'|'md'|'lg'|'xl'), tone ('default'|'danger'),
- *   footer (node rendered in the sticky footer)
- */
 export default function AppModal({
   open,
   onClose,
@@ -54,32 +42,33 @@ export default function AppModal({
   const isDanger = tone === "danger";
 
   return createPortal(
+    /* z-[9999] guarantees it sits above sidebars, headers, and floating elements */
     <div
-      className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-6"
+      className="fixed inset-0 z-[9999] isolate flex items-end sm:items-center justify-center p-0 sm:p-6 overflow-y-auto"
       role="dialog"
       aria-modal="true"
       aria-label={title || "Dialog"}
     >
-      {/* Backdrop */}
+      {/* Backdrop covering entire screen */}
       <div
-        className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
+        className="fixed inset-0 bg-slate-950/70 backdrop-blur-md transition-opacity"
         onClick={onClose}
       />
 
       {/* Panel */}
       <div
         ref={panelRef}
-        className={`relative w-full ${SIZES[size]} max-h-[92vh] sm:max-h-[85vh] flex flex-col bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] rounded-t-3xl sm:rounded-2xl shadow-2xl animate-fade-in overflow-hidden`}
+        className={`relative z-10 w-full ${SIZES[size]} max-h-[92vh] sm:max-h-[85vh] flex flex-col bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] border border-[rgb(var(--zx-border))] rounded-t-3xl sm:rounded-2xl shadow-2xl animate-fade-in overflow-hidden my-auto`}
       >
         {/* Header */}
         <div
-          className={`flex items-center justify-between gap-4 px-6 py-4 border-b border-[rgb(var(--zx-border))] shrink-0 ${
-            isDanger ? "bg-red-500/5" : ""
+          className={`flex items-center justify-between gap-4 px-6 py-4 border-b border-[rgb(var(--zx-border))] shrink-0 bg-[rgb(var(--zx-surface-hover))]/50 ${
+            isDanger ? "bg-rose-500/5" : ""
           }`}
         >
           <h2
             className={`text-base font-bold flex items-center gap-2.5 ${
-              isDanger ? "text-red-600 dark:text-red-300" : "text-[rgb(var(--zx-text))]"
+              isDanger ? "text-rose-600 dark:text-rose-300" : "text-[rgb(var(--zx-text))]"
             }`}
           >
             {isDanger ? <AlertTriangle size={18} /> : null}
@@ -95,14 +84,14 @@ export default function AppModal({
           </button>
         </div>
 
-        {/* Body — scrolls internally */}
+        {/* Body */}
         <div className="flex-1 min-h-0 overflow-y-auto zx-scroll px-6 py-5">
           {children}
         </div>
 
         {/* Footer */}
         {footer ? (
-          <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-bg))] shrink-0">
+          <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface-hover))]/50 shrink-0">
             {footer}
           </div>
         ) : null}
