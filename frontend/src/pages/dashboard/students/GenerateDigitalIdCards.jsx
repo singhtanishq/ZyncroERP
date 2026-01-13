@@ -4,15 +4,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Eye, 
   Download, 
-  Power, 
   CreditCard, 
   CheckCircle2, 
-  AlertCircle,
-  Calendar,
   Filter,
-  Search,
-  User,
-  RefreshCw
+  User
 } from "lucide-react";
 import ConfirmModal from "../../../components/ConfirmModal";
 import PdfPreviewModal from "../../../components/PdfPreviewModal";
@@ -96,22 +91,29 @@ export default function GenerateDigitalIdCards() {
   const gridLayout = "grid grid-cols-[100px_minmax(0,1fr)_140px_230px] gap-4 items-center";
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-8 animate-fade-in font-sans">
+    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8 pt-0 space-y-8 animate-fade-in font-sans">
       
+      {/* Decorative Background Glows */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-teal-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-blue-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+
       {/* HEADER SECTION */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
-            <CreditCard className="text-blue-600" size={32} />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal-500/10 border border-brand-teal-500/20 text-[11px] font-bold tracking-widest text-brand-teal-500 uppercase w-max mb-1">
+            <CreditCard size={14} strokeWidth={2.5} />
+            Identification Hub
+          </div>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[rgb(var(--zx-text))]">
             Digital ID Cards
           </h1>
-          <p className="text-slate-500 mt-2 text-sm max-w-xl">
+          <p className="text-[rgb(var(--zx-text-muted))] mt-1 text-[15px] max-w-xl leading-relaxed">
             Manage student identification cards. Activate new cards, set expiry dates, and download digital copies for printing.
           </p>
         </div>
 
         {/* FILTERS - SEGMENTED CONTROL */}
-        <div className="bg-slate-100/80 p-1.5 rounded-xl flex items-center shadow-inner">
+        <div className="bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] p-1.5 rounded-2xl flex items-center shadow-inner">
           {[
             { key: "all", label: "All Students" },
             { key: "active", label: "Active" },
@@ -120,10 +122,10 @@ export default function GenerateDigitalIdCards() {
             <button
               key={opt.key}
               onClick={() => setFilter(opt.key)}
-              className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+              className={`px-5 py-2 rounded-xl text-xs font-bold tracking-wider uppercase transition-all duration-200 ${
                 filter === opt.key
-                  ? "bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200"
-                  : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50"
+                  ? "bg-brand-teal-500 text-white shadow-md shadow-brand-teal-500/20"
+                  : "text-[rgb(var(--zx-text-muted))] hover:text-[rgb(var(--zx-text))] hover:bg-[rgb(var(--zx-surface))]"
               }`}
             >
               {opt.label}
@@ -133,11 +135,11 @@ export default function GenerateDigitalIdCards() {
       </div>
 
       {/* TABLE CONTAINER */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-xl shadow-slate-200/40 overflow-hidden min-h-[400px]">
+      <div className="bg-[rgb(var(--zx-surface))] rounded-3xl border border-[rgb(var(--zx-border))] shadow-sm overflow-hidden min-h-[400px] relative z-10">
         
         {/* TABLE HEADER */}
         <div
-          className={`${gridLayout} px-6 py-4 bg-slate-50/80 border-b border-slate-100 text-xs font-bold text-slate-400 uppercase tracking-wider backdrop-blur-sm`}
+          className={`${gridLayout} px-6 py-4 bg-[rgb(var(--zx-surface-hover))] border-b border-[rgb(var(--zx-border))] text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider`}
         >
           <div className="text-left">SID</div>
           <div className="text-left">Student</div>
@@ -147,55 +149,55 @@ export default function GenerateDigitalIdCards() {
 
         {/* LOADING STATE */}
         {loading && (
-          <div className="p-20 flex flex-col items-center justify-center text-slate-400 space-y-3">
-             <div className="w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-600 rounded-full animate-spin"></div>
-             <span className="font-medium">Loading students...</span>
+          <div className="p-20 flex flex-col items-center justify-center text-[rgb(var(--zx-text-muted))] space-y-3">
+             <div className="w-8 h-8 border-4 border-brand-teal-500/30 border-t-brand-teal-500 rounded-full animate-spin"></div>
+             <span className="font-medium text-sm">Loading students...</span>
           </div>
         )}
 
         {/* LIST */}
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-[rgb(var(--zx-border))]">
           {!loading && filteredStudents.length === 0 && (
-            <div className="py-20 text-center text-slate-400 flex flex-col items-center justify-center bg-slate-50/30">
-              <div className="w-16 h-16 bg-white border border-slate-200 rounded-full flex items-center justify-center mb-4 shadow-sm">
-                <Filter size={24} className="text-slate-300" />
+            <div className="py-20 text-center flex flex-col items-center justify-center bg-[rgb(var(--zx-surface))]">
+              <div className="w-16 h-16 bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] rounded-2xl flex items-center justify-center mb-4 text-[rgb(var(--zx-text-muted))] shadow-sm">
+                <Filter size={24} />
               </div>
-              <p className="text-lg font-bold text-slate-600">No students found</p>
-              <p className="text-sm">Try changing the filter status.</p>
+              <p className="text-[17px] font-bold text-[rgb(var(--zx-text))]">No students found</p>
+              <p className="text-[14px] text-[rgb(var(--zx-text-muted))] mt-1">Try changing the filter status.</p>
             </div>
           )}
 
           {!loading && filteredStudents.map((s) => (
             <div 
               key={s.student_id} 
-              className={`${gridLayout} px-6 py-5 hover:bg-slate-50/80 transition-all duration-200 group border-l-[3px] border-l-transparent hover:border-l-indigo-500`}
+              className={`${gridLayout} px-6 py-4 hover:bg-[rgb(var(--zx-surface-hover))] transition-all duration-200 group border-l-[3px] border-l-transparent hover:border-l-brand-teal-500`}
             >
               {/* SID */}
               <div>
-                 <span className="font-mono text-xs font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded border border-slate-200 inline-block">
+                 <span className="font-mono text-xs font-semibold text-[rgb(var(--zx-text-muted))] bg-[rgb(var(--zx-surface-hover))] px-2.5 py-1 rounded-lg border border-[rgb(var(--zx-border))] inline-block">
                     {s.sid}
                  </span>
               </div>
               
               {/* STUDENT (Name & Email Combined) */}
               <div className="flex items-center gap-3 overflow-hidden">
-                 <div className="p-2 rounded-full bg-indigo-50 text-indigo-600 hidden md:flex shrink-0">
+                 <div className="p-2 rounded-xl bg-brand-teal-500/10 text-brand-teal-500 hidden md:flex shrink-0 border border-brand-teal-500/20">
                     <User size={16} />
                  </div>
                  <div className="flex flex-col overflow-hidden">
-                    <div className="font-bold text-slate-800 text-sm md:text-base truncate">{s.name}</div>
-                    <div className="text-slate-500 text-sm font-medium truncate">{s.email}</div>
+                    <div className="font-bold text-[rgb(var(--zx-text))] text-sm md:text-base truncate">{s.name}</div>
+                    <div className="text-[rgb(var(--zx-text-muted))] text-sm font-medium truncate">{s.email}</div>
                  </div>
               </div>
               
               {/* Status Badge */}
               <div>
-                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border ${
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ${
                   s.active 
-                    ? "bg-emerald-50 text-emerald-700 border-emerald-100" 
-                    : "bg-slate-100 text-slate-500 border-slate-200"
+                    ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" 
+                    : "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border-[rgb(var(--zx-border))]"
                 }`}>
-                  <span className={`w-2 h-2 rounded-full ${s.active ? "bg-emerald-500 animate-pulse" : "bg-slate-400"}`} />
+                  <span className={`w-2 h-2 rounded-full ${s.active ? "bg-emerald-500 animate-pulse" : "bg-[rgb(var(--zx-text-muted))]"}`} />
                   {s.active ? "Active" : "Inactive"}
                 </span>
               </div>
@@ -206,10 +208,10 @@ export default function GenerateDigitalIdCards() {
                 <button
                   disabled={s.active}
                   onClick={() => openActivate(s.student_id)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition-all shadow-sm border ${
+                  className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all shadow-sm border ${
                     s.active
-                      ? "bg-emerald-50 border-emerald-200 text-emerald-700 cursor-default"
-                      : "bg-indigo-600 border-transparent text-white hover:bg-indigo-700 hover:shadow-indigo-200"
+                      ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 cursor-default"
+                      : "bg-brand-teal-500 border-transparent text-white hover:bg-brand-teal-600 hover:shadow-brand-teal-500/20"
                   }`}
                 >
                   {s.active ? (
@@ -226,7 +228,7 @@ export default function GenerateDigitalIdCards() {
                 </button>
 
                 {/* Vertical Divider */}
-                <div className="w-px h-5 bg-slate-200 mx-1"></div>
+                <div className="w-px h-5 bg-[rgb(var(--zx-border))] mx-1"></div>
 
                 {/* VIEW */}
                 <button
@@ -238,10 +240,10 @@ export default function GenerateDigitalIdCards() {
                     setPreviewOpen(true);
                   }}
                   title="View ID Card"
-                  className={`p-2 rounded-lg transition-all ${
+                  className={`p-2 rounded-xl transition-all ${
                     s.active
-                      ? "text-slate-400 hover:bg-indigo-50 hover:text-indigo-600"
-                      : "text-slate-200 cursor-not-allowed"
+                      ? "text-[rgb(var(--zx-text-muted))] hover:bg-brand-teal-500/10 hover:text-brand-teal-500"
+                      : "text-[rgb(var(--zx-border))] cursor-not-allowed"
                   }`}
                 >
                   <Eye size={18} />
@@ -257,10 +259,10 @@ export default function GenerateDigitalIdCards() {
                     )
                   }
                   title="Download ID Card"
-                  className={`p-2 rounded-lg transition-all ${
+                  className={`p-2 rounded-xl transition-all ${
                     s.active
-                      ? "text-slate-400 hover:bg-purple-50 hover:text-purple-600"
-                      : "text-slate-200 cursor-not-allowed"
+                      ? "text-[rgb(var(--zx-text-muted))] hover:bg-brand-blue-500/10 hover:text-brand-blue-500"
+                      : "text-[rgb(var(--zx-border))] cursor-not-allowed"
                   }`}
                 >
                   <Download size={18} />
@@ -297,12 +299,12 @@ export default function GenerateDigitalIdCards() {
             initial={{ opacity: 0, y: 20, x: 0 }}
             animate={{ opacity: 1, y: 0, x: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-8 right-8 z-50 bg-slate-900 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700/50"
+            className="fixed bottom-8 right-8 z-50 bg-[rgb(var(--zx-text))] text-[rgb(var(--zx-surface))] px-6 py-4 rounded-2xl shadow-2xl shadow-black/20 flex items-center gap-3 border border-[rgb(var(--zx-border))]"
           >
-            <div className="bg-emerald-500 rounded-full p-1">
-              <CheckCircle2 size={14} className="text-white" strokeWidth={3} />
+            <div className="bg-emerald-500 rounded-full p-1 text-white">
+              <CheckCircle2 size={14} strokeWidth={3} />
             </div>
-            <span className="text-sm font-semibold tracking-wide">{toast}</span>
+            <span className="text-[14px] font-bold tracking-wide">{toast}</span>
           </motion.div>
         )}
       </AnimatePresence>
