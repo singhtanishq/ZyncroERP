@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { X, Users, BookOpen, Layers } from "lucide-react";
+import { Users, BookOpen, Layers, ChevronDown, CheckCircle2 } from "lucide-react";
 import api from "../../../lib/api/apiClient";
+import AppModal from "../../../components/common/AppModal";
 
 export default function AccessControlModal({
   open,
@@ -40,8 +41,8 @@ export default function AccessControlModal({
             : "/admin/courses"
     ).then((res) => {
       setCourses(res.data);
-    });
-  }, [open]);
+    }).catch(() => setCourses([]));
+  }, [open, isFaculty]);
 
   /* ================= PREFILL (EDIT MODE) ================= */
 
@@ -74,6 +75,9 @@ export default function AccessControlModal({
           if (!cancelled) {
             setBatches(res.data);
           }
+        })
+        .catch(() => {
+          if (!cancelled) setBatches([]);
         });
     } else {
       setBatches([]);
@@ -83,7 +87,7 @@ export default function AccessControlModal({
     return () => {
       cancelled = true;
     };
-  }, [accessType, courseId]);
+  }, [accessType, courseId, isFaculty]);
 
   if (!open) return null;
 
@@ -108,7 +112,7 @@ export default function AccessControlModal({
       await onSubmit({
         access_type: accessType,
         course_id:
-          accessType === "batch"
+          accessType === "batch" || accessType === "course"
               ? Number(courseId)
               : null,
         batch_id: accessType === "batch" ? Number(batchId) : null,
@@ -118,204 +122,28 @@ export default function AccessControlModal({
     }
   };
 
-  /* ================= UI ================= */
-
   return (
-    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 animate-in fade-in duration-200">
-      <div className="bg-white w-[500px] rounded-2xl shadow-2xl overflow-hidden transform transition-all animate-in zoom-in-95 duration-200 border border-slate-100">
-        
-        {/* HEADER */}
-        <div className="flex justify-between items-center px-6 py-5 border-b border-slate-100 bg-slate-50/50">
-          <div>
-            <h2 className="text-xl font-bold text-slate-800">Access Control</h2>
-            <p className="text-xs text-slate-500 font-medium mt-0.5">Who can view this lecture?</p>
-          </div>
-          <button 
-            onClick={onClose} 
-            className="p-2 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-colors"
-          >
-            <X size={20} />
-          </button>
-        </div>
-
-        {/* BODY */}
-        <div className="p-6 space-y-6">
-          
-          {/* ACCESS TYPE SELECTION CARDS */}
-
-          <div className="space-y-3">
-              {(
-                  isFaculty
-                      ? [
-                          {
-                              id: "batch",
-                              label: "Assigned Batch",
-                              desc: "Only your assigned batch can join",
-                              icon: <Layers size={20} />,
-                              active: "border-purple-600 bg-purple-50/30",
-                              iconBg: "bg-purple-600 text-white",
-                              iconIdle: "bg-slate-100 text-slate-500 group-hover:bg-purple-100 group-hover:text-purple-600",
-                              dot: "bg-purple-600 shadow-purple-300",
-                              text: "text-purple-900",
-                          }
-                      ]
-                      : [
-                          {
-                              id: "all",
-                              label: "All Students",
-                              desc: "Any enrolled student can join",
-                              icon: <Users size={20} />,
-                              active: "border-indigo-600 bg-indigo-50/30",
-                              iconBg: "bg-indigo-600 text-white",
-                              iconIdle: "bg-slate-100 text-slate-500 group-hover:bg-indigo-100 group-hover:text-indigo-600",
-                              dot: "bg-indigo-600 shadow-indigo-300",
-                              text: "text-indigo-900",
-                          },
-                          {
-                              id: "course",
-                              label: "Specific Course",
-                              desc: "Restrict access to a full course",
-                              icon: <BookOpen size={20} />,
-                              active: "border-blue-600 bg-blue-50/30",
-                              iconBg: "bg-blue-600 text-white",
-                              iconIdle: "bg-slate-100 text-slate-500 group-hover:bg-blue-100 group-hover:text-blue-600",
-                              dot: "bg-blue-600 shadow-blue-300",
-                              text: "text-blue-900",
-                          },
-                          {
-                              id: "batch",
-                              label: "Specific Batch",
-                              desc: "Restrict access to a specific batch",
-                              icon: <Layers size={20} />,
-                              active: "border-purple-600 bg-purple-50/30",
-                              iconBg: "bg-purple-600 text-white",
-                              iconIdle: "bg-slate-100 text-slate-500 group-hover:bg-purple-100 group-hover:text-purple-600",
-                              dot: "bg-purple-600 shadow-purple-300",
-                              text: "text-purple-900",
-                          },
-                      ]
-              ).map((opt) => (
-                  <label
-                      key={opt.id}
-                      className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 group ${
-                          accessType === opt.id
-                              ? opt.active
-                              : "border-slate-100 hover:bg-slate-50"
-                      }`}
-                  >
-                      <input
-                          type="radio"
-                          className="sr-only"
-                          checked={accessType === opt.id}
-                          onChange={() => setAccessType(opt.id)}
-                      />
-
-                      <div
-                          className={`p-3 rounded-full ${
-                              accessType === opt.id
-                                  ? opt.iconBg
-                                  : opt.iconIdle
-                          }`}
-                      >
-                          {opt.icon}
-                      </div>
-
-                      <div>
-                          <div
-                              className={`font-bold text-sm ${
-                                  accessType === opt.id
-                                      ? opt.text
-                                      : "text-slate-700"
-                              }`}
-                          >
-                              {opt.label}
-                          </div>
-
-                          <div className="text-xs text-slate-500 mt-0.5">
-                              {opt.desc}
-                          </div>
-                      </div>
-
-                      {accessType === opt.id && (
-                          <div
-                              className={`absolute right-4 w-3 h-3 rounded-full ${opt.dot}`}
-                          />
-                      )}
-                  </label>
-              ))}
-          </div>
-
-          {/* DYNAMIC FORM FIELDS */}
-          <div className={`space-y-4 transition-all duration-300 ${accessType === 'all' ? 'opacity-50 grayscale pointer-events-none hidden' : 'opacity-100'}`}>
-            
-            {/* COURSE */}
-            {(
-                isFaculty
-                    ? accessType === "batch"
-                    : (accessType === "course" || accessType === "batch")
-            ) && (
-              <div className="animate-in slide-in-from-top-2 duration-300">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 block ml-1">Select Course <span className="text-red-500">*</span></label>
-                <div className="relative">
-                    <select
-                      className="w-full appearance-none bg-white border border-slate-300 text-slate-700 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-medium text-sm shadow-sm"
-                      value={courseId}
-                      onChange={(e) => setCourseId(e.target.value)}
-                    >
-                      <option value="">-- Choose a Course --</option>
-                      {courses.map((c) => (
-                        <option key={c.id} value={c.id}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
-                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
-                        <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
-                    </div>
-                </div>
-              </div>
-            )}
-
-            {/* BATCH */}
-            {accessType === "batch" && (
-              <div className="animate-in slide-in-from-top-2 duration-300">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 block ml-1">Select Batch <span className="text-red-500">*</span></label>
-                <div className="relative">
-                    <select
-                      className="w-full appearance-none bg-white border border-slate-300 text-slate-700 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-medium text-sm shadow-sm disabled:bg-slate-50 disabled:text-slate-400"
-                      value={batchId}
-                      onChange={(e) => setBatchId(e.target.value)}
-                      disabled={!courseId}
-                    >
-                      <option value="">{courseId ? "-- Choose a Batch --" : "Select a Course first"}</option>
-                      {batches.map((b) => (
-                        <option key={b.id} value={b.id}>
-                          {b.name}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
-                        <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
-                    </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* FOOTER */}
-        <div className="flex justify-between items-center px-6 py-4 bg-slate-50 border-t border-slate-100">
+    <AppModal
+      open={open}
+      onClose={onClose}
+      title="Access Control"
+      size="lg"
+      footer={
+        <div className="w-full flex justify-between items-center">
           <button
             onClick={onBack}
-            className="px-5 py-2.5 rounded-xl text-slate-600 font-semibold hover:bg-slate-200 transition-all text-sm"
+            className="px-5 py-2.5 rounded-xl border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] text-sm font-semibold hover:bg-[rgb(var(--zx-surface-hover))] transition-all shadow-sm"
           >
             Back
           </button>
-
           <button
             onClick={submit}
             disabled={loading}
-            className="flex items-center gap-2 px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 active:scale-95 transition-all shadow-lg shadow-indigo-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none"
+            className={`px-6 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-lg transition-all active:scale-95 ${
+              loading
+                ? "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border border-[rgb(var(--zx-border))] cursor-not-allowed shadow-none"
+                : "bg-brand-teal-500 text-white hover:bg-brand-teal-600 shadow-brand-teal-500/20"
+            }`}
           >
             {loading ? (
                  <>
@@ -327,7 +155,155 @@ export default function AccessControlModal({
             )}
           </button>
         </div>
+      }
+    >
+      <div className="space-y-6">
+        
+        {/* SUBHEADER CONTEXT */}
+        <p className="text-xs text-[rgb(var(--zx-text-muted))] font-medium -mt-2">
+          Who can view this lecture?
+        </p>
+
+        {/* ACCESS TYPE SELECTION CARDS */}
+        <div className="space-y-3">
+            {(
+                isFaculty
+                    ? [
+                        {
+                            id: "batch",
+                            label: "Assigned Batch",
+                            desc: "Only your assigned batch can join",
+                            icon: <Layers size={20} />,
+                        }
+                    ]
+                    : [
+                        {
+                            id: "all",
+                            label: "All Students",
+                            desc: "Any enrolled student can join",
+                            icon: <Users size={20} />,
+                        },
+                        {
+                            id: "course",
+                            label: "Specific Course",
+                            desc: "Restrict access to a full course",
+                            icon: <BookOpen size={20} />,
+                        },
+                        {
+                            id: "batch",
+                            label: "Specific Batch",
+                            desc: "Restrict access to a specific batch",
+                            icon: <Layers size={20} />,
+                        },
+                    ]
+            ).map((opt) => (
+                <label
+                    key={opt.id}
+                    className={`relative flex items-center gap-4 p-4 rounded-2xl border cursor-pointer transition-all duration-200 group ${
+                        accessType === opt.id
+                            ? "border-brand-teal-500 bg-brand-teal-500/5 shadow-sm"
+                            : "border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface))] hover:border-brand-teal-500/40 hover:bg-[rgb(var(--zx-surface-hover))]"
+                    }`}
+                >
+                    <input
+                        type="radio"
+                        className="sr-only"
+                        checked={accessType === opt.id}
+                        onChange={() => setAccessType(opt.id)}
+                    />
+
+                    <div
+                        className={`p-3 rounded-xl transition-colors ${
+                            accessType === opt.id
+                                ? "bg-brand-teal-500 text-white shadow-md shadow-brand-teal-500/20"
+                                : "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border border-[rgb(var(--zx-border))]"
+                        }`}
+                    >
+                        {opt.icon}
+                    </div>
+
+                    <div>
+                        <div
+                            className={`font-bold text-sm ${
+                                accessType === opt.id
+                                    ? "text-[rgb(var(--zx-text))]"
+                                    : "text-[rgb(var(--zx-text))] opacity-90"
+                            }`}
+                        >
+                            {opt.label}
+                        </div>
+
+                        <div className="text-xs text-[rgb(var(--zx-text-muted))] mt-0.5 font-medium">
+                            {opt.desc}
+                        </div>
+                    </div>
+
+                    {accessType === opt.id && (
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-brand-teal-500 animate-in zoom-in duration-200">
+                            <CheckCircle2 size={20} />
+                        </div>
+                    )}
+                </label>
+            ))}
+        </div>
+
+        {/* DYNAMIC FORM FIELDS */}
+        <div className={`space-y-4 transition-all duration-300 ${accessType === 'all' ? 'opacity-50 grayscale pointer-events-none hidden' : 'opacity-100'}`}>
+          
+          {/* COURSE */}
+          {(
+              isFaculty
+                  ? accessType === "batch"
+                  : (accessType === "course" || accessType === "batch")
+          ) && (
+            <div className="animate-in slide-in-from-top-2 duration-300">
+              <label className="text-[11px] font-bold uppercase tracking-widest text-[rgb(var(--zx-text-muted))] mb-1.5 block ml-1">Select Course <span className="text-rose-500">*</span></label>
+              <div className="relative group">
+                  <select
+                    className="w-full appearance-none bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] pl-4 pr-10 py-3 rounded-xl focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-sm cursor-pointer shadow-sm"
+                    value={courseId}
+                    onChange={(e) => setCourseId(e.target.value)}
+                  >
+                    <option value="">-- Choose a Course --</option>
+                    {courses.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[rgb(var(--zx-text-muted))]">
+                      <ChevronDown size={16} />
+                  </div>
+              </div>
+            </div>
+          )}
+
+          {/* BATCH */}
+          {accessType === "batch" && (
+            <div className="animate-in slide-in-from-top-2 duration-300">
+              <label className="text-[11px] font-bold uppercase tracking-widest text-[rgb(var(--zx-text-muted))] mb-1.5 block ml-1">Select Batch <span className="text-rose-500">*</span></label>
+              <div className="relative group">
+                  <select
+                    className="w-full appearance-none bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] pl-4 pr-10 py-3 rounded-xl focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-sm cursor-pointer shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    value={batchId}
+                    onChange={(e) => setBatchId(e.target.value)}
+                    disabled={!courseId}
+                  >
+                    <option value="">{courseId ? "-- Choose a Batch --" : "Select a Course first"}</option>
+                    {batches.map((b) => (
+                      <option key={b.id} value={b.id}>
+                        {b.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[rgb(var(--zx-text-muted))]">
+                      <ChevronDown size={16} />
+                  </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </AppModal>
   );
 }
