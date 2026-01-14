@@ -9,8 +9,7 @@ import {
   Video,
   Eye,
   Filter,
-  ChevronDown,
-  MoreHorizontal
+  ChevronDown
 } from "lucide-react";
 
 import ConfirmModal from "../../../components/ConfirmModal";
@@ -57,7 +56,7 @@ export default function ManageOnlineClasses({
 
   useEffect(() => {
     api.get(`${apiPrefix}/courses`).then((res) => setCourses(res.data));
-  }, []);
+  }, [apiPrefix]);
 
   useEffect(() => {
     if (accessFilter === "batch" && courseId) {
@@ -68,7 +67,7 @@ export default function ManageOnlineClasses({
       setBatches([]);
       setBatchId("");
     }
-  }, [accessFilter, courseId]);
+  }, [accessFilter, courseId, apiPrefix]);
 
   /* ================= LOAD CLASSES ================= */
 
@@ -220,27 +219,33 @@ export default function ManageOnlineClasses({
     };
   };
 
-  // Upgraded Logic-less UI Styling
   const statusBadge = (s) =>
     s === "live"
-      ? "bg-rose-50 text-rose-600 ring-1 ring-rose-200 animate-pulse"
+      ? "bg-rose-500/10 text-rose-500 border border-rose-500/20 animate-pulse"
       : s === "completed"
-      ? "bg-slate-100 text-slate-500 ring-1 ring-slate-200"
-      : "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200";
+      ? "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border border-[rgb(var(--zx-border))]"
+      : "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20";
 
   /* ================= UI ================= */
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-8 animate-fade-in font-sans">
+    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8 pt-0 space-y-8 animate-fade-in font-sans">
       
-      {/* HEADER SECTION (Restored to User Preference) */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+      {/* Decorative Background Glows */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-teal-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-blue-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+
+      {/* HEADER SECTION */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
-            <Video className="text-blue-600" size={32} />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal-500/10 border border-brand-teal-500/20 text-[11px] font-bold tracking-widest text-brand-teal-500 uppercase w-max mb-1">
+            <Video size={14} strokeWidth={2.5} />
+            Virtual Classroom
+          </div>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[rgb(var(--zx-text))]">
             Manage Online Classes
           </h1>
-          <p className="text-slate-500 mt-2 text-sm max-w-xl">
+          <p className="text-[rgb(var(--zx-text-muted))] mt-1 text-[15px] max-w-xl leading-relaxed">
             Schedule, manage, and track your live sessions.
           </p>
         </div>
@@ -248,15 +253,15 @@ export default function ManageOnlineClasses({
         <div className="flex gap-3">
           <button 
             onClick={() => startSchedule("schedule")} 
-            className="group flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all active:scale-95 font-medium"
+            className="group flex items-center gap-2 px-5 py-3 bg-[rgb(var(--zx-surface))] hover:bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text))] border border-[rgb(var(--zx-border))] rounded-2xl shadow-sm transition-all active:scale-95 font-semibold text-sm"
           >
-            <Calendar size={18} className="group-hover:-translate-y-0.5 transition-transform" /> 
+            <Calendar size={18} className="group-hover:-translate-y-0.5 transition-transform text-brand-teal-500" /> 
             <span>Schedule Class</span>
           </button>
           
           <button 
             onClick={() => startSchedule("live")} 
-            className="group flex items-center gap-2 px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl shadow-lg shadow-rose-200 hover:shadow-rose-300 transition-all active:scale-95 font-medium"
+            className="group flex items-center gap-2 px-5 py-3 bg-brand-teal-500 hover:bg-brand-teal-600 text-white rounded-2xl shadow-lg shadow-brand-teal-500/20 transition-all active:scale-95 font-semibold text-sm"
           >
             <PlayCircle size={18} className="animate-pulse" /> 
             <span>Go Live Now</span>
@@ -265,21 +270,21 @@ export default function ManageOnlineClasses({
       </div>
 
       {/* FILTERS & CONTROLS */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col xl:flex-row gap-4 items-center justify-between sticky top-4 z-10 backdrop-blur-xl bg-white/90 supports-[backdrop-filter]:bg-white/60">
+      <div className="bg-[rgb(var(--zx-surface))]/90 p-4 rounded-2xl border border-[rgb(var(--zx-border))] shadow-sm flex flex-col xl:flex-row gap-4 items-center justify-between sticky top-4 z-30 backdrop-blur-xl">
         
         {/* Time Toggles */}
-        <div className="bg-slate-100/80 p-1.5 rounded-xl inline-flex w-full xl:w-auto">
+        <div className="bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] p-1.5 rounded-2xl inline-flex w-full xl:w-auto shadow-inner">
           {["upcoming", "live", "past"].map((f) => (
             <button
               key={f}
               onClick={() => setTimeFilter(f)}
-              className={`flex-1 xl:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+              className={`flex-1 xl:flex-none px-6 py-2 rounded-xl text-xs font-bold tracking-wider uppercase transition-all duration-200 ${
                 timeFilter === f 
-                  ? "bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200/50" 
-                  : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50"
+                  ? "bg-brand-teal-500 text-white shadow-md shadow-brand-teal-500/20" 
+                  : "text-[rgb(var(--zx-text-muted))] hover:text-[rgb(var(--zx-text))] hover:bg-[rgb(var(--zx-surface))]"
               }`}
             >
-              {f.toUpperCase()}
+              {f}
             </button>
           ))}
         </div>
@@ -291,13 +296,13 @@ export default function ManageOnlineClasses({
             <select 
                 value={accessFilter} 
                 onChange={handleAccessFilterChange}
-                className="w-full appearance-none bg-white border border-slate-200 text-slate-700 py-2.5 pl-4 pr-10 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-medium text-sm hover:border-indigo-300"
+                className="w-full appearance-none bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] py-3 pl-4 pr-10 rounded-xl focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-sm cursor-pointer shadow-sm"
             >
               <option value="all">All Access</option>
               <option value="course">Specific Course</option>
               <option value="batch">Specific Batch</option>
             </select>
-            <Filter size={16} className="absolute right-3 top-3 text-slate-400 pointer-events-none group-hover:text-indigo-500 transition-colors" />
+            <Filter size={16} className="absolute right-3.5 top-3.5 text-[rgb(var(--zx-text-muted))] pointer-events-none" />
           </div>
 
           {accessFilter !== "all" && (
@@ -305,14 +310,14 @@ export default function ManageOnlineClasses({
                 <select 
                     value={courseId} 
                     onChange={(e) => setCourseId(e.target.value)}
-                    className="w-full appearance-none bg-white border border-slate-200 text-slate-700 py-2.5 pl-4 pr-10 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-medium text-sm"
+                    className="w-full appearance-none bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] py-3 pl-4 pr-10 rounded-xl focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-sm cursor-pointer shadow-sm"
                 >
                 <option value="">Select Course</option>
                 {courses.map((c) => (
                     <option key={c.id} value={c.id}>{c.name}</option>
                 ))}
                 </select>
-                <ChevronDown size={16} className="absolute right-3 top-3 text-slate-400 pointer-events-none" />
+                <ChevronDown size={16} className="absolute right-3.5 top-3.5 text-[rgb(var(--zx-text-muted))] pointer-events-none" />
             </div>
           )}
 
@@ -321,14 +326,14 @@ export default function ManageOnlineClasses({
                 <select 
                     value={batchId} 
                     onChange={(e) => setBatchId(e.target.value)}
-                    className="w-full appearance-none bg-white border border-slate-200 text-slate-700 py-2.5 pl-4 pr-10 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-medium text-sm"
+                    className="w-full appearance-none bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] py-3 pl-4 pr-10 rounded-xl focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-sm cursor-pointer shadow-sm"
                 >
                 <option value="">Select Batch</option>
                 {batches.map((b) => (
                     <option key={b.id} value={b.id}>{b.name}</option>
                 ))}
                 </select>
-                <ChevronDown size={16} className="absolute right-3 top-3 text-slate-400 pointer-events-none" />
+                <ChevronDown size={16} className="absolute right-3.5 top-3.5 text-[rgb(var(--zx-text-muted))] pointer-events-none" />
             </div>
           )}
         </div>
@@ -336,9 +341,9 @@ export default function ManageOnlineClasses({
       </div>
 
       {/* TABLE */}
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-xl shadow-slate-200/40 overflow-hidden">
+      <div className="bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] rounded-3xl shadow-sm overflow-hidden relative z-10">
         {/* Table Header */}
-        <div className="grid grid-cols-6 px-6 py-4 bg-slate-50/80 border-b border-slate-100 text-xs font-bold text-slate-400 uppercase tracking-wider backdrop-blur-sm">
+        <div className="grid grid-cols-6 px-6 py-4 bg-[rgb(var(--zx-surface-hover))] border-b border-[rgb(var(--zx-border))] text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">
           <div className="col-span-1">Lecture Title</div>
           <div className="col-span-1">Platform</div>
           <div className="col-span-1">Course</div>
@@ -348,14 +353,14 @@ export default function ManageOnlineClasses({
         </div>
 
         {loading ? (
-          <div className="p-20 flex flex-col items-center justify-center text-slate-400 space-y-3">
-             <div className="w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-600 rounded-full animate-spin"></div>
-             <span className="font-medium">Loading classes...</span>
+          <div className="p-20 flex flex-col items-center justify-center text-[rgb(var(--zx-text-muted))] space-y-3">
+             <div className="w-8 h-8 border-4 border-brand-teal-500/30 border-t-brand-teal-500 rounded-full animate-spin"></div>
+             <span className="font-medium text-sm">Loading classes...</span>
           </div>
         ) : classes.length === 0 ? (
-            <div className="p-20 text-center text-slate-400 bg-slate-50/30">
-                <p className="text-lg font-medium text-slate-500">No classes found</p>
-                <p className="text-sm">Adjust filters or schedule a new class.</p>
+            <div className="p-20 text-center text-[rgb(var(--zx-text-muted))] bg-[rgb(var(--zx-surface))]">
+                <p className="text-lg font-bold text-[rgb(var(--zx-text))]">No classes found</p>
+                <p className="text-sm mt-1">Adjust filters or schedule a new class.</p>
             </div>
         ) : (
           classes.map((c) => {
@@ -363,52 +368,53 @@ export default function ManageOnlineClasses({
             const isExpanded = expandedId === c.id;
             
             return (
-              <div key={c.id} className="group border-b border-slate-100 last:border-0 transition-colors hover:bg-slate-50/50">
+              <div key={c.id} className="group border-b border-[rgb(var(--zx-border))] last:border-0 transition-colors">
                 
                 {/* Row Content */}
                 <div
                   onClick={() => setExpandedId(isExpanded ? null : c.id)}
-                  className={`grid grid-cols-6 px-6 py-5 cursor-pointer items-center transition-all duration-200 ${isExpanded ? "bg-indigo-50/30" : ""}`}
+                  className={`grid grid-cols-6 px-6 py-4 cursor-pointer items-center transition-all duration-200 ${isExpanded ? "bg-brand-teal-500/5" : "hover:bg-[rgb(var(--zx-surface-hover))]"}`}
                 >
-                  <div className="font-bold text-slate-800 text-sm md:text-base truncate pr-2">{c.title}</div>
+                  <div className="font-bold text-[rgb(var(--zx-text))] text-sm md:text-base truncate pr-2">{c.title}</div>
                   
-                  <div className="flex items-center gap-2 text-sm text-slate-600 font-medium">
-                    <div className={`p-1.5 rounded-lg ${c.platform_name?.toLowerCase().includes('zoom') ? 'bg-blue-100 text-blue-600' : 'bg-purple-100 text-purple-600'}`}>
+                  <div className="flex items-center gap-2 text-sm text-[rgb(var(--zx-text-muted))] font-medium">
+                    <div className={`p-2 rounded-xl border border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface))] text-brand-teal-500`}>
                         <Video size={14} /> 
                     </div>
                     {c.platform_name}
                   </div>
                   
-                  <div className="text-sm text-slate-600 font-medium truncate pr-2">{ab.course}</div>
-                  <div className="text-sm text-slate-500 truncate pr-2">{ab.batch}</div>
+                  <div className="text-sm text-[rgb(var(--zx-text))] font-medium truncate pr-2">{ab.course}</div>
+                  <div className="text-sm text-[rgb(var(--zx-text-muted))] truncate pr-2">{ab.batch}</div>
                   
                   <div>
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide ${statusBadge(c.status)}`}>
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest ${statusBadge(c.status)}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${c.status === "live" ? "bg-rose-500 animate-pulse" : c.status === "completed" ? "bg-[rgb(var(--zx-text-muted))]" : "bg-emerald-500"}`} />
                         {c.status}
                     </span>
                   </div>
                   
-                  <div className="flex items-center gap-2 text-sm text-slate-500 font-medium">
-                    <Clock size={14} className="text-slate-400" /> 
+                  <div className="flex items-center gap-2 text-sm text-[rgb(var(--zx-text-muted))] font-medium">
+                    <Clock size={14} className="text-[rgb(var(--zx-text-muted))]" /> 
                     {new Date(c.start_datetime).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' })}
                   </div>
                 </div>
 
                 {/* Expanded Action Panel */}
                 {isExpanded && (
-                  <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-100/50 flex flex-wrap items-center gap-4 animate-in slide-in-from-top-2 duration-200">
-                    <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mr-2">Actions:</div>
+                  <div className="px-6 py-4 bg-[rgb(var(--zx-surface-hover))]/50 border-t border-[rgb(var(--zx-border))] flex flex-wrap items-center gap-3 animate-in slide-in-from-top-2 duration-200">
+                    <div className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider mr-2">Actions:</div>
                     
                     <button 
                         onClick={(e) => { e.stopPropagation(); setViewData(c); setViewOpen(true); }}
-                        className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-slate-600 text-sm font-semibold shadow-sm hover:border-indigo-300 hover:text-indigo-600 hover:shadow-md transition-all"
+                        className="flex items-center gap-2 px-4 py-2 bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] rounded-xl text-[rgb(var(--zx-text))] text-xs font-bold shadow-sm hover:border-brand-teal-500/40 hover:text-brand-teal-500 transition-all"
                     >
                       <Eye size={16} /> View Details
                     </button>
                     
                     <button 
                         onClick={(e) => { e.stopPropagation(); startEdit(c); }}
-                        className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-slate-600 text-sm font-semibold shadow-sm hover:border-amber-300 hover:text-amber-600 hover:shadow-md transition-all"
+                        className="flex items-center gap-2 px-4 py-2 bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] rounded-xl text-[rgb(var(--zx-text))] text-xs font-bold shadow-sm hover:border-amber-500/40 hover:text-amber-500 transition-all"
                     >
                         <Pencil size={16} /> Edit Class
                     </button>
@@ -416,7 +422,7 @@ export default function ManageOnlineClasses({
                     {c.status !== "live" && (
                       <button 
                         onClick={(e) => { e.stopPropagation(); api.post(`${apiPrefix}/online-classes/${c.id}/go-live`).then(loadClasses); }}
-                        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white border border-transparent rounded-lg text-sm font-semibold shadow-md shadow-rose-200 hover:shadow-lg hover:scale-105 transition-all"
+                        className="flex items-center gap-2 px-4 py-2 bg-rose-600 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-600/20 hover:bg-rose-700 transition-all"
                       >
                         <PlayCircle size={16} /> Go Live
                       </button>
@@ -426,7 +432,7 @@ export default function ManageOnlineClasses({
                     
                     <button 
                         onClick={(e) => { e.stopPropagation(); setDeleteTarget(c); setConfirmOpen(true); }}
-                        className="flex items-center gap-2 px-4 py-2 bg-white border border-red-100 rounded-lg text-red-500 text-sm font-semibold shadow-sm hover:bg-red-50 hover:border-red-200 transition-all ml-auto"
+                        className="flex items-center gap-2 px-4 py-2 bg-[rgb(var(--zx-surface))] border border-rose-500/30 rounded-xl text-rose-500 text-xs font-bold shadow-sm hover:bg-rose-500/10 transition-all ml-auto"
                     >
                       <Trash2 size={16} /> Delete
                     </button>
@@ -467,9 +473,9 @@ export default function ManageOnlineClasses({
       {/* TOAST NOTIFICATION */}
       {toast && (
         <div className="fixed bottom-8 right-8 z-50 animate-in slide-in-from-bottom-5 duration-300">
-            <div className="bg-slate-900 text-white px-6 py-3.5 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700/50">
-                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-                <span className="font-medium text-sm">{toast}</span>
+            <div className="bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-[rgb(var(--zx-border))] backdrop-blur-xl">
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                <span className="font-bold text-sm">{toast}</span>
             </div>
         </div>
       )}
