@@ -25,7 +25,6 @@ export default function AdmitCards({
   const [loadingStudents, setLoadingStudents] = useState(false);
   const [previewData, setPreviewData] = useState(null);
   
-  // New state to track which student is currently having a card generated
   const [generatingId, setGeneratingId] = useState(null);
   
   // Load exams
@@ -36,7 +35,7 @@ export default function AdmitCards({
         setExams(res.data);
       })
       .finally(() => setLoadingExams(false));
-  }, []);
+  }, [apiPrefix]);
 
   // Load students for selected exam
   const openExam = async (exam) => {
@@ -52,7 +51,6 @@ export default function AdmitCards({
 
   const generateAdmitCard = async (examId, studentId) => {
       try {
-
           setGeneratingId(studentId);
 
           await api.post(
@@ -64,18 +62,13 @@ export default function AdmitCards({
           );
 
           setStudents(res.data);
-
       } catch (error) {
-
           console.error(
               "Failed to generate admit card",
               error
           );
-
       } finally {
-
           setGeneratingId(null);
-
       }
   };
 
@@ -86,15 +79,13 @@ export default function AdmitCards({
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 font-sans overflow-x-hidden">
-      {/* INJECTING CUSTOM STYLES TO GUARANTEE ANIMATION WORKS 
-        WITHOUT RELYING ON TAILWIND PLUGINS 
-      */}
+    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8 pt-0 font-sans overflow-x-hidden">
+      {/* INJECTING CUSTOM ANIMATION STYLES */}
       <style>{`
         @keyframes slideInFromRight {
           from {
             opacity: 0;
-            transform: translateX(50px);
+            transform: translateX(30px);
           }
           to {
             opacity: 1;
@@ -104,7 +95,7 @@ export default function AdmitCards({
         @keyframes slideInFromLeft {
           from {
             opacity: 0;
-            transform: translateX(-50px);
+            transform: translateX(-30px);
           }
           to {
             opacity: 1;
@@ -112,13 +103,17 @@ export default function AdmitCards({
           }
         }
         .animate-slide-right {
-          animation: slideInFromRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          animation: slideInFromRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         .animate-slide-left {
-          animation: slideInFromLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          animation: slideInFromLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
       `}</style>
       
+      {/* Decorative Background Glows */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-teal-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-blue-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+
       {/* VIEW 1: EXAM LIST */}
       {!selectedExam && (
         <div 
@@ -126,69 +121,72 @@ export default function AdmitCards({
             className="space-y-8 animate-slide-left"
         >
           {/* HEADER */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
-                <Ticket className="text-blue-600" size={32} />
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal-500/10 border border-brand-teal-500/20 text-[11px] font-bold tracking-widest text-brand-teal-500 uppercase w-max mb-1">
+                <Ticket size={14} strokeWidth={2.5} />
+                Examination Hub
+              </div>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[rgb(var(--zx-text))]">
                 Admit Cards
               </h1>
-              <p className="text-slate-500 mt-2 text-sm max-w-xl">
+              <p className="text-[rgb(var(--zx-text-muted))] mt-1 text-[15px] max-w-xl leading-relaxed">
                 Select an exam to manage and issue admit cards for eligible students.
               </p>
             </div>
           </div>
 
           {/* TABLE CONTAINER */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-xl shadow-slate-200/40 overflow-hidden min-h-[400px]">
+          <div className="bg-[rgb(var(--zx-surface))] rounded-3xl border border-[rgb(var(--zx-border))] shadow-sm overflow-hidden min-h-[400px] relative z-10">
             <table className="w-full text-left border-collapse">
-              <thead className="bg-slate-50/80 border-b border-slate-100 backdrop-blur-sm">
+              <thead className="bg-[rgb(var(--zx-surface-hover))] border-b border-[rgb(var(--zx-border))]">
                 <tr>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Exam Name</th>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Course</th>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Batch</th>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right">Action</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Exam Name</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Course</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Batch</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[rgb(var(--zx-border))]">
                 {loadingExams ? (
                   <tr>
                     <td colSpan="4" className="px-6 py-20">
-                      <div className="flex flex-col items-center justify-center text-slate-400 space-y-3">
-                        <div className="w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-600 rounded-full animate-spin"></div>
-                        <span className="font-medium">Loading exams...</span>
+                      <div className="flex flex-col items-center justify-center text-[rgb(var(--zx-text-muted))] space-y-3">
+                        <div className="w-8 h-8 border-4 border-brand-teal-500/30 border-t-brand-teal-500 rounded-full animate-spin"></div>
+                        <span className="font-medium text-sm">Loading exams...</span>
                       </div>
                     </td>
                   </tr>
                 ) : exams.length === 0 ? (
                   <tr>
-                    <td colSpan="4" className="px-6 py-20 text-center text-slate-400">
+                    <td colSpan="4" className="px-6 py-20 text-center text-[rgb(var(--zx-text-muted))]">
                       <div className="flex flex-col items-center justify-center">
                         <Search size={48} className="mb-4 opacity-20" />
-                        <p className="text-lg font-medium text-slate-600">No exams available</p>
+                        <p className="text-lg font-bold text-[rgb(var(--zx-text))]">No exams available</p>
                       </div>
                     </td>
                   </tr>
                 ) : (
                   exams.map((exam) => (
-                    <tr key={exam.id} className="hover:bg-slate-50 transition-colors group cursor-pointer" onClick={() => openExam(exam)}>
+                    <tr key={exam.id} className="hover:bg-[rgb(var(--zx-surface-hover))] transition-colors group cursor-pointer" onClick={() => openExam(exam)}>
                       <td className="px-6 py-5">
-                        <div className="font-bold text-slate-800 text-sm md:text-base">{exam.name}</div>
+                        <div className="font-bold text-[rgb(var(--zx-text))] text-sm md:text-base">{exam.name}</div>
                       </td>
                       <td className="px-6 py-5">
-                        <div className="flex items-center gap-2 text-sm text-slate-600 font-medium">
-                            <BookOpen size={16} className="text-slate-400" />
+                        <div className="flex items-center gap-2 text-sm text-[rgb(var(--zx-text-muted))] font-medium">
+                            <BookOpen size={16} className="text-[rgb(var(--zx-text-muted))]" />
                             {exam.course?.name}
                         </div>
                       </td>
                       <td className="px-6 py-5">
-                        <div className="flex items-center gap-2 text-sm text-slate-500">
-                            <Layers size={16} className="text-slate-400" />
+                        <div className="flex items-center gap-2 text-sm text-[rgb(var(--zx-text-muted))]">
+                            <Layers size={16} className="text-[rgb(var(--zx-text-muted))]" />
                             {exam.batch?.name}
                         </div>
                       </td>
                       <td className="px-6 py-5 text-right">
                         <button
-                          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 shadow-sm text-xs font-bold uppercase tracking-wide hover:border-indigo-300 hover:text-indigo-600 hover:shadow-md transition-all"
+                          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] shadow-sm text-xs font-bold uppercase tracking-wider hover:border-brand-teal-500 hover:text-brand-teal-500 transition-all"
                           onClick={(e) => {
                             e.stopPropagation();
                             openExam(exam);
@@ -213,83 +211,83 @@ export default function AdmitCards({
             className="space-y-6 animate-slide-right"
         >
           {/* HEADER WITH BACK BUTTON */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 relative z-10">
             <button
-              className="flex items-center gap-2 text-slate-500 hover:text-slate-800 transition-colors w-fit font-semibold text-sm"
+              className="flex items-center gap-2 text-[rgb(var(--zx-text-muted))] hover:text-[rgb(var(--zx-text))] transition-colors w-fit font-bold text-xs uppercase tracking-wider"
               onClick={() => {
                 setSelectedExam(null);
                 setStudents([]);
               }}
             >
-              <ArrowLeft size={18} /> Back to Exams
+              <ArrowLeft size={16} /> Back to Exams
             </button>
 
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="bg-[rgb(var(--zx-surface))] p-6 sm:p-8 rounded-3xl border border-[rgb(var(--zx-border))] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold text-slate-900 tracking-tight">{selectedExam.name}</h2>
-                    <div className="flex items-center gap-4 mt-2 text-sm text-slate-500">
+                    <h2 className="text-2xl font-extrabold text-[rgb(var(--zx-text))] tracking-tight">{selectedExam.name}</h2>
+                    <div className="flex items-center gap-4 mt-2 text-sm text-[rgb(var(--zx-text-muted))] font-medium">
                         <span className="flex items-center gap-1.5"><BookOpen size={14} /> {selectedExam.course?.name}</span>
-                        <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
+                        <span className="w-1 h-1 bg-[rgb(var(--zx-border))] rounded-full"></span>
                         <span className="flex items-center gap-1.5"><Layers size={14} /> {selectedExam.batch?.name}</span>
                     </div>
                 </div>
-                <div className="bg-indigo-50 px-4 py-2 rounded-xl border border-indigo-100 text-indigo-700 font-semibold text-sm">
+                <div className="bg-brand-teal-500/10 border border-brand-teal-500/20 px-4 py-2 rounded-xl text-brand-teal-500 font-bold text-xs tracking-widest uppercase w-max">
                     {students.length} Students
                 </div>
             </div>
           </div>
 
           {/* STUDENTS TABLE */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-xl shadow-slate-200/40 overflow-hidden min-h-[400px]">
+          <div className="bg-[rgb(var(--zx-surface))] rounded-3xl border border-[rgb(var(--zx-border))] shadow-sm overflow-hidden min-h-[400px] relative z-10">
             <table className="w-full text-left border-collapse">
-              <thead className="bg-slate-50/80 border-b border-slate-100 backdrop-blur-sm">
+              <thead className="bg-[rgb(var(--zx-surface-hover))] border-b border-[rgb(var(--zx-border))]">
                 <tr>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">SID</th>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Student Name</th>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right">Status & Action</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">SID</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Student Name</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider text-right">Status & Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[rgb(var(--zx-border))]">
                 {loadingStudents ? (
                   <tr>
                     <td colSpan="3" className="px-6 py-20">
-                      <div className="flex flex-col items-center justify-center text-slate-400 space-y-3">
-                        <div className="w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-600 rounded-full animate-spin"></div>
-                        <span className="font-medium">Loading students...</span>
+                      <div className="flex flex-col items-center justify-center text-[rgb(var(--zx-text-muted))] space-y-3">
+                        <div className="w-8 h-8 border-4 border-brand-teal-500/30 border-t-brand-teal-500 rounded-full animate-spin"></div>
+                        <span className="font-medium text-sm">Loading students...</span>
                       </div>
                     </td>
                   </tr>
                 ) : students.length === 0 ? (
                   <tr>
-                    <td colSpan="3" className="px-6 py-20 text-center text-slate-400">
+                    <td colSpan="3" className="px-6 py-20 text-center text-[rgb(var(--zx-text-muted))]">
                         <div className="flex flex-col items-center justify-center">
                             <Search size={48} className="mb-4 opacity-20" />
-                            <p className="text-lg font-medium text-slate-600">No students found</p>
-                            <p className="text-sm">There are no students enrolled in this exam's criteria.</p>
+                            <p className="text-lg font-bold text-[rgb(var(--zx-text))]">No students found</p>
+                            <p className="text-sm mt-1">There are no students enrolled in this exam's criteria.</p>
                         </div>
                     </td>
                   </tr>
                 ) : (
                   students.map((student) => (
-                    <tr key={student.id} className="hover:bg-slate-50 transition-colors group">
+                    <tr key={student.id} className="hover:bg-[rgb(var(--zx-surface-hover))] transition-colors group">
                       <td className="px-6 py-5">
-                        <span className="font-mono text-slate-500 text-xs font-bold bg-slate-100 px-2 py-1 rounded border border-slate-200">
+                        <span className="font-mono text-[rgb(var(--zx-text-muted))] text-xs font-semibold bg-[rgb(var(--zx-surface-hover))] px-2.5 py-1 rounded-lg border border-[rgb(var(--zx-border))]">
                             {student.sid}
                         </span>
                       </td>
                       <td className="px-6 py-5">
-                        <div className="font-bold text-slate-800 text-sm md:text-base">{student.name}</div>
+                        <div className="font-bold text-[rgb(var(--zx-text))] text-sm md:text-base">{student.name}</div>
                       </td>
                       <td className="px-6 py-5 text-right">
                         <div className="flex items-center justify-end gap-3">
                           {student.admit_card_id ? (
                              <>
-                                <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded border border-emerald-100 flex items-center gap-1">
+                                <span className="text-[10px] font-bold text-emerald-600 bg-emerald-500/10 px-3 py-1 rounded-md border border-emerald-500/20 flex items-center gap-1 uppercase tracking-widest">
                                     <CheckCircle2 size={12}/> Generated
                                 </span>
                                 <button
                                     onClick={() => viewAdmitCard(student.admit_card_id)}
-                                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wide hover:bg-slate-50 hover:text-indigo-600 hover:border-indigo-200 transition-all shadow-sm"
+                                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] text-xs font-bold uppercase tracking-wider hover:bg-[rgb(var(--zx-surface-hover))] hover:text-brand-teal-500 hover:border-brand-teal-500/40 transition-all shadow-sm"
                                 >
                                     <Eye size={14} /> View
                                 </button>
@@ -298,10 +296,10 @@ export default function AdmitCards({
                             <button
                               disabled={selectedExam.status !== "upcoming" || generatingId === student.id}
                               onClick={() => generateAdmitCard(selectedExam.id, student.id)}
-                              className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition-all shadow-sm ${
+                              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-sm ${
                                 selectedExam.status !== "upcoming" || generatingId === student.id
-                                ? "bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200"
-                                : "bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-indigo-200 active:scale-95"
+                                ? "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] cursor-not-allowed border border-[rgb(var(--zx-border))]"
+                                : "bg-brand-teal-500 text-white hover:bg-brand-teal-600 shadow-brand-teal-500/20 active:scale-95"
                               }`}
                             >
                               {generatingId === student.id ? (
