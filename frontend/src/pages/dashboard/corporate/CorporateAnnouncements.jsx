@@ -4,7 +4,6 @@ import api from "../../../lib/api/apiClient";
 import DataTable from "../../../components/common/DataTable";
 import StatusBadge from "../../../components/common/StatusBadge";
 import AppModal from "../../../components/common/AppModal";
-import { EmptyState } from "../../../components/common/States";
 import { formatDate } from "../../../utils/format";
 import { useToast } from "../../../components/common/ToastProvider";
 
@@ -93,84 +92,94 @@ export default function CorporateAnnouncements() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 animate-fade-in">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-24 lg:pb-32 pt-0 space-y-8 animate-fade-in font-sans">
+      
+      {/* Decorative Background Glows */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-teal-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-blue-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+
+      {/* HEADER SECTION */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 relative z-10">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-[rgb(var(--zx-text))] flex items-center gap-3">
-            <span className="p-2.5 rounded-2xl bg-brand-teal-500/10 text-brand-teal-600 dark:text-brand-teal-300">
-              <Megaphone size={24} />
-            </span>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal-500/10 border border-brand-teal-500/20 text-[11px] font-bold tracking-widest text-brand-teal-500 uppercase w-max mb-1">
+            <Megaphone size={14} strokeWidth={2.5} />
+            Company Portal
+          </div>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[rgb(var(--zx-text))]">
             Company Announcements
           </h1>
-          <p className="text-[rgb(var(--zx-text-muted))] mt-2 text-sm">
+          <p className="text-[rgb(var(--zx-text-muted))] mt-1 text-[15px] max-w-xl leading-relaxed">
             Publish company-wide notices to the employee portal.
           </p>
         </div>
+
         <button
           type="button"
           onClick={openCreate}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-brand-teal-500 hover:bg-brand-teal-600 transition-colors shadow-sm"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-semibold text-white bg-brand-teal-500 hover:bg-brand-teal-600 shadow-lg shadow-brand-teal-500/25 transition-all active:scale-95 shrink-0"
         >
-          <Plus size={16} />
-          New Announcement
+          <Plus size={18} />
+          <span>New Announcement</span>
         </button>
       </div>
 
-      <DataTable
-        columns={[
-          {
-            key: "title",
-            header: "Announcement",
-            render: (r) => (
-              <div className="max-w-md">
-                <p className="font-semibold text-[rgb(var(--zx-text))]">{r.title}</p>
-                <p className="text-xs text-[rgb(var(--zx-text-muted))] line-clamp-1">{r.body}</p>
-              </div>
-            ),
-          },
-          { key: "author.name", header: "Published By", render: (r) => r.author?.name || "—", sortable: false },
-          { key: "created_at", header: "Published", render: (r) => formatDate(r.created_at), sortable: false },
-          { key: "status", header: "Status", render: (r) => <StatusBadge status={r.status} /> },
-        ]}
-        rows={rows}
-        loading={loading}
-        error={error}
-        onRetry={load}
-        searchPlaceholder="Search announcements…"
-        rowActions={(row) => (
-          <div className="inline-flex items-center gap-1">
-            <button
-              type="button"
-              onClick={() => openEdit(row)}
-              title="Edit"
-              className="p-2 rounded-lg text-[rgb(var(--zx-text-muted))] hover:text-brand-blue-700 hover:bg-brand-blue-500/10 transition-colors"
-            >
-              <Pencil size={15} />
-            </button>
-            <button
-              type="button"
-              onClick={() => toggle(row)}
-              title={row.status === "active" ? "Archive" : "Publish"}
-              className="p-2 rounded-lg text-[rgb(var(--zx-text-muted))] hover:text-amber-600 hover:bg-amber-500/10 transition-colors"
-            >
-              <Power size={15} />
-            </button>
-            <button
-              type="button"
-              onClick={() => setDeleteRow(row)}
-              title="Delete"
-              className="p-2 rounded-lg text-[rgb(var(--zx-text-muted))] hover:text-red-600 hover:bg-red-500/10 transition-colors"
-            >
-              <Trash2 size={15} />
-            </button>
-          </div>
-        )}
-        empty={{
-          icon: Megaphone,
-          title: "No announcements yet",
-          description: "Published announcements will appear here.",
-        }}
-      />
+      <div className="relative z-10">
+        <DataTable
+          columns={[
+            {
+              key: "title",
+              header: "Announcement",
+              render: (r) => (
+                <div className="max-w-md">
+                  <p className="font-bold text-[rgb(var(--zx-text))]">{r.title}</p>
+                  <p className="text-xs text-[rgb(var(--zx-text-muted))] line-clamp-1 font-medium mt-0.5">{r.body}</p>
+                </div>
+              ),
+            },
+            { key: "author.name", header: "Published By", render: (r) => r.author?.name || "—", sortable: false },
+            { key: "created_at", header: "Published", render: (r) => formatDate(r.created_at), sortable: false },
+            { key: "status", header: "Status", render: (r) => <StatusBadge status={r.status} /> },
+          ]}
+          rows={rows}
+          loading={loading}
+          error={error}
+          onRetry={load}
+          searchPlaceholder="Search announcements…"
+          rowActions={(row) => (
+            <div className="inline-flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => openEdit(row)}
+                title="Edit"
+                className="p-2 rounded-xl text-[rgb(var(--zx-text-muted))] hover:text-brand-teal-500 hover:bg-brand-teal-500/10 transition-colors border border-transparent hover:border-brand-teal-500/20"
+              >
+                <Pencil size={15} />
+              </button>
+              <button
+                type="button"
+                onClick={() => toggle(row)}
+                title={row.status === "active" ? "Archive" : "Publish"}
+                className="p-2 rounded-xl text-[rgb(var(--zx-text-muted))] hover:text-amber-500 hover:bg-amber-500/10 transition-colors border border-transparent hover:border-amber-500/20"
+              >
+                <Power size={15} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setDeleteRow(row)}
+                title="Delete"
+                className="p-2 rounded-xl text-[rgb(var(--zx-text-muted))] hover:text-rose-500 hover:bg-rose-500/10 transition-colors border border-transparent hover:border-rose-500/20"
+              >
+                <Trash2 size={15} />
+              </button>
+            </div>
+          )}
+          empty={{
+            icon: Megaphone,
+            title: "No announcements yet",
+            description: "Published announcements will appear here.",
+          }}
+        />
+      </div>
 
       {/* CREATE / EDIT */}
       <AppModal
@@ -179,11 +188,11 @@ export default function CorporateAnnouncements() {
         title={modal?.mode === "create" ? "New Announcement" : "Edit Announcement"}
         size="lg"
         footer={
-          <>
+          <div className="w-full flex justify-between items-center">
             <button
               type="button"
               onClick={() => setModal(null)}
-              className="px-5 py-2.5 rounded-xl text-sm font-semibold text-[rgb(var(--zx-text-muted))] hover:bg-[rgb(var(--zx-surface-hover))] transition-colors"
+              className="px-5 py-2.5 rounded-xl border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] text-sm font-semibold hover:bg-[rgb(var(--zx-surface-hover))] transition-all shadow-sm"
             >
               Cancel
             </button>
@@ -191,16 +200,20 @@ export default function CorporateAnnouncements() {
               type="button"
               onClick={save}
               disabled={saving}
-              className="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-brand-teal-500 hover:bg-brand-teal-600 disabled:opacity-60 transition-colors"
+              className="px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-brand-teal-500 hover:bg-brand-teal-600 disabled:opacity-60 shadow-lg shadow-brand-teal-500/20 transition-all active:scale-95"
             >
               {saving ? "Saving…" : modal?.mode === "create" ? "Publish" : "Save Changes"}
             </button>
-          </>
+          </div>
         }
       >
-        <div className="space-y-4">
+        <div className="space-y-5">
+          <p className="text-xs text-[rgb(var(--zx-text-muted))] font-medium -mt-2">
+            {modal?.mode === "create" ? "Publish a new company notice" : "Modify announcement details"}
+          </p>
+
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[rgb(var(--zx-text-muted))] mb-1.5">
+            <label className="block text-[11px] font-bold uppercase tracking-widest text-[rgb(var(--zx-text-muted))] mb-1.5 ml-1">
               Title
             </label>
             <input
@@ -208,11 +221,11 @@ export default function CorporateAnnouncements() {
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               placeholder="Announcement title"
-              className="w-full px-4 py-2.5 rounded-xl text-sm bg-[rgb(var(--zx-bg))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] focus:outline-none focus:ring-2 focus:ring-brand-teal-500/40 focus:border-brand-teal-500 transition"
+              className="w-full px-4 py-3 rounded-xl text-sm bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] focus:outline-none focus:border-brand-teal-500 transition-all font-bold shadow-sm placeholder:text-[rgb(var(--zx-text-muted))]/60 placeholder:font-normal"
             />
           </div>
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[rgb(var(--zx-text-muted))] mb-1.5">
+            <label className="block text-[11px] font-bold uppercase tracking-widest text-[rgb(var(--zx-text-muted))] mb-1.5 ml-1">
               Body
             </label>
             <textarea
@@ -220,17 +233,17 @@ export default function CorporateAnnouncements() {
               value={form.body}
               onChange={(e) => setForm({ ...form, body: e.target.value })}
               placeholder="Write the announcement…"
-              className="w-full px-4 py-2.5 rounded-xl text-sm bg-[rgb(var(--zx-bg))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] focus:outline-none focus:ring-2 focus:ring-brand-teal-500/40 focus:border-brand-teal-500 transition resize-y"
+              className="w-full px-4 py-3 rounded-xl text-sm bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] focus:outline-none focus:border-brand-teal-500 transition-all font-medium shadow-sm placeholder:text-[rgb(var(--zx-text-muted))]/60 resize-y"
             />
           </div>
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[rgb(var(--zx-text-muted))] mb-1.5">
+            <label className="block text-[11px] font-bold uppercase tracking-widest text-[rgb(var(--zx-text-muted))] mb-1.5 ml-1">
               Status
             </label>
             <select
               value={form.status}
               onChange={(e) => setForm({ ...form, status: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl text-sm bg-[rgb(var(--zx-bg))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] focus:outline-none focus:ring-2 focus:ring-brand-teal-500/40 focus:border-brand-teal-500 transition"
+              className="w-full px-4 py-3 rounded-xl text-sm bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] focus:outline-none focus:border-brand-teal-500 transition-all font-semibold shadow-sm cursor-pointer"
             >
               <option value="active">Active (visible to employees)</option>
               <option value="inactive">Archived (hidden)</option>
@@ -247,26 +260,26 @@ export default function CorporateAnnouncements() {
         size="sm"
         tone="danger"
         footer={
-          <>
+          <div className="w-full flex justify-between items-center">
             <button
               type="button"
               onClick={() => setDeleteRow(null)}
-              className="px-5 py-2.5 rounded-xl text-sm font-semibold text-[rgb(var(--zx-text-muted))] hover:bg-[rgb(var(--zx-surface-hover))] transition-colors"
+              className="px-5 py-2.5 rounded-xl border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] text-sm font-semibold hover:bg-[rgb(var(--zx-surface-hover))] transition-all shadow-sm"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={destroy}
-              className="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-red-600 hover:bg-red-700 transition-colors"
+              className="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-rose-600 hover:bg-rose-700 shadow-lg shadow-rose-600/20 transition-all active:scale-95"
             >
               Delete Permanently
             </button>
-          </>
+          </div>
         }
       >
-        <p className="text-sm text-[rgb(var(--zx-text-muted))]">
-          Delete <strong className="text-[rgb(var(--zx-text))]">{deleteRow?.title}</strong>? This
+        <p className="text-sm text-[rgb(var(--zx-text-muted))] font-medium">
+          Delete <strong className="text-[rgb(var(--zx-text))] font-bold">{deleteRow?.title}</strong>? This
           permanently removes the announcement for all employees. This action cannot be undone.
         </p>
       </AppModal>
