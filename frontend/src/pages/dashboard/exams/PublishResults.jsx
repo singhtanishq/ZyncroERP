@@ -30,7 +30,7 @@ export default function PublishResults({
   const [results, setResults] = useState({});
 
   const [isLoading, setIsLoading] = useState(false);
-  const [hasFetched, setHasFetched] = useState(false); // NEW: Tracks if we have actually fetched data
+  const [hasFetched, setHasFetched] = useState(false);
 
   const [expandedStudentId, setExpandedStudentId] = useState(null);
   const [editingStudentId, setEditingStudentId] = useState(null);
@@ -43,8 +43,8 @@ export default function PublishResults({
     apiPrefix === "/faculty"
         ? "/faculty/course-options"
         : `${apiPrefix}/courses`;
-        api.get(courseEndpoint).then(res => setCourses(res.data));
-  }, []);
+        api.get(courseEndpoint).then(res => setCourses(res.data)).catch(() => {});
+  }, [apiPrefix]);
 
   useEffect(() => {
     if (!courseId) return;
@@ -53,9 +53,10 @@ export default function PublishResults({
         ? `/faculty/course-options/${courseId}/batches`
         : `${apiPrefix}/courses/${courseId}/batches`;
 
-api.get(batchEndpoint)
-      .then(res => setBatches(res.data));
-  }, [courseId]);
+    api.get(batchEndpoint)
+      .then(res => setBatches(res.data))
+      .catch(() => {});
+  }, [courseId, apiPrefix]);
 
   const loadResults = async () => {
     if (!courseId || !batchId) return;
@@ -69,7 +70,7 @@ api.get(batchEndpoint)
       setExams(res.data.exams || []);
       setStudents(res.data.students || []);
       setResults(res.data.results || {});
-      setHasFetched(true); // Marks that a fetch successfully completed
+      setHasFetched(true);
     } finally {
       setIsLoading(false);
     }
@@ -98,14 +99,14 @@ api.get(batchEndpoint)
   const toggleExpand = (studentId) => {
     if (expandedStudentId === studentId) {
         setExpandedStudentId(null);
-        setEditingStudentId(null); // Cancel editing if row is collapsed
+        setEditingStudentId(null);
     } else {
         setExpandedStudentId(studentId);
     }
   };
 
   const startEdit = (studentId, e) => {
-    e.stopPropagation(); // Prevent row from collapsing when clicking edit
+    e.stopPropagation();
     setEditingStudentId(studentId);
 
     const draft = {};
@@ -137,43 +138,50 @@ api.get(batchEndpoint)
     };
 
     await api.post(
-    `${apiPrefix}/exam-results/save`,
-    payload
-);
+      `${apiPrefix}/exam-results/save`,
+      payload
+    );
 
     setEditingStudentId(null);
     setScoresDraft({});
-    loadResults(); // Refetch to get updated results
+    loadResults();
   };
 
   // ---------------- UI ----------------
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-8 animate-fade-in font-sans pb-24">
+    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-24 lg:pb-32 pt-0 space-y-8 animate-fade-in font-sans">
       {/* Custom Scrollbar */}
       <style>{`
         .custom-dashboard-scroll::-webkit-scrollbar { height: 8px; width: 8px; }
         .custom-dashboard-scroll::-webkit-scrollbar-track { background: transparent; }
-        .custom-dashboard-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .custom-dashboard-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .custom-dashboard-scroll::-webkit-scrollbar-thumb { background: rgb(var(--zx-border)); border-radius: 10px; }
+        .custom-dashboard-scroll::-webkit-scrollbar-thumb:hover { background: rgb(var(--zx-text-muted)); }
       `}</style>
       
+      {/* Decorative Background Glows */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-teal-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-blue-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+
       {/* HEADER */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
-            <Award className="text-indigo-600" size={32} />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal-500/10 border border-brand-teal-500/20 text-[11px] font-bold tracking-widest text-brand-teal-500 uppercase w-max mb-1">
+            <Award size={14} strokeWidth={2.5} />
+            Assessment Results
+          </div>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[rgb(var(--zx-text))]">
             Publish Results
           </h1>
-          <p className="text-slate-500 mt-2 text-sm max-w-xl">
+          <p className="text-[rgb(var(--zx-text-muted))] mt-1 text-[15px] max-w-xl leading-relaxed">
             Enter and manage exam scores for students. Locked scores indicate a certificate has already been issued.
           </p>
         </div>
       </div>
 
       {/* FILTERS & CONTROLS */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-4 items-center sticky top-4 z-30 backdrop-blur-xl bg-white/90">
-        <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider px-2 shrink-0">
+      <div className="bg-[rgb(var(--zx-surface))]/90 p-4 rounded-2xl border border-[rgb(var(--zx-border))] shadow-sm flex flex-col md:flex-row gap-4 items-center sticky top-4 z-30 backdrop-blur-xl">
+        <div className="flex items-center gap-2 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider px-2 shrink-0">
             <Filter size={16} /> Cohort Filter
         </div>
 
@@ -181,14 +189,13 @@ api.get(batchEndpoint)
             {/* Course Select */}
             <div className="relative group">
                 <select
-                    className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 pl-10 pr-10 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all font-semibold text-sm cursor-pointer"
+                    className="w-full appearance-none bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] pl-10 pr-10 py-3 rounded-xl focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-sm cursor-pointer shadow-sm"
                     value={courseId}
                     onChange={(e) => {
                       setCourseId(e.target.value);
-                      // Clear results out of view when changing filters
                       setExams([]);
                       setStudents([]);
-                      setHasFetched(false); // Reset fetch status
+                      setHasFetched(false);
                     }}
                 >
                     <option value="">Select Academic Course</option>
@@ -196,21 +203,20 @@ api.get(batchEndpoint)
                         <option key={c.id} value={c.id}>{c.name}</option>
                     ))}
                 </select>
-                <BookOpen className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none group-hover:text-indigo-500 transition-colors" size={16} />
-                <ChevronDown className="absolute right-3.5 top-3.5 text-slate-400 pointer-events-none" size={16} />
+                <BookOpen className="absolute left-3.5 top-3.5 text-[rgb(var(--zx-text-muted))] pointer-events-none" size={16} />
+                <ChevronDown className="absolute right-3.5 top-3.5 text-[rgb(var(--zx-text-muted))] pointer-events-none" size={16} />
             </div>
 
             {/* Batch Select */}
             <div className="relative group">
                 <select
-                    className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 pl-10 pr-10 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all font-semibold text-sm cursor-pointer disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed"
+                    className="w-full appearance-none bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] pl-10 pr-10 py-3 rounded-xl focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                     value={batchId}
                     onChange={(e) => {
                       setBatchId(e.target.value);
-                      // Clear results out of view when changing filters
                       setExams([]);
                       setStudents([]);
-                      setHasFetched(false); // Reset fetch status
+                      setHasFetched(false);
                     }}
                     disabled={!courseId}
                 >
@@ -219,16 +225,16 @@ api.get(batchEndpoint)
                         <option key={b.id} value={b.id}>{b.name}</option>
                     ))}
                 </select>
-                <Layers className={`absolute left-3.5 top-3.5 pointer-events-none transition-colors ${!courseId ? 'text-slate-300' : 'text-slate-400 group-hover:text-indigo-500'}`} size={16} />
-                <ChevronDown className={`absolute right-3.5 top-3.5 pointer-events-none transition-colors ${!courseId ? 'text-slate-300' : 'text-slate-400'}`} size={16} />
+                <Layers className="absolute left-3.5 top-3.5 text-[rgb(var(--zx-text-muted))] pointer-events-none" size={16} />
+                <ChevronDown className="absolute right-3.5 top-3.5 text-[rgb(var(--zx-text-muted))] pointer-events-none" size={16} />
             </div>
         </div>
 
         <button 
-            className={`flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-bold transition-all shadow-md active:scale-95 shrink-0 w-full md:w-auto ${
+            className={`flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-bold transition-all shadow-md active:scale-95 shrink-0 w-full md:w-auto text-sm ${
               !courseId || !batchId || isLoading
-              ? "bg-slate-200 text-slate-400 cursor-not-allowed shadow-none"
-              : "bg-green-600 text-white hover:bg-green-700 shadow-slate-200"
+              ? "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border border-[rgb(var(--zx-border))] cursor-not-allowed shadow-none"
+              : "bg-brand-teal-500 text-white hover:bg-brand-teal-600 shadow-brand-teal-500/20"
             }`}
             onClick={loadResults}
             disabled={!courseId || !batchId || isLoading}
@@ -242,16 +248,16 @@ api.get(batchEndpoint)
       </div>
 
       {/* TABLE CONTAINER */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/40 overflow-hidden min-h-[400px] flex flex-col">
+      <div className="bg-[rgb(var(--zx-surface))] rounded-3xl border border-[rgb(var(--zx-border))] shadow-sm overflow-hidden min-h-[400px] flex flex-col relative z-10">
         
         {/* Table Toolbar */}
-        <div className="px-6 py-5 bg-slate-50/80 border-b border-slate-100 flex items-center justify-between backdrop-blur-sm">
-            <h2 className="font-bold text-slate-800 flex items-center gap-2">
-              <Award size={18} className="text-indigo-500" />
+        <div className="px-6 py-5 bg-[rgb(var(--zx-surface-hover))] border-b border-[rgb(var(--zx-border))] flex items-center justify-between">
+            <h2 className="font-bold text-[rgb(var(--zx-text))] flex items-center gap-2 text-sm">
+              <Award size={18} className="text-brand-teal-500" />
               Examination Results Matrix
             </h2>
             {students.length > 0 && (
-              <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+              <span className="bg-brand-teal-500/10 border border-brand-teal-500/20 text-brand-teal-500 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
                   {students.length} Students
               </span>
             )}
@@ -260,60 +266,60 @@ api.get(batchEndpoint)
         {/* Content Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {!courseId || !batchId ? (
-            <div className="flex flex-col items-center justify-center py-24 text-slate-400 m-auto">
-              <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100 shadow-sm">
-                <Filter size={24} className="text-indigo-400" />
+            <div className="flex flex-col items-center justify-center py-24 text-[rgb(var(--zx-text-muted))] m-auto">
+              <div className="w-16 h-16 bg-[rgb(var(--zx-surface-hover))] rounded-2xl flex items-center justify-center mb-4 border border-[rgb(var(--zx-border))] shadow-sm text-[rgb(var(--zx-text-muted))]">
+                <Filter size={24} />
               </div>
-              <p className="text-lg font-bold text-slate-600">Select Cohort Parameters</p>
-              <p className="text-sm mt-1">Choose a specific course and batch to view results.</p>
+              <p className="text-[17px] font-bold text-[rgb(var(--zx-text))]">Select Cohort Parameters</p>
+              <p className="text-[14px] text-[rgb(var(--zx-text-muted))] mt-1">Choose a specific course and batch to view results.</p>
             </div>
           ) : isLoading ? (
-            <div className="p-20 flex flex-col items-center justify-center text-slate-400 space-y-3">
-              <div className="w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-600 rounded-full animate-spin"></div>
-              <span className="font-medium">Loading exams...</span>
+            <div className="p-20 flex flex-col items-center justify-center text-[rgb(var(--zx-text-muted))] space-y-3">
+              <div className="w-8 h-8 border-4 border-brand-teal-500/30 border-t-brand-teal-500 rounded-full animate-spin"></div>
+              <span className="font-medium text-sm">Loading exams...</span>
             </div>
           ) : !hasFetched ? (
-            <div className="flex flex-col items-center justify-center py-24 text-slate-400 m-auto">
-              <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100 shadow-sm">
-                <Search size={24} className="text-indigo-400" />
+            <div className="flex flex-col items-center justify-center py-24 text-[rgb(var(--zx-text-muted))] m-auto">
+              <div className="w-16 h-16 bg-[rgb(var(--zx-surface-hover))] rounded-2xl flex items-center justify-center mb-4 border border-[rgb(var(--zx-border))] shadow-sm text-[rgb(var(--zx-text-muted))]">
+                <Search size={24} />
               </div>
-              <p className="text-lg font-bold text-slate-600">Ready to Fetch</p>
-              <p className="text-sm mt-1">Click "Load Results" to fetch examination data.</p>
+              <p className="text-[17px] font-bold text-[rgb(var(--zx-text))]">Ready to Fetch</p>
+              <p className="text-[14px] text-[rgb(var(--zx-text-muted))] mt-1">Click "Load Results" to fetch examination data.</p>
             </div>
           ) : students.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-24 text-slate-400 m-auto">
-              <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100 shadow-sm">
-                <Users size={24} className="text-indigo-400" />
+            <div className="flex flex-col items-center justify-center py-24 text-[rgb(var(--zx-text-muted))] m-auto">
+              <div className="w-16 h-16 bg-[rgb(var(--zx-surface-hover))] rounded-2xl flex items-center justify-center mb-4 border border-[rgb(var(--zx-border))] shadow-sm text-[rgb(var(--zx-text-muted))]">
+                <Users size={24} />
               </div>
-              <p className="text-lg font-bold text-slate-600">No Students Enrolled</p>
-              <p className="text-sm mt-1">There are currently no students mapped to this batch.</p>
+              <p className="text-[17px] font-bold text-[rgb(var(--zx-text))]">No Students Enrolled</p>
+              <p className="text-[14px] text-[rgb(var(--zx-text-muted))] mt-1">There are currently no students mapped to this batch.</p>
             </div>
           ) : exams.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-24 text-slate-400 m-auto">
-              <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100 shadow-sm">
-                <Award size={24} className="text-indigo-400" />
+            <div className="flex flex-col items-center justify-center py-24 text-[rgb(var(--zx-text-muted))] m-auto">
+              <div className="w-16 h-16 bg-[rgb(var(--zx-surface-hover))] rounded-2xl flex items-center justify-center mb-4 border border-[rgb(var(--zx-border))] shadow-sm text-[rgb(var(--zx-text-muted))]">
+                <Award size={24} />
               </div>
-              <p className="text-lg font-bold text-slate-600">No Exams Found</p>
-              <p className="text-sm mt-1">There are no completed exams configured for this cohort.</p>
+              <p className="text-[17px] font-bold text-[rgb(var(--zx-text))]">No Exams Found</p>
+              <p className="text-[14px] text-[rgb(var(--zx-text-muted))] mt-1">There are no completed exams configured for this cohort.</p>
             </div>
           ) : (
             <div className="overflow-x-auto custom-dashboard-scroll">
               <table className="min-w-full text-left border-collapse whitespace-nowrap">
-                <thead className="bg-white border-b border-slate-100">
+                <thead className="bg-[rgb(var(--zx-surface))] border-b border-[rgb(var(--zx-border))]">
                   <tr>
-                    <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider sticky left-0 bg-white z-10 border-r border-slate-100 shadow-[1px_0_5px_-2px_rgba(0,0,0,0.1)]">SID</th>
-                    <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Student Name</th>
+                    <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider sticky left-0 bg-[rgb(var(--zx-surface))] z-10 border-r border-[rgb(var(--zx-border))] shadow-[1px_0_5px_-2px_rgba(0,0,0,0.1)]">SID</th>
+                    <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Student Name</th>
                     {exams.map(exam => (
-                      <th key={exam.id} className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">
+                      <th key={exam.id} className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider text-center">
                         {exam.name}
                       </th>
                     ))}
-                    <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-center">Average</th>
+                    <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider text-center">Average</th>
                     <th className="px-6 py-4 text-right"></th>
                   </tr>
                 </thead>
 
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-[rgb(var(--zx-border))]">
                   {students.map(student => {
                     const isExpanded = expandedStudentId === student.id;
                     const isEditing = editingStudentId === student.id;
@@ -322,16 +328,16 @@ api.get(batchEndpoint)
                       <Fragment key={student.id}>
                         {/* DATA ROW */}
                         <tr 
-                          className={`cursor-pointer transition-colors ${isExpanded ? 'bg-indigo-50/30' : 'hover:bg-slate-50'}`}
+                          className={`cursor-pointer transition-colors ${isExpanded ? 'bg-brand-teal-500/5' : 'hover:bg-[rgb(var(--zx-surface-hover))]'}`}
                           onClick={() => toggleExpand(student.id)}
                         >
-                          <td className="px-6 py-5 sticky left-0 bg-white group-hover:bg-slate-50 border-r border-slate-100 shadow-[1px_0_5px_-2px_rgba(0,0,0,0.1)] z-10">
-                            <span className="font-mono text-slate-500 text-xs font-bold bg-slate-100 px-2 py-1 rounded border border-slate-200">
+                          <td className="px-6 py-5 sticky left-0 bg-[rgb(var(--zx-surface))] group-hover:bg-[rgb(var(--zx-surface-hover))] border-r border-[rgb(var(--zx-border))] shadow-[1px_0_5px_-2px_rgba(0,0,0,0.1)] z-10">
+                            <span className="font-mono text-[rgb(var(--zx-text-muted))] text-xs font-semibold bg-[rgb(var(--zx-surface-hover))] px-2.5 py-1 rounded-lg border border-[rgb(var(--zx-border))]">
                                 {student.sid}
                             </span>
                           </td>
                           <td className="px-6 py-5">
-                            <div className="font-bold text-slate-800 text-sm">{student.user.name}</div>
+                            <div className="font-bold text-[rgb(var(--zx-text))] text-sm">{student.user.name}</div>
                           </td>
 
                           {exams.map(exam => {
@@ -346,8 +352,8 @@ api.get(batchEndpoint)
                                   <div className="flex justify-center">
                                       <input
                                         type="number"
-                                        onClick={(e) => e.stopPropagation()} // Prevent row toggle when typing
-                                        className={`w-20 bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-center font-bold text-slate-800 transition-all ${locked ? "bg-slate-100 text-slate-400 cursor-not-allowed border-slate-200" : ""}`}
+                                        onClick={(e) => e.stopPropagation()}
+                                        className={`w-20 bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] rounded-xl px-2.5 py-2 text-sm focus:outline-none focus:border-brand-teal-500 text-center font-bold text-[rgb(var(--zx-text))] transition-all ${locked ? "opacity-50 cursor-not-allowed" : ""}`}
                                         disabled={locked}
                                         placeholder="-"
                                         value={scoresDraft[exam.id] ?? ""}
@@ -361,10 +367,10 @@ api.get(batchEndpoint)
                                       />
                                   </div>
                                 ) : (
-                                  <div className="flex items-center justify-center gap-1.5 text-sm font-bold text-slate-700">
-                                    {getScore(student.id, exam.id) || <span className="text-slate-300 font-normal">-</span>}
+                                  <div className="flex items-center justify-center gap-1.5 text-sm font-bold text-[rgb(var(--zx-text))]">
+                                    {getScore(student.id, exam.id) || <span className="text-[rgb(var(--zx-text-muted))] font-normal">-</span>}
                                     {locked && (
-                                      <Lock size={12} strokeWidth={3} className="text-slate-400" />
+                                      <Lock size={12} strokeWidth={3} className="text-[rgb(var(--zx-text-muted))]" />
                                     )}
                                   </div>
                                 )}
@@ -373,13 +379,13 @@ api.get(batchEndpoint)
                           })}
 
                           <td className="px-6 py-5 text-center">
-                            <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-100 font-bold text-xs">
+                            <span className="inline-flex items-center justify-center px-3 py-1 rounded-md bg-brand-teal-500/10 text-brand-teal-500 border border-brand-teal-500/20 font-bold text-xs">
                                 {calculateAverage(student.id)}
                             </span>
                           </td>
                           
                           <td className="px-6 py-5 text-right">
-                              <div className={`p-1.5 rounded-full inline-block transition-transform duration-200 ${isExpanded ? 'rotate-90 bg-indigo-100 text-indigo-600' : 'text-slate-300'}`}>
+                              <div className={`p-2 rounded-xl inline-flex transition-transform duration-200 ${isExpanded ? 'rotate-90 bg-brand-teal-500/10 text-brand-teal-500 border border-brand-teal-500/20' : 'text-[rgb(var(--zx-text-muted))]'}`}>
                                   <MoreHorizontal size={18} />
                               </div>
                           </td>
@@ -387,17 +393,17 @@ api.get(batchEndpoint)
 
                         {/* EXPANDED ACTION ROW */}
                         {isExpanded && (
-                          <tr className="bg-indigo-50/30 animate-in fade-in duration-200">
-                            <td colSpan={exams.length + 4} className="px-6 py-4 border-b border-slate-100">
+                          <tr className="bg-[rgb(var(--zx-surface-hover))]/50 animate-in fade-in duration-200">
+                            <td colSpan={exams.length + 4} className="px-6 py-4 border-b border-[rgb(var(--zx-border))]">
                               <div className="flex justify-end gap-3">
-                                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mr-auto flex items-center">
+                                <span className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider mr-auto flex items-center">
                                   {isEditing ? "Editing Scores..." : "Actions"}
                                 </span>
                                 
                                 {isEditing ? (
                                   <>
                                     <button
-                                      className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-slate-200 text-slate-600 bg-white shadow-sm text-xs font-bold uppercase tracking-wide hover:bg-slate-50 transition-all"
+                                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] bg-[rgb(var(--zx-surface))] shadow-sm text-xs font-bold uppercase tracking-wider hover:bg-[rgb(var(--zx-surface-hover))] transition-all"
                                       onClick={(e) => {
                                           e.stopPropagation();
                                           setEditingStudentId(null);
@@ -406,7 +412,7 @@ api.get(batchEndpoint)
                                       <X size={14} /> Cancel
                                     </button>
                                     <button
-                                      className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-600 text-white shadow-sm text-xs font-bold uppercase tracking-wide hover:bg-emerald-700 transition-all active:scale-95"
+                                      className="flex items-center gap-1.5 px-5 py-2 rounded-xl bg-emerald-600 text-white shadow-sm text-xs font-bold uppercase tracking-wider hover:bg-emerald-700 transition-all active:scale-95"
                                       onClick={(e) => saveScores(student.id, e)}
                                     >
                                       <Save size={14} /> Save Scores
@@ -414,7 +420,7 @@ api.get(batchEndpoint)
                                   </>
                                 ) : (
                                   <button
-                                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-slate-200 text-slate-600 bg-white shadow-sm text-xs font-bold uppercase tracking-wide hover:border-indigo-300 hover:text-indigo-600 transition-all active:scale-95"
+                                    className="flex items-center gap-1.5 px-5 py-2 rounded-xl border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] bg-[rgb(var(--zx-surface))] shadow-sm text-xs font-bold uppercase tracking-wider hover:border-brand-teal-500 hover:text-brand-teal-500 transition-all active:scale-95"
                                     onClick={(e) => startEdit(student.id, e)}
                                   >
                                     <Edit2 size={14} /> Enter Scores
