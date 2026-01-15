@@ -145,7 +145,6 @@ export default function AssignCourses() {
       facultyId
   ) {
       try {
-
           const res = await api.get(
               `/faculty-assignments/courses/${courseId}/batches`,
               {
@@ -156,11 +155,8 @@ export default function AssignCourses() {
           );
 
           setBatches(res.data || []);
-
       } catch {
-
           setBatches([]);
-
       }
   }
 
@@ -176,15 +172,12 @@ export default function AssignCourses() {
 
       showToast(res.data?.message || "Assigned successfully");
 
-      // Reset form but keep the faculty selected
       setForm((prev) => ({ ...prev, course_id: "", batch_id: "" }));
       setShowForm(false);
 
-      // If the assigned faculty matches our current dashboard view, refresh the table
       if (globalFacultyId === form.faculty_id) {
         loadAssignments(globalFacultyId);
       } else {
-        // Otherwise, switch the view to the newly assigned faculty
         setGlobalFacultyId(form.faculty_id);
       }
     } catch (err) {
@@ -208,21 +201,24 @@ export default function AssignCourses() {
     }
   }
 
-  // Helper for UI card representation in the form
   const selectedFormFaculty = useMemo(() => {
     if (!form.faculty_id) return null;
     return faculties.find((f) => String(f.id) === String(form.faculty_id));
   }, [form.faculty_id, faculties]);
 
   return (
-    <div className="max-w-[1600px] mx-auto p-6 md:p-8 font-sans overflow-x-hidden pb-24">
+    <div className="relative max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-24 lg:pb-32 pt-0 font-sans overflow-x-hidden">
       {/* Custom Scrollbar */}
       <style>{`
         .custom-dashboard-scroll::-webkit-scrollbar { height: 8px; width: 8px; }
         .custom-dashboard-scroll::-webkit-scrollbar-track { background: transparent; }
-        .custom-dashboard-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .custom-dashboard-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .custom-dashboard-scroll::-webkit-scrollbar-thumb { background: rgb(var(--zx-border)); border-radius: 10px; }
+        .custom-dashboard-scroll::-webkit-scrollbar-thumb:hover { background: rgb(var(--zx-text-muted)); }
       `}</style>
+
+      {/* Decorative Background Glows */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-teal-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-blue-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
 
       <motion.div
         variants={containerVariants}
@@ -231,29 +227,32 @@ export default function AssignCourses() {
         className="space-y-8"
       >
         {/* HEADER */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
-              <GraduationCap className="text-indigo-600" size={32} />
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal-500/10 border border-brand-teal-500/20 text-[11px] font-bold tracking-widest text-brand-teal-500 uppercase w-max mb-1">
+              <GraduationCap size={14} strokeWidth={2.5} />
+              Academic Workload
+            </div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[rgb(var(--zx-text))]">
               Course Assignments
             </h1>
-            <p className="text-slate-500 mt-2 text-sm max-w-xl">
+            <p className="text-[rgb(var(--zx-text-muted))] mt-1 text-[15px] max-w-xl leading-relaxed">
               Assign faculty members to specific course batches. Every faculty assignment is now batch-based.
             </p>
           </div>
 
           <button
+            type="button"
             onClick={() => {
-              // If opening form, optionally pre-fill with current dashboard faculty
               if (!showForm && globalFacultyId && !form.faculty_id) {
                 setForm(prev => ({ ...prev, faculty_id: globalFacultyId }));
               }
               setShowForm(!showForm);
             }}
-            className={`inline-flex items-center gap-2 px-5 py-3 rounded-xl font-semibold transition-all active:scale-95 ${
+            className={`inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-semibold text-sm transition-all active:scale-95 ${
               showForm
-                ? "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                : "bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-600/20"
+                ? "bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] border border-[rgb(var(--zx-border))] hover:bg-[rgb(var(--zx-surface-hover))]"
+                : "bg-brand-teal-500 text-white hover:bg-brand-teal-600 shadow-lg shadow-brand-teal-500/20"
             }`}
           >
             {showForm ? <XCircle size={18} /> : <Plus size={18} />}
@@ -269,15 +268,15 @@ export default function AssignCourses() {
               animate={{ opacity: 1, height: "auto", overflow: "visible" }}
               exit={{ opacity: 0, height: 0, overflow: "hidden" }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="bg-white border border-slate-200 rounded-2xl shadow-sm"
+              className="bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] rounded-3xl shadow-sm relative z-10"
             >
-              <div className="p-6">
-                <h3 className="text-lg font-bold text-slate-800 mb-6">Create New Assignment</h3>
+              <div className="p-8">
+                <h3 className="text-base font-bold text-[rgb(var(--zx-text))] mb-6 pb-3 border-b border-[rgb(var(--zx-border))]">Create New Assignment</h3>
                 
                 <div className="flex flex-col gap-6">
                   {/* FACULTY SELECTION */}
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">
+                    <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
                       Faculty Member
                     </label>
                     
@@ -285,25 +284,26 @@ export default function AssignCourses() {
                       <motion.div 
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="flex items-start justify-between p-4 rounded-xl border border-indigo-200 bg-indigo-50/40"
+                        className="flex items-start justify-between p-4 rounded-2xl border border-brand-teal-500/30 bg-brand-teal-500/5 shadow-sm"
                       >
                         <div className="flex gap-4 items-center">
-                          <div className="bg-indigo-100 text-indigo-600 p-3 rounded-full hidden sm:block">
+                          <div className="bg-brand-teal-500/10 text-brand-teal-500 border border-brand-teal-500/20 p-3 rounded-xl hidden sm:block">
                             <UserCheck size={24} />
                           </div>
                           <div className="flex flex-col gap-1">
-                            <span className="inline-flex items-center text-[11px] font-bold text-indigo-700 bg-indigo-100/50 px-2 py-0.5 rounded border border-indigo-200 uppercase tracking-widest w-fit">
+                            <span className="inline-flex items-center text-[10px] font-bold text-brand-teal-500 bg-brand-teal-500/10 px-2.5 py-0.5 rounded border border-brand-teal-500/20 uppercase tracking-widest w-fit">
                               CODE: {selectedFormFaculty.code}
                             </span>
-                            <span className="text-base font-bold text-slate-800">
+                            <span className="text-base font-bold text-[rgb(var(--zx-text))]">
                               {selectedFormFaculty.name}
                             </span>
                           </div>
                         </div>
                         
                         <button
+                          type="button"
                           onClick={() => setForm({ ...form, faculty_id: "" })}
-                          className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-rose-600 bg-white hover:bg-rose-50 border border-slate-200 px-3 py-2 rounded-lg transition-colors"
+                          className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[rgb(var(--zx-text-muted))] hover:text-rose-500 bg-[rgb(var(--zx-surface))] hover:bg-rose-500/10 border border-[rgb(var(--zx-border))] px-3.5 py-2 rounded-xl transition-colors"
                         >
                           <XCircle size={14} /> Change
                         </button>
@@ -313,7 +313,7 @@ export default function AssignCourses() {
                         value={form.faculty_id}
                         onChange={(e) => setForm({ ...form, faculty_id: e.target.value })}
                         disabled={loadingInitial}
-                        className="w-full px-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all font-medium text-slate-700 disabled:opacity-50"
+                        className="w-full px-4 py-3.5 rounded-xl border border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-sm cursor-pointer disabled:opacity-50 shadow-sm"
                       >
                         <option value="">{loadingInitial ? "Loading Faculties..." : "Select Faculty"}</option>
                         {faculties.map((f) => (
@@ -328,14 +328,14 @@ export default function AssignCourses() {
                   {/* COURSE AND BATCH SELECTION */}
                   <div className="grid md:grid-cols-2 gap-6 pt-2">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1 flex items-center gap-1.5">
-                        <BookOpen size={14} /> Course Program
+                      <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1 flex items-center gap-1.5">
+                        <BookOpen size={14} className="text-brand-teal-500" /> Course Program
                       </label>
                       <select
                         value={form.course_id}
                         onChange={(e) => setForm({ ...form, course_id: e.target.value })}
                         disabled={loadingInitial}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all font-medium text-slate-700 disabled:opacity-50"
+                        className="w-full px-4 py-3 rounded-xl border border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-sm cursor-pointer disabled:opacity-50 shadow-sm"
                       >
                         <option value="">{loadingInitial ? "Loading Courses..." : "Select Course"}</option>
                         {courses.map((c) => (
@@ -347,8 +347,8 @@ export default function AssignCourses() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1 flex items-center gap-1.5">
-                        <Layers3 size={14} /> Batch
+                      <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1 flex items-center gap-1.5">
+                        <Layers3 size={14} className="text-brand-teal-500" /> Batch
                       </label>
                       <select
                         value={form.batch_id}
@@ -359,8 +359,8 @@ export default function AssignCourses() {
                             })
                         }
                         disabled={!form.course_id}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all font-medium text-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
+                        className="w-full px-4 py-3 rounded-xl border border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                      >
                         <option value="">
                             Select Batch
                         </option>
@@ -373,21 +373,22 @@ export default function AssignCourses() {
                                 {b.name}
                             </option>
                         ))}
-                    </select>
+                      </select>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end">
+                <div className="mt-8 pt-6 border-t border-[rgb(var(--zx-border))] flex justify-end">
                   <button
+                    type="button"
                     onClick={assignCourse}
                     disabled={
                       assigning ||
                       !form.faculty_id ||
                       !form.course_id ||
                       !form.batch_id
-                  }
-                    className="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    }
+                    className="inline-flex items-center gap-2 bg-brand-teal-500 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-brand-teal-600 transition-all shadow-lg shadow-brand-teal-500/20 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
                   >
                     {assigning ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
                     {assigning ? "Processing..." : "Confirm & Assign"}
@@ -398,18 +399,18 @@ export default function AssignCourses() {
           )}
         </AnimatePresence>
 
-        {/* FACULTY GLOBAL FILTER (Sticky UX Improvement) */}
-        <motion.div variants={itemVariants} className="bg-white/90 backdrop-blur-xl p-4 rounded-2xl border border-slate-200 shadow-sm sticky top-4 z-30 transition-all flex flex-col sm:flex-row sm:items-center gap-4">
-          <div className="flex items-center gap-3 pl-2 sm:border-r border-slate-200 sm:pr-4 shrink-0">
-             <User className="text-indigo-500" size={24} />
-             <span className="font-bold text-slate-700">View Ledger</span>
+        {/* FACULTY GLOBAL FILTER */}
+        <motion.div variants={itemVariants} className="bg-[rgb(var(--zx-surface))]/90 backdrop-blur-xl p-4 rounded-2xl border border-[rgb(var(--zx-border))] shadow-sm sticky top-4 z-30 transition-all flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="flex items-center gap-3 pl-2 sm:border-r border-[rgb(var(--zx-border))] sm:pr-4 shrink-0">
+             <User className="text-brand-teal-500" size={24} />
+             <span className="font-bold text-[rgb(var(--zx-text))] text-sm">View Ledger</span>
           </div>
           <div className="relative group w-full max-w-xl">
             <select
               value={globalFacultyId}
               onChange={(e) => setGlobalFacultyId(e.target.value)}
               disabled={loadingInitial}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all font-medium text-slate-700 appearance-none cursor-pointer disabled:opacity-50"
+              className="w-full px-4 py-3 rounded-xl border border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-sm appearance-none cursor-pointer disabled:opacity-50 shadow-sm"
             >
               <option value="">{loadingInitial ? "-- Loading Workspace... --" : "-- Select a Faculty Member to view assignments --"}</option>
               {faculties.map((f) => (
@@ -418,22 +419,21 @@ export default function AssignCourses() {
                 </option>
               ))}
             </select>
-            {/* Custom dropdown arrow to replace native one */}
-            <div className="absolute right-4 top-3 pointer-events-none text-slate-400">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            <div className="absolute right-4 top-3.5 pointer-events-none text-[rgb(var(--zx-text-muted))]">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
             </div>
           </div>
         </motion.div>
 
         {/* DATA TABLE */}
-        <motion.div variants={itemVariants} className="bg-white rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/40 overflow-hidden flex flex-col min-h-[400px]">
-          <div className="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between shrink-0">
-            <h3 className="font-bold text-slate-800 text-lg flex items-center gap-2">
-              <ShieldCheck size={18} className="text-indigo-500" />
+        <motion.div variants={itemVariants} className="bg-[rgb(var(--zx-surface))] rounded-3xl border border-[rgb(var(--zx-border))] shadow-sm overflow-hidden flex flex-col min-h-[400px] relative z-10">
+          <div className="px-6 py-5 border-b border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface-hover))] flex items-center justify-between shrink-0">
+            <h3 className="font-bold text-[rgb(var(--zx-text))] text-sm flex items-center gap-2">
+              <ShieldCheck size={18} className="text-brand-teal-500" />
               Current Assignments
             </h3>
             {assignments.length > 0 && !loadingAssignments && (
-              <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+              <span className="bg-brand-teal-500/10 border border-brand-teal-500/20 text-brand-teal-500 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
                 {assignments.length} Records
               </span>
             )}
@@ -441,21 +441,21 @@ export default function AssignCourses() {
 
           <div className="overflow-x-auto flex-1 custom-dashboard-scroll">
             <table className="w-full text-left border-collapse whitespace-nowrap">
-              <thead className="bg-white border-b border-slate-100 sticky top-0 z-10">
+              <thead className="bg-[rgb(var(--zx-surface))] border-b border-[rgb(var(--zx-border))] sticky top-0 z-10">
                 <tr>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Course</th>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Batch</th>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Assigned Date</th>
-                  <th className="px-6 py-4 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Course</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Batch</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Assigned Date</th>
+                  <th className="px-6 py-4 text-right text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[rgb(var(--zx-border))]">
                 {loadingInitial || loadingAssignments ? (
                   <tr>
                     <td colSpan="4" className="px-6 py-32 text-center">
-                      <div className="flex flex-col items-center justify-center space-y-3 text-slate-400">
-                        <Loader2 size={40} className="animate-spin text-indigo-500" />
-                        <span className="font-bold tracking-widest text-sm">
+                      <div className="flex flex-col items-center justify-center space-y-3 text-[rgb(var(--zx-text-muted))]">
+                        <Loader2 size={40} className="animate-spin text-brand-teal-500" />
+                        <span className="font-bold tracking-widest text-xs uppercase">
                           {loadingInitial ? "Fetching Workspace..." : "Fetching Assignments..."}
                         </span>
                       </div>
@@ -463,50 +463,51 @@ export default function AssignCourses() {
                   </tr>
                 ) : !globalFacultyId ? (
                   <tr>
-                    <td colSpan="4" className="px-6 py-32 text-center text-slate-400">
+                    <td colSpan="4" className="px-6 py-32 text-center text-[rgb(var(--zx-text-muted))]">
                       <div className="flex flex-col items-center justify-center">
                         <User size={48} className="mb-4 opacity-20" />
-                        <p className="text-lg font-medium text-slate-600">No faculty selected</p>
+                        <p className="text-lg font-bold text-[rgb(var(--zx-text))]">No faculty selected</p>
                         <p className="text-sm mt-1">Please select a faculty member from the filter above.</p>
                       </div>
                     </td>
                   </tr>
                 ) : assignments.length === 0 ? (
                   <tr>
-                    <td colSpan="4" className="px-6 py-32 text-center text-slate-400">
+                    <td colSpan="4" className="px-6 py-32 text-center text-[rgb(var(--zx-text-muted))]">
                       <div className="flex flex-col items-center justify-center">
                         <Inbox size={48} className="mb-4 opacity-20" />
-                        <p className="text-lg font-medium text-slate-600">No assignments found</p>
+                        <p className="text-lg font-bold text-[rgb(var(--zx-text))]">No assignments found</p>
                         <p className="text-sm mt-1">Assign a course using the form above to begin.</p>
                       </div>
                     </td>
                   </tr>
                 ) : (
                   assignments.map((assignment) => (
-                    <tr key={assignment.id} className="hover:bg-slate-50 transition-colors group">
+                    <tr key={assignment.id} className="hover:bg-[rgb(var(--zx-surface-hover))] transition-colors group">
                       <td className="px-6 py-5">
-                        <span className="font-bold text-slate-800 text-base">{assignment.course_name}</span>
+                        <span className="font-bold text-[rgb(var(--zx-text))] text-sm md:text-base">{assignment.course_name}</span>
                       </td>
 
                       <td className="px-6 py-5">
-                        <span className="font-medium text-slate-700 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 text-sm">
+                        <span className="font-semibold text-[rgb(var(--zx-text))] bg-[rgb(var(--zx-surface-hover))] px-3 py-1.5 rounded-xl border border-[rgb(var(--zx-border))] text-xs">
                             {assignment.batch_name}
                         </span>
                       </td>
 
                       <td className="px-6 py-5">
-                         <span className="text-sm font-medium text-slate-500">{assignment.assigned_at}</span>
+                         <span className="text-sm font-medium text-[rgb(var(--zx-text-muted))]">{assignment.assigned_at}</span>
                       </td>
 
                       <td className="px-6 py-5 text-right">
                         <button
+                          type="button"
                           onClick={() =>
                             setConfirm({
                               id: assignment.id,
                               course: assignment.course_name,
                             })
                           }
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-rose-600 bg-rose-50 hover:bg-rose-100 transition-colors shadow-sm active:scale-95"
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-rose-500 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-all shadow-sm active:scale-95"
                         >
                           <Trash2 size={14} /> Remove
                         </button>
@@ -525,8 +526,8 @@ export default function AssignCourses() {
         open={!!confirm}
         title="Remove Assignment"
         message={
-          <span>
-            Remove this faculty assignment from <strong>{confirm?.course}</strong>?
+          <span className="text-[rgb(var(--zx-text-muted))]">
+            Remove this faculty assignment from <strong className="text-[rgb(var(--zx-text))]">{confirm?.course}</strong>?
           </span>
         }
         onConfirm={() => removeAssignment(confirm.id)}
@@ -542,22 +543,25 @@ export default function AssignCourses() {
             exit={{ opacity: 0, y: 50 }}
             className="fixed bottom-8 right-8 z-50"
           >
-            <div className="bg-slate-900 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 min-w-[300px] border border-slate-800">
+            <div className="bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 min-w-[300px] border border-[rgb(var(--zx-border))] backdrop-blur-xl">
               <div
-                className={`rounded-full p-1 ${
-                  toast.type === "success" ? "bg-emerald-500" : "bg-red-500"
+                className={`rounded-full p-1 border ${
+                  toast.type === "success" 
+                    ? "bg-emerald-500/20 text-emerald-500 border-emerald-500/30" 
+                    : "bg-rose-500/20 text-rose-500 border-rose-500/30"
                 }`}
               >
                 {toast.type === "success" ? (
-                  <CheckCircle2 size={14} strokeWidth={3} className="text-slate-900" />
+                  <CheckCircle2 size={14} strokeWidth={3} />
                 ) : (
-                  <AlertCircle size={14} strokeWidth={3} className="text-white" />
+                  <AlertCircle size={14} strokeWidth={3} />
                 )}
               </div>
-              <span className="font-medium flex-1 text-sm">{toast.message}</span>
+              <span className="font-bold flex-1 text-sm">{toast.message}</span>
               <button
+                type="button"
                 onClick={() => setToast({ show: false, type: "success", message: "" })}
-                className="text-slate-400 hover:text-white transition-colors"
+                className="text-[rgb(var(--zx-text-muted))] hover:text-[rgb(var(--zx-text))] transition-colors"
               >
                 <X size={16} />
               </button>
