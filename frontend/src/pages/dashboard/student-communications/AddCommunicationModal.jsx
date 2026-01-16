@@ -189,6 +189,7 @@ export default function AddCommunicationModal({
       open={open}
       onClose={onClose}
       title="Create Communication"
+      subtitle="Publish a notice for students"
       size="lg"
       footer={
         <div className="w-full flex justify-between items-center">
@@ -226,10 +227,6 @@ export default function AddCommunicationModal({
       }
     >
       <div className="space-y-5 max-h-[70vh] overflow-y-auto custom-dashboard-scroll pr-1">
-        <p className="text-xs text-[rgb(var(--zx-text-muted))] font-medium -mt-2">
-          Publish a notice for students
-        </p>
-
         {/* TITLE */}
         <div>
           <label className="text-[11px] font-bold uppercase tracking-widest text-[rgb(var(--zx-text-muted))] flex items-center gap-1.5 mb-1.5 ml-1">
