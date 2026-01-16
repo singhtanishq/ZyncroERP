@@ -182,20 +182,18 @@ export default function ManageStudentCommunications({
           </button>
         </div>
 
-        {/* SEARCH BAR (Sticky) */}
-        <motion.div variants={itemVariants} className="bg-[rgb(var(--zx-surface))]/90 backdrop-blur-xl p-4 rounded-2xl border border-[rgb(var(--zx-border))] shadow-sm sticky top-4 z-30 transition-all">
-          <div className="relative group w-full">
-            <Search
-              size={18}
-              className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500 transition-colors"
-            />
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search communications by title or content..."
-              className="w-full pl-11 pr-4 py-3 rounded-xl border border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-sm shadow-sm placeholder:text-[rgb(var(--zx-text-muted))]/60 placeholder:font-normal"
-            />
-          </div>
+        {/* SEARCH BAR (Simple Input) */}
+        <motion.div variants={itemVariants} className="relative w-full max-w-md z-10">
+          <Search
+            size={18}
+            className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))]"
+          />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search communications by title or content..."
+            className="w-full pl-11 pr-4 py-3 rounded-xl border border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-sm shadow-sm placeholder:text-[rgb(var(--zx-text-muted))]/60 placeholder:font-normal"
+          />
         </motion.div>
 
         {/* TABLE */}
