@@ -6,6 +6,7 @@ import {
   BookOpen,
   Layers,
 } from "lucide-react";
+import AppModal from "../../../components/common/AppModal";
 
 export default function CommunicationViewModal({
   open,
@@ -19,8 +20,8 @@ export default function CommunicationViewModal({
 
     if (!access) {
       return (
-        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">
-          <Globe size={14} />
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-brand-teal-500/10 text-brand-teal-500 border border-brand-teal-500/20 text-[10px] uppercase tracking-widest font-bold">
+          <Globe size={12} />
           All Students
         </span>
       );
@@ -28,8 +29,8 @@ export default function CommunicationViewModal({
 
     if (access.access_type === "all") {
       return (
-        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold">
-          <Globe size={14} />
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-brand-teal-500/10 text-brand-teal-500 border border-brand-teal-500/20 text-[10px] uppercase tracking-widest font-bold">
+          <Globe size={12} />
           All Students
         </span>
       );
@@ -37,16 +38,16 @@ export default function CommunicationViewModal({
 
     if (access.access_type === "course") {
       return (
-        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold">
-          <BookOpen size={14} />
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-brand-teal-500/10 text-brand-teal-500 border border-brand-teal-500/20 text-[10px] uppercase tracking-widest font-bold">
+          <BookOpen size={12} />
           {access.course?.name}
         </span>
       );
     }
 
     return (
-      <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-xs font-bold">
-        <Layers size={14} />
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-brand-teal-500/10 text-brand-teal-500 border border-brand-teal-500/20 text-[10px] uppercase tracking-widest font-bold">
+        <Layers size={12} />
         {access.course?.name}
         {" • "}
         {access.batch?.name}
@@ -55,92 +56,41 @@ export default function CommunicationViewModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-
-      <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-
-        {/* HEADER */}
-
-        <div className="px-6 py-5 border-b border-slate-100 bg-slate-50 flex justify-between items-start">
-
-          <div className="flex items-start gap-4">
-
-            <div className="bg-blue-100 text-blue-600 p-3 rounded-2xl">
-
-              <Megaphone size={24} />
-
-            </div>
-
-            <div>
-
-              <h2 className="text-2xl font-bold text-slate-900">
-
-                {communication.title}
-
-              </h2>
-
-              <div className="flex flex-wrap items-center gap-3 mt-3">
-
-                {audience()}
-
-                <span className="inline-flex items-center gap-2 text-sm text-slate-500">
-
-                  <CalendarDays size={15} />
-
-                  {new Date(
-                    communication.created_at
-                  ).toLocaleDateString(undefined, {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-
-                </span>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          <button
-            onClick={onClose}
-            className="rounded-full p-2 hover:bg-slate-200 transition"
-          >
-            <X size={20} />
-          </button>
-
+    <AppModal
+      open={open}
+      onClose={onClose}
+      title={communication.title}
+      subtitle={
+        <div className="flex flex-wrap items-center gap-3 mt-1.5">
+          {audience()}
+          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[rgb(var(--zx-text-muted))]">
+            <CalendarDays size={14} />
+            {new Date(
+              communication.created_at
+            ).toLocaleDateString(undefined, {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          </span>
         </div>
-
-        {/* BODY */}
-
-        <div className="px-8 py-8 max-h-[70vh] overflow-y-auto">
-
-          <div className="whitespace-pre-wrap leading-8 text-slate-700 text-[15px]">
-
-            {communication.message}
-
-          </div>
-
+      }
+      size="xl"
+      footer={
+        <button
+          type="button"
+          onClick={onClose}
+          className="px-6 py-2.5 rounded-xl bg-brand-teal-500 hover:bg-brand-teal-600 text-white text-sm font-semibold transition-all active:scale-95 shadow-lg shadow-brand-teal-500/25"
+        >
+          Close
+        </button>
+      }
+    >
+      <div className="space-y-4 max-h-[70vh] overflow-y-auto custom-dashboard-scroll pr-1">
+        <div className="whitespace-pre-wrap leading-relaxed text-[rgb(var(--zx-text))] text-[15px] font-medium">
+          {communication.message}
         </div>
-
-        {/* FOOTER */}
-
-        <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end">
-
-          <button
-            onClick={onClose}
-            className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition"
-          >
-
-            Close
-
-          </button>
-
-        </div>
-
       </div>
-
-    </div>
+    </AppModal>
   );
 }
