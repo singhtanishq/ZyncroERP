@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../../../lib/api/apiClient";
 import ConfirmModal from "../../../components/ConfirmModal";
+import AppModal from "../../../components/common/AppModal";
 import { 
   Banknote, 
   ChevronDown, 
@@ -10,43 +11,50 @@ import {
   Calendar,
   History,
   User,
-  Hash,
   Wallet,
-  X,
-  Clock,
-  ArrowRight
+  Clock
 } from "lucide-react";
 
 // --- HISTORY MODAL COMPONENT ---
 function PaymentHistoryModal({ data, onClose, name }) {
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col transform transition-all animate-in zoom-in-95 duration-200 border border-slate-100">
-        <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-          <div>
-            <h2 className="text-xl font-bold text-slate-900">Payment History</h2>
-            <p className="text-xs text-slate-500 font-medium uppercase tracking-wide">{name}</p>
-          </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 hover:bg-slate-200 p-2 rounded-full transition-colors">
-            <X size={20} />
-          </button>
-        </div>
+    <AppModal
+      open={!!data}
+      onClose={onClose}
+      title="Payment History"
+      size="md"
+      footer={
+        <button 
+          type="button" 
+          onClick={onClose} 
+          className="px-6 py-2.5 rounded-xl bg-brand-teal-500 text-white text-sm font-semibold hover:bg-brand-teal-600 transition-all active:scale-95 shadow-lg shadow-brand-teal-500/25"
+        >
+          Close
+        </button>
+      }
+    >
+      <div className="space-y-4">
+        <p className="text-xs text-[rgb(var(--zx-text-muted))] font-medium -mt-2 uppercase tracking-wide">
+          {name}
+        </p>
 
-        <div className="p-6 max-h-[60vh] overflow-y-auto space-y-3">
+        <div className="max-h-[60vh] overflow-y-auto space-y-3 custom-dashboard-scroll pr-1">
           {data.length === 0 ? (
             <div className="text-center py-10">
-                <Clock className="mx-auto text-slate-200 mb-2" size={32} />
-                <p className="text-sm text-slate-400 font-medium">No prior records found</p>
+                <Clock className="mx-auto text-[rgb(var(--zx-text-muted))] opacity-40 mb-2" size={32} />
+                <p className="text-sm text-[rgb(var(--zx-text-muted))] font-medium">No prior records found</p>
             </div>
           ) : (
             data.map((h, i) => (
-              <div key={i} className="flex justify-between items-center p-4 bg-slate-50 rounded-xl border border-slate-100 transition-hover hover:border-slate-200">
+              <div key={i} className="flex justify-between items-center p-4 bg-[rgb(var(--zx-surface-hover))]/50 rounded-2xl border border-[rgb(var(--zx-border))] transition-hover">
                 <div className="flex items-center gap-3">
-                    <Calendar size={16} className="text-slate-400" />
-                    <span className="text-sm font-bold text-slate-700">{h.month}</span>
+                    <Calendar size={16} className="text-brand-teal-500" />
+                    <span className="text-sm font-bold text-[rgb(var(--zx-text))]">{h.month}</span>
                 </div>
-                <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-lg border ${
-                    h.status === "paid" ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-rose-50 text-rose-700 border-rose-100"
+                <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-md border ${
+                    h.status === "paid" 
+                      ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" 
+                      : "bg-rose-500/10 text-rose-500 border-rose-500/20"
                 }`}>
                   {h.status}
                 </span>
@@ -54,14 +62,8 @@ function PaymentHistoryModal({ data, onClose, name }) {
             ))
           )}
         </div>
-
-        <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end">
-          <button onClick={onClose} className="px-6 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition-all active:scale-95">
-            Close
-          </button>
-        </div>
       </div>
-    </div>
+    </AppModal>
   );
 }
 
@@ -125,75 +127,82 @@ export default function FacultyPayouts() {
   const openHistory = async (f) => {
     const res = await api.get(`/faculty-payouts/${f.id}/history`);
     setHistory(res.data);
-    setExpandedId(f.id); // Maintain expansion context
-    setShowHistory(f.name); // Pass name for modal header
+    setExpandedId(f.id);
+    setShowHistory(f.name);
   };
 
   const getStatusColor = (status) => {
     return status === "paid" 
-      ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
-      : "bg-rose-50 text-rose-700 border-rose-200";
+      ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" 
+      : "bg-rose-500/10 text-rose-500 border-rose-500/20";
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-8 animate-fade-in font-sans">
+    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-24 lg:pb-32 pt-0 space-y-8 animate-fade-in font-sans">
       
+      {/* Decorative Background Glows */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-teal-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-blue-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+
       {/* HEADER */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
-            <Banknote className="text-indigo-600" size={32} />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal-500/10 border border-brand-teal-500/20 text-[11px] font-bold tracking-widest text-brand-teal-500 uppercase w-max mb-1">
+            <Banknote size={14} strokeWidth={2.5} />
+            Financial Operations
+          </div>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[rgb(var(--zx-text))]">
             Faculty Payouts
           </h1>
-          <p className="text-slate-500 mt-2 text-sm max-w-xl">
+          <p className="text-[rgb(var(--zx-text-muted))] mt-1 text-[15px] max-w-xl leading-relaxed">
             Disburse monthly compensation, update base salaries, and audit the complete payment history for academic staff.
           </p>
         </div>
 
-        <div className="flex items-center bg-white border border-slate-200 p-1.5 rounded-2xl shadow-sm">
+        <div className="flex items-center bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] p-1.5 rounded-2xl shadow-sm">
             <div className="flex items-center gap-3 px-4 py-2">
-                <Calendar size={16} className="text-indigo-500" />
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mr-1">Billing Month:</span>
+                <Calendar size={16} className="text-brand-teal-500" />
+                <span className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest mr-1">Billing Month:</span>
                 <input
                     type="month"
                     value={selectedMonth}
                     onChange={(e) => setSelectedMonth(e.target.value)}
-                    className="bg-slate-50 border-none rounded-lg px-3 py-1 text-sm font-bold text-slate-700 focus:ring-0 cursor-pointer hover:bg-slate-100 transition-colors"
+                    className="bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] rounded-xl px-3 py-1.5 text-sm font-bold text-[rgb(var(--zx-text))] focus:outline-none focus:border-brand-teal-500 cursor-pointer transition-colors shadow-sm"
                 />
             </div>
         </div>
       </div>
 
       {/* TABLE CONTAINER */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-xl shadow-slate-200/40 overflow-hidden min-h-[400px]">
+      <div className="bg-[rgb(var(--zx-surface))] rounded-3xl border border-[rgb(var(--zx-border))] shadow-sm overflow-hidden min-h-[400px] relative z-10">
         <table className="w-full text-left border-collapse">
-          <thead className="bg-slate-50/80 border-b border-slate-100 backdrop-blur-sm">
+          <thead className="bg-[rgb(var(--zx-surface-hover))] border-b border-[rgb(var(--zx-border))]">
             <tr>
-              <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">FID</th>
-              <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Faculty Name</th>
-              <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Salary</th>
-              <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Month</th>
-              <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Joining Date</th>
-              <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Status</th>
+              <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">FID</th>
+              <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Faculty Name</th>
+              <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Salary</th>
+              <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Month</th>
+              <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Joining Date</th>
+              <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Status</th>
               <th className="px-6 py-4 text-right"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-[rgb(var(--zx-border))]">
             {isLoading ? (
               <tr>
                 <td colSpan="7" className="px-6 py-20 text-center">
-                  <div className="flex flex-col items-center justify-center text-slate-400 space-y-3">
-                    <div className="w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-600 rounded-full animate-spin"></div>
-                    <span className="font-medium">Loading faculty payouts...</span>
+                  <div className="flex flex-col items-center justify-center text-[rgb(var(--zx-text-muted))] space-y-3">
+                    <div className="w-8 h-8 border-4 border-brand-teal-500/30 border-t-brand-teal-500 rounded-full animate-spin"></div>
+                    <span className="font-medium text-sm">Loading faculty payouts...</span>
                   </div>
                 </td>
               </tr>
             ) : data.length === 0 ? (
               <tr>
-                <td colSpan="7" className="px-6 py-20 text-center text-slate-400">
+                <td colSpan="7" className="px-6 py-20 text-center text-[rgb(var(--zx-text-muted))]">
                   <div className="flex flex-col items-center justify-center">
                     <Inbox size={48} className="mb-4 opacity-20" />
-                    <p className="text-lg font-medium text-slate-600">No records for this month</p>
+                    <p className="text-lg font-bold text-[rgb(var(--zx-text))]">No records for this month</p>
                   </div>
                 </td>
               </tr>
@@ -201,40 +210,40 @@ export default function FacultyPayouts() {
               data.map((f) => (
                 <React.Fragment key={f.id}>
                   <tr 
-                    className={`cursor-pointer transition-colors ${expandedId === f.id ? "bg-indigo-50/30" : "hover:bg-slate-50"}`}
+                    className={`cursor-pointer transition-colors ${expandedId === f.id ? "bg-brand-teal-500/5" : "hover:bg-[rgb(var(--zx-surface-hover))]"}`}
                     onClick={() => handleExpand(f)}
                   >
-                    <td className="px-6 py-5 text-sm font-bold text-indigo-600 font-mono">#{f.code}</td>
+                    <td className="px-6 py-5 text-sm font-bold text-brand-teal-500 font-mono">#{f.code}</td>
                     <td className="px-6 py-5">
-                        <div className="flex items-center gap-2 font-bold text-slate-800 text-sm">
-                            <User size={14} className="text-slate-400" /> {f.name}
+                        <div className="flex items-center gap-2 font-bold text-[rgb(var(--zx-text))] text-sm">
+                            <User size={14} className="text-[rgb(var(--zx-text-muted))]" /> {f.name}
                         </div>
                     </td>
                     <td className="px-6 py-5">
                         {editingSalary === f.id ? (
                             <div className="flex items-center gap-2 animate-in slide-in-from-left-2">
-                                <span className="text-slate-400 font-bold">₹</span>
+                                <span className="text-[rgb(var(--zx-text-muted))] font-bold">₹</span>
                                 <input
                                     type="number"
                                     value={salaryValue}
                                     onClick={(e) => e.stopPropagation()}
                                     onChange={(e) => setSalaryValue(e.target.value)}
-                                    className="bg-white border border-indigo-200 rounded-lg px-2 py-1 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 w-24 shadow-sm"
+                                    className="bg-[rgb(var(--zx-surface))] border border-brand-teal-500 rounded-xl px-3 py-1.5 text-sm font-bold text-[rgb(var(--zx-text))] focus:outline-none w-28 shadow-sm"
                                 />
                             </div>
                         ) : (
-                            <span className="text-sm font-bold text-slate-700">₹{f.salary || 0}</span>
+                            <span className="text-sm font-bold text-[rgb(var(--zx-text))]">₹{f.salary || 0}</span>
                         )}
                     </td>
-                    <td className="px-6 py-5 text-sm text-slate-500 font-medium">{selectedMonth}</td>
-                    <td className="px-6 py-5 text-sm text-slate-500">{f.join_date}</td>
+                    <td className="px-6 py-5 text-sm text-[rgb(var(--zx-text-muted))] font-semibold">{selectedMonth}</td>
+                    <td className="px-6 py-5 text-sm text-[rgb(var(--zx-text-muted))] font-medium">{f.join_date}</td>
                     <td className="px-6 py-5">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide border ${getStatusColor(f.status)}`}>
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest border ${getStatusColor(f.status)}`}>
                         {f.status}
                       </span>
                     </td>
                     <td className="px-6 py-5 text-right">
-                      <div className={`p-1.5 rounded-full inline-block transition-transform duration-200 ${expandedId === f.id ? 'rotate-180 bg-indigo-100 text-indigo-600' : 'text-slate-300'}`}>
+                      <div className={`p-2 rounded-xl inline-flex transition-transform duration-200 ${expandedId === f.id ? 'rotate-180 bg-brand-teal-500/10 text-brand-teal-500 border border-brand-teal-500/20' : 'text-[rgb(var(--zx-text-muted))]'}`}>
                         <ChevronDown size={18} />
                       </div>
                     </td>
@@ -242,58 +251,62 @@ export default function FacultyPayouts() {
 
                   {/* EXPANDED SECTION */}
                   {expandedId === f.id && (
-                    <tr className="bg-indigo-50/30 animate-in fade-in duration-200">
-                      <td colSpan="7" className="px-6 py-6 border-b border-slate-100">
+                    <tr className="bg-[rgb(var(--zx-surface-hover))]/50 animate-in fade-in duration-200">
+                      <td colSpan="7" className="px-6 py-6 border-b border-[rgb(var(--zx-border))]">
                         <div className="flex flex-wrap items-center gap-4">
                             
                             {editingSalary === f.id ? (
                                 <button
+                                    type="button"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setConfirm({ type: 'salary', id: f.id, name: f.name });
                                     }}
                                     disabled={salaryValue === ""}
-                                    className={`flex items-center gap-2 px-5 py-2.5 rounded-xl border text-sm font-bold shadow-md transition-all active:scale-95 ${
+                                    className={`flex items-center gap-2 px-5 py-2.5 rounded-xl border text-xs font-bold uppercase tracking-wider shadow-md transition-all active:scale-95 ${
                                         salaryValue !== "" 
-                                        ? "bg-indigo-600 text-white border-transparent hover:bg-indigo-700" 
-                                        : "bg-slate-100 text-slate-300 border-slate-200 cursor-not-allowed"
+                                        ? "bg-brand-teal-500 text-white border-transparent hover:bg-brand-teal-600 shadow-brand-teal-500/20" 
+                                        : "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border-[rgb(var(--zx-border))] cursor-not-allowed shadow-none"
                                     }`}
                                 >
                                     <Save size={16} /> Save Base Salary
                                 </button>
                             ) : (
                                 <button
+                                    type="button"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setEditingSalary(f.id);
                                         setSalaryValue(f.salary || "");
                                     }}
-                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 text-sm font-bold hover:border-indigo-300 hover:text-indigo-600 transition-all shadow-sm active:scale-95"
+                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] text-xs font-bold uppercase tracking-wider hover:border-brand-teal-500 hover:text-brand-teal-500 transition-all shadow-sm active:scale-95"
                                 >
                                     <Wallet size={16} /> Update Base Salary
                                 </button>
                             )}
 
-                            <div className="w-px h-8 bg-slate-200 mx-2 hidden md:block"></div>
+                            <div className="w-px h-8 bg-[rgb(var(--zx-border))] mx-2 hidden md:block"></div>
 
                             <button
+                                type="button"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setConfirm({ type: 'pay', id: f.id, name: f.name, amount: f.salary });
                                 }}
                                 disabled={f.status === "paid"}
-                                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm shadow-md transition-all active:scale-95 ${
+                                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-md transition-all active:scale-95 ${
                                     f.status === "paid" 
-                                    ? "bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed shadow-none" 
-                                    : "bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-100"
+                                    ? "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border border-[rgb(var(--zx-border))] cursor-not-allowed shadow-none" 
+                                    : "bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-600/20"
                                 }`}
                             >
                                 <CheckCircle2 size={16} /> {f.status === "paid" ? "Payment Completed" : `Mark Paid (₹${f.salary})`}
                             </button>
 
                             <button
+                                type="button"
                                 onClick={(e) => { e.stopPropagation(); openHistory(f); }}
-                                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 text-white text-sm font-bold hover:bg-slate-900 transition-all shadow-md active:scale-95 ml-auto"
+                                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] text-xs font-bold uppercase tracking-wider hover:border-brand-blue-500 hover:text-brand-blue-500 transition-all shadow-sm active:scale-95 ml-auto"
                             >
                                 <History size={16} /> View Audit Trail
                             </button>
@@ -314,12 +327,12 @@ export default function FacultyPayouts() {
         title={confirm?.type === 'pay' ? "Process Payout" : "Update Base Salary"}
         message={
           <div className="space-y-3">
-            <span className="block text-slate-600">
-                Are you sure you want to {confirm?.type === 'pay' ? 'process the monthly payment' : 'update the base salary'} for <span className="font-bold text-slate-900">"{confirm?.name}"</span>?
+            <span className="block text-[rgb(var(--zx-text-muted))] font-medium">
+                Are you sure you want to {confirm?.type === 'pay' ? 'process the monthly payment' : 'update the base salary'} for <span className="font-bold text-[rgb(var(--zx-text))]">"{confirm?.name}"</span>?
             </span>
-            <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-2xl flex items-center gap-3">
-                <Banknote size={18} className="text-indigo-600" />
-                <span className="text-sm font-bold text-indigo-700">Amount: ₹{confirm?.type === 'pay' ? confirm.amount : salaryValue}</span>
+            <div className="p-4 bg-brand-teal-500/10 border border-brand-teal-500/20 rounded-2xl flex items-center gap-3">
+                <Banknote size={18} className="text-brand-teal-500" />
+                <span className="text-sm font-bold text-brand-teal-500">Amount: ₹{confirm?.type === 'pay' ? confirm.amount : salaryValue}</span>
             </div>
           </div>
         }
@@ -339,11 +352,11 @@ export default function FacultyPayouts() {
       {/* TOAST SYSTEM */}
       {toast && (
         <div className="fixed bottom-8 right-8 z-50 animate-in slide-in-from-bottom-5 duration-300">
-          <div className="bg-slate-900 text-white px-6 py-3.5 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700/50">
-            <div className="bg-emerald-500 rounded-full p-1">
-              <CheckCircle2 size={14} className="text-white" strokeWidth={3} />
+          <div className="bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-[rgb(var(--zx-border))] backdrop-blur-xl">
+            <div className="bg-emerald-500/20 text-emerald-500 rounded-full p-1 border border-emerald-500/30">
+              <CheckCircle2 size={14} strokeWidth={3} />
             </div>
-            <span className="text-sm font-medium tracking-wide">{toast}</span>
+            <span className="text-sm font-bold tracking-wide">{toast}</span>
           </div>
         </div>
       )}
