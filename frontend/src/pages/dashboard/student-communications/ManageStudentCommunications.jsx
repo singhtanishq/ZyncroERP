@@ -91,20 +91,20 @@ export default function ManageStudentCommunications({
   function audienceBadge(item) {
     if (item.access_type === "all") {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200 text-[10px] uppercase tracking-widest font-bold">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-brand-teal-500/10 text-brand-teal-500 border border-brand-teal-500/20 text-[10px] uppercase tracking-widest font-bold">
           <Globe size={12} /> All Students
         </span>
       );
     }
     if (item.access_type === "course") {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 border border-blue-200 text-[10px] uppercase tracking-widest font-bold">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-brand-teal-500/10 text-brand-teal-500 border border-brand-teal-500/20 text-[10px] uppercase tracking-widest font-bold">
           <BookOpen size={12} /> {item.course?.name}
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] uppercase tracking-widest font-bold">
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-brand-teal-500/10 text-brand-teal-500 border border-brand-teal-500/20 text-[10px] uppercase tracking-widest font-bold">
         <Layers size={12} /> {item.course?.name} • {item.batch?.name}
       </span>
     );
@@ -138,14 +138,18 @@ export default function ManageStudentCommunications({
   }
 
   return (
-    <div className="max-w-[1600px] mx-auto p-6 md:p-8 font-sans overflow-x-hidden pb-24">
+    <div className="relative max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-24 lg:pb-32 pt-0 font-sans overflow-x-hidden">
       {/* Custom Scrollbar */}
       <style>{`
         .custom-dashboard-scroll::-webkit-scrollbar { height: 8px; width: 8px; }
         .custom-dashboard-scroll::-webkit-scrollbar-track { background: transparent; }
-        .custom-dashboard-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .custom-dashboard-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .custom-dashboard-scroll::-webkit-scrollbar-thumb { background: rgb(var(--zx-border)); border-radius: 10px; }
+        .custom-dashboard-scroll::-webkit-scrollbar-thumb:hover { background: rgb(var(--zx-text-muted)); }
       `}</style>
+
+      {/* Decorative Background Glows */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-teal-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-blue-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
 
       <motion.div
         variants={containerVariants}
@@ -154,20 +158,24 @@ export default function ManageStudentCommunications({
         className="space-y-8"
       >
         {/* HEADER */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
-              <Megaphone className="text-indigo-600" size={32} />
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal-500/10 border border-brand-teal-500/20 text-[11px] font-bold tracking-widest text-brand-teal-500 uppercase w-max mb-1">
+              <Megaphone size={14} strokeWidth={2.5} />
+              Student Portal
+            </div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[rgb(var(--zx-text))]">
               Student Communications
             </h1>
-            <p className="text-slate-500 mt-2 text-sm max-w-xl">
+            <p className="text-[rgb(var(--zx-text-muted))] mt-1 text-[15px] max-w-xl leading-relaxed">
               Publish announcements that will be visible inside the Student Dashboard.
             </p>
           </div>
 
           <button
+            type="button"
             onClick={() => setAddOpen(true)}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-semibold transition-all active:scale-95 bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-600/20"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-semibold text-sm transition-all active:scale-95 bg-brand-teal-500 text-white hover:bg-brand-teal-600 shadow-lg shadow-brand-teal-500/20 shrink-0"
           >
             <Plus size={18} />
             Create Communication
@@ -175,30 +183,30 @@ export default function ManageStudentCommunications({
         </div>
 
         {/* SEARCH BAR (Sticky) */}
-        <motion.div variants={itemVariants} className="bg-white/90 backdrop-blur-xl p-4 rounded-2xl border border-slate-200 shadow-sm sticky top-4 z-30 transition-all">
+        <motion.div variants={itemVariants} className="bg-[rgb(var(--zx-surface))]/90 backdrop-blur-xl p-4 rounded-2xl border border-[rgb(var(--zx-border))] shadow-sm sticky top-4 z-30 transition-all">
           <div className="relative group w-full">
             <Search
-              size={20}
-              className="absolute left-4 top-3.5 text-slate-400 group-focus-within:text-indigo-600 transition-colors"
+              size={18}
+              className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500 transition-colors"
             />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search communications by title or content..."
-              className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all font-medium text-slate-700 placeholder:text-slate-400"
+              className="w-full pl-11 pr-4 py-3 rounded-xl border border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-sm shadow-sm placeholder:text-[rgb(var(--zx-text-muted))]/60 placeholder:font-normal"
             />
           </div>
         </motion.div>
 
         {/* TABLE */}
-        <motion.div variants={itemVariants} className="bg-white rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/40 overflow-hidden flex flex-col min-h-[500px]">
-          <div className="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between shrink-0">
-            <h3 className="font-bold text-slate-800 text-lg flex items-center gap-2">
-              <Megaphone size={18} className="text-indigo-500" />
+        <motion.div variants={itemVariants} className="bg-[rgb(var(--zx-surface))] rounded-3xl border border-[rgb(var(--zx-border))] shadow-sm overflow-hidden flex flex-col min-h-[500px] relative z-10">
+          <div className="px-6 py-5 border-b border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface-hover))] flex items-center justify-between shrink-0">
+            <h3 className="font-bold text-[rgb(var(--zx-text))] text-sm flex items-center gap-2">
+              <Megaphone size={18} className="text-brand-teal-500" />
               Announcements Ledger
             </h3>
             {filtered.length > 0 && !loading && (
-              <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+              <span className="bg-brand-teal-500/10 border border-brand-teal-500/20 text-brand-teal-500 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
                 {filtered.length} Published
               </span>
             )}
@@ -206,45 +214,45 @@ export default function ManageStudentCommunications({
 
           <div className="overflow-x-auto flex-1 custom-dashboard-scroll">
             <table className="w-full text-left border-collapse whitespace-nowrap">
-              <thead className="bg-white border-b border-slate-100 sticky top-0 z-10">
+              <thead className="bg-[rgb(var(--zx-surface))] border-b border-[rgb(var(--zx-border))] sticky top-0 z-10">
                 <tr>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider w-1/2">Communication</th>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Created</th>
-                  <th className="px-6 py-4 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider w-1/2">Communication</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Created</th>
+                  <th className="px-6 py-4 text-right text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[rgb(var(--zx-border))]">
                 {loading ? (
                   <tr>
                     <td colSpan="4" className="px-6 py-32 text-center">
-                      <div className="flex flex-col items-center justify-center space-y-3 text-slate-400">
-                        <Loader2 size={40} className="animate-spin text-indigo-500" />
-                        <span className="font-bold tracking-widest text-sm uppercase">Loading Communications...</span>
+                      <div className="flex flex-col items-center justify-center space-y-3 text-[rgb(var(--zx-text-muted))]">
+                        <Loader2 size={40} className="animate-spin text-brand-teal-500" />
+                        <span className="font-bold tracking-widest text-xs uppercase">Loading Communications...</span>
                       </div>
                     </td>
                   </tr>
                 ) : filtered.length === 0 ? (
                   <tr>
-                    <td colSpan="4" className="px-6 py-32 text-center text-slate-400">
+                    <td colSpan="4" className="px-6 py-32 text-center text-[rgb(var(--zx-text-muted))]">
                       <div className="flex flex-col items-center justify-center">
                         <MessageSquare size={48} className="mb-4 opacity-20" />
-                        <h3 className="text-lg font-bold text-slate-700">No Communications Found</h3>
+                        <h3 className="text-lg font-bold text-[rgb(var(--zx-text))]">No Communications Found</h3>
                         <p className="text-sm mt-1">Click "Create Communication" to publish your first announcement.</p>
                       </div>
                     </td>
                   </tr>
                 ) : (
                   filtered.map((item) => (
-                    <tr key={item.id} className="hover:bg-slate-50 transition-colors group">
+                    <tr key={item.id} className="hover:bg-[rgb(var(--zx-surface-hover))] transition-colors group">
                       
                         {/* Communication Column */}
                       <td className="px-6 py-5 whitespace-normal">
                         <div className="flex flex-col min-w-0 max-w-xl">
-                          <h3 className="font-bold text-slate-900 text-base mb-1 truncate">
+                          <h3 className="font-bold text-[rgb(var(--zx-text))] text-sm md:text-base mb-1 truncate">
                             {item.title}
                           </h3>
-                          <p className="text-sm text-slate-500 line-clamp-2">
+                          <p className="text-xs sm:text-sm text-[rgb(var(--zx-text-muted))] line-clamp-2 font-medium">
                             {item.message}
                           </p>
                         </div>
@@ -253,15 +261,15 @@ export default function ManageStudentCommunications({
                       {/* Status Column */}
                       <td className="px-6 py-5">
                         <span
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest border ${
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest border ${
                             item.status === "active"
-                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                              : "bg-slate-50 text-slate-600 border-slate-200"
+                              ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
+                              : "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border-[rgb(var(--zx-border))]"
                           }`}
                         >
                           <span
                             className={`w-1.5 h-1.5 rounded-full ${
-                              item.status === "active" ? "bg-emerald-500" : "bg-slate-400"
+                              item.status === "active" ? "bg-emerald-500" : "bg-[rgb(var(--zx-text-muted))]"
                             }`}
                           />
                           {item.status === "active" ? "Published" : "Hidden"}
@@ -270,34 +278,37 @@ export default function ManageStudentCommunications({
 
                       {/* Created Column */}
                       <td className="px-6 py-5">
-                        <div className="text-sm font-medium text-slate-500 flex items-center gap-2">
-                          <Calendar size={14} className="text-slate-400" />
+                        <div className="text-sm font-medium text-[rgb(var(--zx-text-muted))] flex items-center gap-2">
+                          <Calendar size={14} className="text-[rgb(var(--zx-text-muted))]" />
                           {new Date(item.created_at).toLocaleDateString()}
                         </div>
                       </td>
 
                       {/* Actions Column */}
                       <td className="px-6 py-5 text-right">
-                        <div className="flex justify-end items-center gap-2">
+                        <div className="flex justify-end items-center gap-1.5">
                           <button
+                            type="button"
                             onClick={() => setViewItem(item)}
-                            className="p-2 rounded-lg bg-white border border-slate-200 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 text-slate-500 transition-colors shadow-sm active:scale-95"
+                            className="p-2 rounded-xl bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] hover:border-brand-teal-500 hover:text-brand-teal-500 text-[rgb(var(--zx-text-muted))] transition-colors shadow-sm active:scale-95"
                             title="View"
                           >
                             <Eye size={16} />
                           </button>
 
                           <button
+                            type="button"
                             onClick={() => setEditItem(item)}
-                            className="p-2 rounded-lg bg-white border border-slate-200 hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200 text-slate-500 transition-colors shadow-sm active:scale-95"
+                            className="p-2 rounded-xl bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] hover:border-amber-500 hover:text-amber-500 text-[rgb(var(--zx-text-muted))] transition-colors shadow-sm active:scale-95"
                             title="Edit"
                           >
                             <Pencil size={16} />
                           </button>
 
                           <button
+                            type="button"
                             onClick={() => toggleStatus(item.id)}
-                            className="p-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-500 transition-colors shadow-sm active:scale-95"
+                            className="p-2 rounded-xl bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] hover:border-brand-blue-500 hover:text-brand-blue-500 text-[rgb(var(--zx-text-muted))] transition-colors shadow-sm active:scale-95"
                             title={item.status === "active" ? "Hide" : "Publish"}
                           >
                             {item.status === "active" ? (
@@ -308,11 +319,12 @@ export default function ManageStudentCommunications({
                           </button>
 
                           <button
+                            type="button"
                             onClick={() => {
                               setDeleteItem(item);
                               setConfirmDelete(true);
                             }}
-                            className="p-2 rounded-lg bg-white border border-slate-200 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-slate-500 transition-colors shadow-sm active:scale-95"
+                            className="p-2 rounded-xl bg-[rgb(var(--zx-surface))] border border-rose-500/30 hover:bg-rose-500/10 text-rose-500 transition-colors shadow-sm active:scale-95"
                             title="Delete"
                           >
                             <Trash2 size={16} />
@@ -364,7 +376,11 @@ export default function ManageStudentCommunications({
       <ConfirmModal
         open={confirmDelete}
         title="Delete Communication"
-        message="Are you sure you want to permanently delete this communication?"
+        message={
+          <span className="text-[rgb(var(--zx-text-muted))] font-medium">
+            Are you sure you want to permanently delete this communication?
+          </span>
+        }
         onClose={() => setConfirmDelete(false)}
         onConfirm={deleteCommunication}
       />
@@ -380,22 +396,23 @@ export default function ManageStudentCommunications({
             exit={{ opacity: 0, y: 50 }}
             className="fixed bottom-8 right-8 z-[100]"
           >
-            <div className={`px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 border min-w-[300px] ${
-              toast.type === "error"
-                ? "bg-rose-900 border-rose-800 text-white"
-                : "bg-slate-900 border-slate-800 text-white"
-            }`}>
-              <div className={`rounded-full p-1 ${toast.type === "error" ? 'bg-rose-500' : 'bg-emerald-500'}`}>
+            <div className="bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-[rgb(var(--zx-border))] backdrop-blur-xl min-w-[300px]">
+              <div className={`rounded-full p-1 border ${
+                toast.type === "error"
+                  ? "bg-rose-500/20 text-rose-500 border-rose-500/30"
+                  : "bg-emerald-500/20 text-emerald-500 border-emerald-500/30"
+              }`}>
                 {toast.type === "error" ? (
-                  <AlertCircle size={14} className="text-white" strokeWidth={3} />
+                  <AlertCircle size={14} strokeWidth={3} />
                 ) : (
-                  <CheckCircle2 size={14} className="text-slate-900" strokeWidth={3} />
+                  <CheckCircle2 size={14} strokeWidth={3} />
                 )}
               </div>
-              <span className="text-sm font-semibold flex-1">{toast.msg}</span>
+              <span className="text-sm font-bold tracking-wide flex-1">{toast.msg}</span>
               <button 
+                type="button"
                 onClick={() => setToast(null)} 
-                className="text-slate-400 hover:text-white transition-colors"
+                className="text-[rgb(var(--zx-text-muted))] hover:text-[rgb(var(--zx-text))] transition-colors"
               >
                 <X size={16} />
               </button>
