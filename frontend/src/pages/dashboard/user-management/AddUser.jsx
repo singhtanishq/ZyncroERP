@@ -9,7 +9,8 @@ import {
   CheckCircle2, 
   AlertCircle,
   ArrowRight,
-  X
+  X,
+  ChevronDown
 } from "lucide-react";
 
 export default function AddUser() {
@@ -41,7 +42,6 @@ export default function AddUser() {
     try {
       setLoading(true);
       
-      // Using your standard apiClient for consistency
       await api.post("/admin/users", form);
 
       showToast("User created & credentials sent securely", "success");
@@ -55,35 +55,42 @@ export default function AddUser() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 font-sans animate-fade-in pb-20">
+    <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-24 lg:pb-32 pt-0 font-sans">
       
+      {/* Decorative Background Glows */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-teal-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-blue-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+
       {/* HEADER */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 tracking-tight flex items-center gap-3">
-            <UserPlus className="text-indigo-600" size={32} />
-            Add New User
+      <div className="mb-8 relative z-10">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal-500/10 border border-brand-teal-500/20 text-[11px] font-bold tracking-widest text-brand-teal-500 uppercase w-max mb-1">
+          <UserPlus size={14} strokeWidth={2.5} />
+          User Provisioning
+        </div>
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[rgb(var(--zx-text))] tracking-tight">
+          Add New User
         </h1>
-        <p className="text-slate-500 mt-2 text-sm max-w-xl">
-            Provision a new account within the system. Access credentials will be automatically securely emailed to the user.
+        <p className="text-[rgb(var(--zx-text-muted))] mt-1 text-[15px] max-w-xl leading-relaxed">
+          Provision a new account within the system. Access credentials will be automatically securely emailed to the user.
         </p>
       </div>
 
       {/* MAIN FORM CARD */}
-      <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-2xl shadow-xl shadow-slate-200/40 flex flex-col overflow-hidden">
+      <form onSubmit={handleSubmit} className="bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] rounded-3xl shadow-sm flex flex-col overflow-hidden relative z-10">
         
-        <div className="px-8 py-6 border-b border-slate-100 bg-slate-50/50">
-            <h3 className="text-lg font-bold text-slate-800">Account Details</h3>
-            <p className="text-xs font-medium text-slate-500 mt-1">Configure user identity and system privileges</p>
+        <div className="px-8 py-6 border-b border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface-hover))]">
+            <h3 className="font-bold text-[rgb(var(--zx-text))] text-base">Account Details</h3>
+            <p className="text-xs font-medium text-[rgb(var(--zx-text-muted))] mt-0.5">Configure user identity and system privileges</p>
         </div>
         
         <div className="p-8 space-y-6">
             {/* Full Name */}
             <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1 flex items-center gap-1.5">
-                    <User size={14} className="text-indigo-500"/> Full Name *
+                <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1 flex items-center gap-1.5">
+                    <User size={14} className="text-brand-teal-500"/> Full Name *
                 </label>
                 <input
-                    className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-bold text-slate-800 placeholder:font-normal placeholder:text-slate-400"
+                    className="w-full bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] rounded-xl px-4 py-3 focus:outline-none focus:border-brand-teal-500 transition-all font-bold text-sm shadow-sm placeholder:text-[rgb(var(--zx-text-muted))]/60 placeholder:font-normal"
                     placeholder="e.g. John Doe"
                     value={form.name}
                     onChange={e => update("name", e.target.value)}
@@ -94,12 +101,12 @@ export default function AddUser() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Email Address */}
                 <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1 flex items-center gap-1.5">
-                        <Mail size={14} className="text-indigo-500"/> Email Address *
+                    <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1 flex items-center gap-1.5">
+                        <Mail size={14} className="text-brand-teal-500"/> Email Address *
                     </label>
                     <input
                         type="email"
-                        className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm font-medium text-slate-700 placeholder:text-slate-400"
+                        className="w-full bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] rounded-xl px-4 py-3 focus:outline-none focus:border-brand-teal-500 transition-all text-sm font-semibold shadow-sm placeholder:text-[rgb(var(--zx-text-muted))]/60"
                         placeholder="user@zyncroerp.local"
                         value={form.email}
                         onChange={e => update("email", e.target.value)}
@@ -109,43 +116,49 @@ export default function AddUser() {
 
                 {/* Role Selection */}
                 <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1 flex items-center gap-1.5">
-                        <ShieldCheck size={14} className="text-indigo-500"/> System Role *
+                    <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1 flex items-center gap-1.5">
+                        <ShieldCheck size={14} className="text-brand-teal-500"/> System Role *
                     </label>
-                    <select
-                        value={form.role}
-                        onChange={e => update("role", e.target.value)}
-                        className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm font-bold text-slate-700 appearance-none cursor-pointer"
-                        required
-                    >
-                        <option value="student">Student</option>
-                        <option value="faculty">Faculty</option>
-                        <option value="franchise">Franchise</option>
-                        <option value="admin">Administrator</option>
-                    </select>
+                    <div className="relative group">
+                      <select
+                          value={form.role}
+                          onChange={e => update("role", e.target.value)}
+                          className="w-full appearance-none bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] rounded-xl px-4 py-3 focus:outline-none focus:border-brand-teal-500 transition-all text-sm font-bold cursor-pointer shadow-sm"
+                          required
+                      >
+                          <option value="student">Student</option>
+                          <option value="faculty">Faculty</option>
+                          <option value="franchise">Franchise</option>
+                          <option value="admin">Administrator</option>
+                      </select>
+                      <ChevronDown
+                        size={16}
+                        className="absolute right-4 top-3.5 text-[rgb(var(--zx-text-muted))] pointer-events-none"
+                      />
+                    </div>
                 </div>
             </div>
         </div>
 
         {/* NAVIGATION FOOTER */}
-        <div className="flex justify-between items-center px-8 py-5 border-t border-slate-100 bg-slate-50">
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest hidden sm:block">
+        <div className="flex justify-between items-center px-8 py-5 border-t border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface-hover))]">
+            <p className="text-[11px] text-[rgb(var(--zx-text-muted))] font-bold uppercase tracking-widest hidden sm:block">
                 All fields are mandatory *
             </p>
 
             <button
                 type="submit"
                 disabled={loading || !isFormValid()}
-                className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-sm shadow-md transition-all active:scale-95 ${
+                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all shadow-lg active:scale-95 ${
                 isFormValid() && !loading
-                    ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-200 hover:shadow-indigo-300"
-                    : "bg-slate-200 text-slate-400 cursor-not-allowed shadow-none"
+                    ? "bg-brand-teal-500 text-white hover:bg-brand-teal-600 shadow-brand-teal-500/25"
+                    : "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border border-[rgb(var(--zx-border))] cursor-not-allowed shadow-none"
                 }`}
             >
                 {loading ? (
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
-                    <Save size={18} /> 
+                    <Save size={16} /> 
                 )}
                 {loading ? "Provisioning..." : "Create Account"} 
                 {!loading && <ArrowRight size={16} className="opacity-50" />}
@@ -156,15 +169,15 @@ export default function AddUser() {
       {/* DUAL-STATE TOAST NOTIFICATION */}
       {toast.msg && (
         <div className="fixed bottom-8 right-8 z-[100] animate-in slide-in-from-bottom-5 fade-in duration-300">
-          <div className="bg-slate-900 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700/50 min-w-[300px]">
-            <div className={`rounded-full p-1 ${toast.type === "success" ? 'bg-emerald-500' : 'bg-rose-500'}`}>
+          <div className="bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-[rgb(var(--zx-border))] backdrop-blur-xl min-w-[300px]">
+            <div className={`rounded-full p-1 border ${toast.type === "success" ? 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30' : 'bg-rose-500/20 text-rose-500 border-rose-500/30'}`}>
                 {toast.type === "success" 
-                    ? <CheckCircle2 size={14} className="text-white" strokeWidth={3} /> 
-                    : <AlertCircle size={14} className="text-white" strokeWidth={3} />
+                    ? <CheckCircle2 size={14} strokeWidth={3} /> 
+                    : <AlertCircle size={14} strokeWidth={3} />
                 }
             </div>
-            <span className="text-sm font-semibold tracking-wide mr-4">{toast.msg}</span>
-            <button onClick={() => setToast({ msg: "", type: "success" })} className="ml-auto text-slate-400 hover:text-white transition-colors">
+            <span className="text-sm font-bold tracking-wide mr-4">{toast.msg}</span>
+            <button type="button" onClick={() => setToast({ msg: "", type: "success" })} className="ml-auto text-[rgb(var(--zx-text-muted))] hover:text-[rgb(var(--zx-text))] transition-colors">
                 <X size={16} />
             </button>
           </div>
