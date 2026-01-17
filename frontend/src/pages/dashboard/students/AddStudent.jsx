@@ -188,44 +188,47 @@ export default function AddStudent() {
 
                 <div className="space-y-6">
                   
-                  {/* Row 1: Name */}
-                  <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
-                      Full Name <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative group">
-                      <User className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500 transition-colors" size={20} />
-                      <input
-                        name="name"
-                        placeholder="e.g. John Doe"
-                        value={form.name}
-                        onChange={handleChange}
-                        className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:border-brand-teal-500 focus:outline-none focus:ring-0 transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
-                        required
-                      />
+                  {/* Row 1: Name & Email */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Name Input */}
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
+                        Full Name <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative group">
+                        <User className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500 transition-colors" size={20} />
+                        <input
+                          name="name"
+                          placeholder="e.g. John Doe"
+                          value={form.name}
+                          onChange={handleChange}
+                          className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:border-brand-teal-500 focus:outline-none focus:ring-0 transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    {/* Email Input */}
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
+                        Email Address <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative group">
+                        <Mail className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500 transition-colors" size={20} />
+                        <input
+                          name="email"
+                          type="email"
+                          placeholder="e.g. john@email.com"
+                          value={form.email}
+                          onChange={handleChange}
+                          className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:border-brand-teal-500 focus:outline-none focus:ring-0 transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
+                          required
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  {/* Row 2: Email */}
-                  <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
-                      Email Address <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative group">
-                      <Mail className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500 transition-colors" size={20} />
-                      <input
-                        name="email"
-                        type="email"
-                        placeholder="e.g. john@email.com"
-                        value={form.email}
-                        onChange={handleChange}
-                        className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:border-brand-teal-500 focus:outline-none focus:ring-0 transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  {/* Row 3: Course & Batch */}
+                  {/* Row 2: Course & Batch */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Course Select */}
                     <div className="space-y-2">
@@ -320,36 +323,28 @@ export default function AddStudent() {
 
                 <div className="bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] rounded-3xl overflow-hidden divide-y divide-[rgb(var(--zx-border))] mb-8">
                   
-                  {/* Row 1: Name */}
-                  <div className="px-6 py-4">
-                    <PreviewAuto label="Full Name" value={form.name} icon={<User size={16} />} />
-                  </div>
-                  
-                  {/* Row 2: Email */}
-                  <div className="px-6 py-4">
-                    <PreviewAuto label="Email Address" value={form.email} icon={<Mail size={16} />} />
-                  </div>
-                  
-                  {/* Row 3: Course and Batch side-by-side */}
+                  {/* Row 1: Name & Email side-by-side */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[rgb(var(--zx-border))]">
-                    <div className="px-6 py-4 flex items-center">
-                      <PreviewAuto 
-                        label="Course" 
-                        value={courses.find(c => c.id == form.course_id)?.name || <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>} 
-                        icon={<BookOpen size={16} />} 
-                      />
-                    </div>
-                    <div className="px-6 py-4 flex items-center">
-                      <PreviewAuto 
-                        label="Batch" 
-                        value={(() => {
-                          const batch = batches.find(b => b.id == form.batch_id);
-                          if (!batch) return <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>;
-                          return `${batch.name} (${formatDate(batch.start_date)} - ${formatDate(batch.end_date)})`;
-                        })()} 
-                        icon={<Layers size={16} />} 
-                      />
-                    </div>
+                    <PreviewStacked label="Full Name" value={form.name} icon={<User size={16} />} />
+                    <PreviewStacked label="Email Address" value={form.email} icon={<Mail size={16} />} />
+                  </div>
+                  
+                  {/* Row 2: Course & Batch side-by-side */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[rgb(var(--zx-border))]">
+                    <PreviewStacked 
+                      label="Course" 
+                      value={courses.find(c => c.id == form.course_id)?.name || <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>} 
+                      icon={<BookOpen size={16} />} 
+                    />
+                    <PreviewStacked 
+                      label="Batch" 
+                      value={(() => {
+                        const batch = batches.find(b => b.id == form.batch_id);
+                        if (!batch) return <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>;
+                        return `${batch.name} (${formatDate(batch.start_date)} - ${formatDate(batch.end_date)})`;
+                      })()} 
+                      icon={<Layers size={16} />} 
+                    />
                   </div>
 
                 </div>
@@ -442,14 +437,14 @@ export default function AddStudent() {
 
 /* --- Sub Components --- */
 
-function PreviewAuto({ label, value, icon }) {
+function PreviewStacked({ label, value, icon }) {
   return (
-    <div className="flex items-center gap-4">
-      <div className="flex items-center gap-3 text-[rgb(var(--zx-text-muted))]">
+    <div className="flex flex-col px-6 py-4 gap-2">
+      <div className="flex items-center gap-2.5 text-[rgb(var(--zx-text-muted))]">
         <div className="p-2 bg-[rgb(var(--zx-surface))] rounded-lg border border-[rgb(var(--zx-border))] shadow-sm">
             {icon}
         </div>
-        <span className="text-[11px] font-bold uppercase tracking-widest">{label}:</span>
+        <span className="text-[11px] font-bold uppercase tracking-widest">{label}</span>
       </div>
       <span className="font-bold text-[rgb(var(--zx-text))] text-[14px] truncate">{value}</span>
     </div>
