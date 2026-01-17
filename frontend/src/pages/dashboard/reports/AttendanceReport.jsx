@@ -131,39 +131,47 @@ export default function AttendanceReport({
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-8 animate-fade-in font-sans pb-24">
+    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-24 lg:pb-32 pt-0 space-y-8 animate-fade-in font-sans">
+      
+      {/* Decorative Background Glows */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-teal-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-blue-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+
       {/* Custom Scrollbar */}
       <style>{`
         .custom-dashboard-scroll::-webkit-scrollbar { height: 8px; width: 8px; }
         .custom-dashboard-scroll::-webkit-scrollbar-track { background: transparent; }
-        .custom-dashboard-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .custom-dashboard-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .custom-dashboard-scroll::-webkit-scrollbar-thumb { background: rgb(var(--zx-border)); border-radius: 10px; }
+        .custom-dashboard-scroll::-webkit-scrollbar-thumb:hover { background: rgb(var(--zx-text-muted)); }
       `}</style>
 
       {/* HEADER */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
-            <FileSpreadsheet className="text-indigo-600" size={32} />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal-500/10 border border-brand-teal-500/20 text-[11px] font-bold tracking-widest text-brand-teal-500 uppercase w-max mb-1">
+            <FileSpreadsheet size={14} strokeWidth={2.5} />
+            Analytics Hub
+          </div>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[rgb(var(--zx-text))]">
             Attendance Report
           </h1>
-          <p className="text-slate-500 mt-2 text-sm max-w-xl">
+          <p className="text-[rgb(var(--zx-text-muted))] mt-1 text-[15px] max-w-xl leading-relaxed">
             Analyze comprehensive attendance data, filter by specific time ranges, and monitor student engagement.
           </p>
         </div>
       </div>
 
       {/* FILTERS & CONTROLS */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col xl:flex-row gap-4 items-center sticky top-4 z-30 backdrop-blur-xl bg-white/90">
-        <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider px-2 shrink-0">
-            <Filter size={16} /> Filters
+      <div className="bg-[rgb(var(--zx-surface))] p-4 rounded-3xl border border-[rgb(var(--zx-border))] shadow-sm flex flex-col xl:flex-row gap-4 items-center sticky top-4 z-30 backdrop-blur-xl relative">
+        <div className="flex items-center gap-2 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest px-2 shrink-0">
+            <Filter size={14} className="text-brand-teal-500" /> Filters
         </div>
 
         <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Course Select */}
             <div className="relative group">
                 <select
-                    className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 pl-10 pr-10 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all font-semibold text-sm cursor-pointer"
+                    className="w-full appearance-none bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] pl-10 pr-10 py-3 rounded-xl focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-sm cursor-pointer shadow-sm"
                     value={courseId}
                     onChange={(e) => {
                       setCourseId(e.target.value);
@@ -176,14 +184,14 @@ export default function AttendanceReport({
                         <option key={c.id} value={c.id}>{c.name}</option>
                     ))}
                 </select>
-                <BookOpen className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none group-hover:text-indigo-500 transition-colors" size={16} />
-                <ChevronDown className="absolute right-3.5 top-3.5 text-slate-400 pointer-events-none" size={16} />
+                <BookOpen className="absolute left-3.5 top-3.5 text-[rgb(var(--zx-text-muted))] pointer-events-none group-hover:text-brand-teal-500 transition-colors" size={16} />
+                <ChevronDown className="absolute right-3.5 top-3.5 text-[rgb(var(--zx-text-muted))] pointer-events-none" size={16} />
             </div>
 
             {/* Batch Select */}
             <div className="relative group">
                 <select
-                    className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 pl-10 pr-10 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all font-semibold text-sm cursor-pointer disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed"
+                    className="w-full appearance-none bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] pl-10 pr-10 py-3 rounded-xl focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-sm cursor-pointer disabled:bg-[rgb(var(--zx-surface-hover))] disabled:text-[rgb(var(--zx-text-muted))]/50 disabled:cursor-not-allowed shadow-sm"
                     value={batchId}
                     onChange={(e) => {
                       setBatchId(e.target.value);
@@ -199,14 +207,14 @@ export default function AttendanceReport({
                         </option>
                     ))}
                 </select>
-                <Layers className={`absolute left-3.5 top-3.5 pointer-events-none transition-colors ${!courseId ? 'text-slate-300' : 'text-slate-400 group-hover:text-indigo-500'}`} size={16} />
-                <ChevronDown className={`absolute right-3.5 top-3.5 pointer-events-none transition-colors ${!courseId ? 'text-slate-300' : 'text-slate-400'}`} size={16} />
+                <Layers className={`absolute left-3.5 top-3.5 pointer-events-none transition-colors ${!courseId ? 'text-[rgb(var(--zx-text-muted))]/30' : 'text-[rgb(var(--zx-text-muted))] group-hover:text-brand-teal-500'}`} size={16} />
+                <ChevronDown className={`absolute right-3.5 top-3.5 pointer-events-none transition-colors ${!courseId ? 'text-[rgb(var(--zx-text-muted))]/30' : 'text-[rgb(var(--zx-text-muted))]'}`} size={16} />
             </div>
 
             {/* Range Select */}
             <div className="relative group">
                 <select
-                    className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 pl-10 pr-10 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all font-semibold text-sm cursor-pointer"
+                    className="w-full appearance-none bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] pl-10 pr-10 py-3 rounded-xl focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-sm cursor-pointer shadow-sm"
                     value={range}
                     onChange={(e) => setRange(e.target.value)}
                 >
@@ -216,16 +224,17 @@ export default function AttendanceReport({
                     <option value="180">Last 6 Months</option>
                     <option value="all">All Time</option>
                 </select>
-                <CalendarClock className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none group-hover:text-indigo-500 transition-colors" size={16} />
-                <ChevronDown className="absolute right-3.5 top-3.5 text-slate-400 pointer-events-none" size={16} />
+                <CalendarClock className="absolute left-3.5 top-3.5 text-[rgb(var(--zx-text-muted))] pointer-events-none group-hover:text-brand-teal-500 transition-colors" size={16} />
+                <ChevronDown className="absolute right-3.5 top-3.5 text-[rgb(var(--zx-text-muted))] pointer-events-none" size={16} />
             </div>
         </div>
 
         <button 
-            className={`flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-bold transition-all shadow-md active:scale-95 shrink-0 w-full xl:w-auto ${
+            type="button"
+            className={`flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md active:scale-95 shrink-0 w-full xl:w-auto ${
               !courseId || !batchId || loadingReport
-              ? "bg-slate-200 text-slate-400 cursor-not-allowed shadow-none"
-              : "bg-green-600 text-white hover:bg-green-700 shadow-slate-200"
+              ? "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border border-[rgb(var(--zx-border))] cursor-not-allowed shadow-none"
+              : "bg-brand-teal-500 text-white hover:bg-brand-teal-600 shadow-brand-teal-500/20"
             }`}
             onClick={loadAttendanceReport}
             disabled={!courseId || !batchId || loadingReport}
@@ -239,16 +248,16 @@ export default function AttendanceReport({
       </div>
 
       {/* TABLE CONTAINER */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/40 overflow-hidden min-h-[400px] flex flex-col">
+      <div className="bg-[rgb(var(--zx-surface))] rounded-3xl border border-[rgb(var(--zx-border))] shadow-sm overflow-hidden min-h-[400px] flex flex-col relative z-10">
         
         {/* Table Toolbar */}
-        <div className="px-6 py-5 bg-slate-50/80 border-b border-slate-100 flex items-center justify-between backdrop-blur-sm">
-            <h2 className="font-bold text-slate-800 flex items-center gap-2">
-              <CalendarRange size={18} className="text-indigo-500" />
+        <div className="px-6 py-5 bg-[rgb(var(--zx-surface-hover))] border-b border-[rgb(var(--zx-border))] flex items-center justify-between">
+            <h2 className="font-bold text-[rgb(var(--zx-text))] text-sm flex items-center gap-2">
+              <CalendarRange size={18} className="text-brand-teal-500" />
               Attendance Master Matrix
             </h2>
             {reportData && (
-              <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+              <span className="bg-brand-teal-500/10 border border-brand-teal-500/20 text-brand-teal-500 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
                   {reportData.students.length} Students
               </span>
             )}
@@ -257,60 +266,60 @@ export default function AttendanceReport({
         {/* Content Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {!courseId || !batchId ? (
-            <div className="flex flex-col items-center justify-center py-24 text-slate-400 m-auto">
-              <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100 shadow-sm">
-                <Filter size={24} className="text-indigo-400" />
+            <div className="flex flex-col items-center justify-center py-24 text-[rgb(var(--zx-text-muted))] m-auto">
+              <div className="w-16 h-16 bg-[rgb(var(--zx-surface-hover))] rounded-full flex items-center justify-center mb-4 border border-[rgb(var(--zx-border))] shadow-sm">
+                <Filter size={24} className="text-brand-teal-500" />
               </div>
-              <p className="text-lg font-bold text-slate-600">Select Parameters</p>
+              <p className="text-lg font-bold text-[rgb(var(--zx-text))]">Select Parameters</p>
               <p className="text-sm mt-1">Choose a specific course and batch to view the roster.</p>
             </div>
           ) : loadingReport ? (
-            <div className="flex flex-col items-center justify-center py-24 text-slate-400 m-auto">
-                    <div className="w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-600 rounded-full animate-spin"></div>
-                    <span className="font-medium">Loading attendance...</span>
+            <div className="flex flex-col items-center justify-center py-24 text-[rgb(var(--zx-text-muted))] m-auto">
+                    <div className="w-8 h-8 border-4 border-brand-teal-500/30 border-t-brand-teal-500 rounded-full animate-spin"></div>
+                    <span className="font-medium text-sm">Loading attendance...</span>
             </div>
           ) : !hasFetched ? (
-            <div className="flex flex-col items-center justify-center py-24 text-slate-400 m-auto">
-              <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100 shadow-sm">
-                <Search size={24} className="text-indigo-400" />
+            <div className="flex flex-col items-center justify-center py-24 text-[rgb(var(--zx-text-muted))] m-auto">
+              <div className="w-16 h-16 bg-[rgb(var(--zx-surface-hover))] rounded-full flex items-center justify-center mb-4 border border-[rgb(var(--zx-border))] shadow-sm">
+                <Search size={24} className="text-brand-teal-500" />
               </div>
-              <p className="text-lg font-bold text-slate-600">Ready to Fetch</p>
+              <p className="text-lg font-bold text-[rgb(var(--zx-text))]">Ready to Fetch</p>
               <p className="text-sm mt-1">Click "Load Report" to analyze attendance records.</p>
             </div>
           ) : reportData.students.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-24 text-slate-400 m-auto">
-              <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100 shadow-sm">
-                <Users size={24} className="text-indigo-400" />
+            <div className="flex flex-col items-center justify-center py-24 text-[rgb(var(--zx-text-muted))] m-auto">
+              <div className="w-16 h-16 bg-[rgb(var(--zx-surface-hover))] rounded-full flex items-center justify-center mb-4 border border-[rgb(var(--zx-border))] shadow-sm">
+                <Users size={24} className="text-brand-teal-500" />
               </div>
-              <p className="text-lg font-bold text-slate-600">No Students Enrolled</p>
+              <p className="text-lg font-bold text-[rgb(var(--zx-text))]">No Students Enrolled</p>
               <p className="text-sm mt-1">There are currently no students mapped to this batch.</p>
             </div>
           ) : filteredSessions.length === 0 ? (
-             <div className="flex flex-col items-center justify-center py-24 text-slate-400 m-auto">
-              <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100 shadow-sm">
-                <Inbox size={24} className="text-indigo-400" />
+             <div className="flex flex-col items-center justify-center py-24 text-[rgb(var(--zx-text-muted))] m-auto">
+              <div className="w-16 h-16 bg-[rgb(var(--zx-surface-hover))] rounded-full flex items-center justify-center mb-4 border border-[rgb(var(--zx-border))] shadow-sm">
+                <Inbox size={24} className="text-brand-teal-500" />
               </div>
-              <p className="text-lg font-bold text-slate-600">No Sessions Found</p>
+              <p className="text-lg font-bold text-[rgb(var(--zx-text))]">No Sessions Found</p>
               <p className="text-sm mt-1">No attendance sessions were recorded for the selected time range.</p>
             </div>
           ) : (
             <div className="overflow-x-auto custom-dashboard-scroll">
               <table className="min-w-full text-left border-collapse whitespace-nowrap">
-                <thead className="bg-white border-b border-slate-100">
+                <thead className="bg-[rgb(var(--zx-surface))] border-b border-[rgb(var(--zx-border))]">
                   <tr>
-                    <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider sticky left-0 bg-white z-10 border-r border-slate-100 shadow-[1px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                    <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider sticky left-0 bg-[rgb(var(--zx-surface))] z-10 border-r border-[rgb(var(--zx-border))] shadow-[1px_0_5px_-2px_rgba(0,0,0,0.1)]">
                       Student Details
                     </th>
-                    <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-center">
+                    <th className="px-6 py-4 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider text-center">
                       Average
                     </th>
                     {filteredSessions.map((s) => (
-                      <th key={s.id} className="px-4 py-4 text-center text-xs font-bold text-slate-500 uppercase tracking-wider min-w-[120px]">
+                      <th key={s.id} className="px-4 py-4 text-center text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider min-w-[120px]">
                         <div className="flex flex-col items-center gap-1">
-                          <span className="text-[10px] text-slate-400">
+                          <span className="text-[10px] text-[rgb(var(--zx-text-muted))]/60">
                              {new Date(s.starts_at).toLocaleDateString('en-US', { weekday: 'short' })}
                           </span>
-                          <span className="text-indigo-600">
+                          <span className="text-brand-teal-500">
                              {new Date(s.starts_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                           </span>
                         </div>
@@ -318,26 +327,26 @@ export default function AttendanceReport({
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-[rgb(var(--zx-border))]">
                   {reportData.students.map((st) => {
                     const percent = getAttendancePercentage(st);
 
                     return (
-                      <tr key={st.id} className="hover:bg-slate-50 transition-colors">
-                        <td className="px-6 py-4 sticky left-0 bg-white group-hover:bg-slate-50 border-r border-slate-100 shadow-[1px_0_5px_-2px_rgba(0,0,0,0.1)] z-10">
+                      <tr key={st.id} className="hover:bg-[rgb(var(--zx-surface-hover))] transition-colors">
+                        <td className="px-6 py-4 sticky left-0 bg-[rgb(var(--zx-surface))] group-hover:bg-[rgb(var(--zx-surface-hover))] border-r border-[rgb(var(--zx-border))] shadow-[1px_0_5px_-2px_rgba(0,0,0,0.1)] z-10">
                           <div className="flex flex-col gap-0.5">
-                            <span className="font-bold text-slate-800 text-sm whitespace-nowrap">{st.name}</span>
-                            <span className="font-mono text-[11px] text-slate-500 tracking-tight">#{st.sid}</span>
+                            <span className="font-bold text-[rgb(var(--zx-text))] text-sm whitespace-nowrap">{st.name}</span>
+                            <span className="font-mono text-xs text-[rgb(var(--zx-text-muted))] tracking-tight">#{st.sid}</span>
                           </div>
                         </td>
 
                         <td className="px-6 py-4 text-center">
-                            <span className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg border font-bold text-sm ${
+                            <span className={`inline-flex items-center justify-center px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest border ${
                                 percent >= 75 
-                                ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
+                                ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" 
                                 : percent >= 50 
-                                ? "bg-amber-50 text-amber-700 border-amber-200" 
-                                : "bg-rose-50 text-rose-700 border-rose-200"
+                                ? "bg-amber-500/10 text-amber-500 border-amber-500/20" 
+                                : "bg-rose-500/10 text-rose-500 border-rose-500/20"
                             }`}>
                                 {percent}%
                             </span>
@@ -348,15 +357,15 @@ export default function AttendanceReport({
                           return (
                             <td key={s.id} className="px-4 py-4 text-center">
                               {status === "present" ? (
-                                <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 mx-auto" title="Present">
+                                <div className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 mx-auto" title="Present">
                                   <CheckCircle2 size={16} strokeWidth={3} />
                                 </div>
                               ) : status === "absent" ? (
-                                <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-rose-50 text-rose-600 border border-rose-200 mx-auto" title="Absent">
+                                <div className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-rose-500/10 text-rose-500 border border-rose-500/20 mx-auto" title="Absent">
                                   <XCircle size={16} strokeWidth={3} />
                                 </div>
                               ) : (
-                                <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-slate-400 border border-slate-200 mx-auto" title="Not Marked">
+                                <div className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border border-[rgb(var(--zx-border))] mx-auto" title="Not Marked">
                                   <span className="text-xs font-bold">-</span>
                                 </div>
                               )}
