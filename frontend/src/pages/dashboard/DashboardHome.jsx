@@ -308,18 +308,18 @@ function ChartsSection({ data }) {
             const ctx = context?.chart?.ctx;
             if(!ctx) return 'transparent';
             const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-            gradient.addColorStop(0, 'rgba(20, 184, 166, 0.25)');
-            gradient.addColorStop(1, 'rgba(20, 184, 166, 0.01)');
+            gradient.addColorStop(0, 'rgba(20, 184, 166, 0.12)');
+            gradient.addColorStop(1, 'rgba(20, 184, 166, 0.00)');
             return gradient;
         },
-        borderWidth: 3,
+        borderWidth: 2,
         tension: 0.4,
         fill: true,
         pointBackgroundColor: 'rgb(var(--zx-surface))',
         pointBorderColor: '#14b8a6',
-        pointBorderWidth: 2,
-        pointRadius: 4,
-        pointHoverRadius: 6,
+        pointBorderWidth: 1.5,
+        pointRadius: 3,
+        pointHoverRadius: 5,
       },
     ],
   };
@@ -330,9 +330,11 @@ function ChartsSection({ data }) {
       {
         label: "New Students",
         data: data.charts.students.map((s) => s.total),
-        backgroundColor: '#3b82f6', // brand-blue-500
-        borderRadius: 8,
-        barPercentage: 0.5,
+        backgroundColor: 'rgba(59, 130, 246, 0.45)', // very light brand-blue
+        hoverBackgroundColor: 'rgba(59, 130, 246, 0.65)',
+        borderColor: 'transparent',
+        borderRadius: 6,
+        barPercentage: 0.45,
       },
     ],
   };
