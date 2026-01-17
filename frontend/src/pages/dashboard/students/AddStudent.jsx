@@ -9,7 +9,7 @@ import {
   ArrowRight, 
   ArrowLeft, 
   AlertCircle, 
-  CheckCircle2,
+  CheckCircle2, 
   Save,
   Loader2,
   UserPlus
@@ -37,6 +37,19 @@ export default function AddStudent() {
 
   const [courses, setCourses] = useState([]);
   const [batches, setBatches] = useState([]);
+
+  // Helper function to cleanly format raw ISO date strings into readable dates (e.g. Jun 1, 2026)
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const cleanDate = dateString.split("T")[0];
+    const date = new Date(cleanDate);
+    if (isNaN(date.getTime())) return cleanDate;
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    }).format(date);
+  };
 
   useEffect(() => {
     api.get("/admin/courses").then((res) => {
@@ -260,7 +273,7 @@ export default function AddStudent() {
                           <option value="">Select Batch</option>
                           {batches.map((b) => (
                             <option key={b.id} value={b.id}>
-                              {b.name} ({b.start_year}-{b.end_year})
+                              {b.name} ({formatDate(b.start_date)} - {formatDate(b.end_date)})
                             </option>
                           ))}
                         </select>
@@ -324,7 +337,11 @@ export default function AddStudent() {
                       />
                       <PreviewStacked 
                         label="Batch" 
-                        value={batches.find(b => b.id == form.batch_id)?.name || <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>} 
+                        value={(() => {
+                          const batch = batches.find(b => b.id == form.batch_id);
+                          if (!batch) return <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>;
+                          return `${batch.name} (${formatDate(batch.start_date)} - ${formatDate(batch.end_date)})`;
+                        })()} 
                         icon={<Layers size={16} />} 
                       />
                   </div>
