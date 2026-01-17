@@ -128,109 +128,104 @@ export default function AddStudent() {
         </p>
       </div>
 
-      {/* TWO-COLUMN LAYOUT ON DESKTOP */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 relative z-10 w-full pt-2">
+      {/* MAIN CONTENT LAYOUT */}
+      <div className="flex flex-col gap-10 relative z-10 w-full pt-4">
         
-        {/* LEFT COLUMN: STEPPER */}
-        <div className="lg:col-span-4 xl:col-span-3">
-          <div className="lg:sticky lg:top-8">
-            <div className="flex flex-row lg:flex-col items-center lg:items-start justify-between lg:justify-start w-full">
-                {STEPS.map((label, index) => {
-                    const stepNum = index + 1;
-                    const isActive = stepNum === step;
-                    const isCompleted = stepNum < step;
-                    const isLastStep = index === STEPS.length - 1;
+        {/* TOP: STEPPER */}
+        <div className="w-full max-w-2xl mx-auto mb-4 sm:mb-8 px-4">
+          <div className="flex flex-row items-center justify-between w-full">
+              {STEPS.map((label, index) => {
+                  const stepNum = index + 1;
+                  const isActive = stepNum === step;
+                  const isCompleted = stepNum < step;
+                  const isLastStep = index === STEPS.length - 1;
 
-                    return (
-                        <Fragment key={index}>
-                            {/* Step Circle & Label */}
-                            <div className="relative flex flex-col lg:flex-row items-center shrink-0 z-10 group cursor-default">
-                                <div
-                                    className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 border-2 shrink-0
-                                    ${isActive 
-                                        ? "bg-brand-teal-500 border-brand-teal-500 text-white scale-110 shadow-lg shadow-brand-teal-500/25" 
-                                        : isCompleted 
-                                        ? "bg-brand-teal-500 border-brand-teal-500 text-white" 
-                                        : "bg-[rgb(var(--zx-surface))] border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text-muted))]"
-                                    }`}
-                                >
-                                    {isCompleted ? <Check size={18} strokeWidth={3} /> : stepNum}
-                                </div>
-                                
-                                {/* Floating/Inline Label */}
-                                <span className={`absolute top-14 lg:static lg:top-auto lg:ml-4 text-[10px] font-bold uppercase tracking-widest transition-colors duration-300 w-max text-center lg:text-left hidden sm:block
-                                    ${isActive ? "text-brand-teal-500" : "text-[rgb(var(--zx-text-muted))]"}`}>
-                                    {label}
-                                </span>
-                            </div>
+                  return (
+                      <Fragment key={index}>
+                          {/* Step Circle & Label */}
+                          <div className="relative flex flex-col items-center shrink-0 z-10 group cursor-default">
+                              <div
+                                  className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 border-2 shrink-0
+                                  ${isActive 
+                                      ? "bg-brand-teal-500 border-brand-teal-500 text-white scale-110 shadow-lg shadow-brand-teal-500/25" 
+                                      : isCompleted 
+                                      ? "bg-brand-teal-500 border-brand-teal-500 text-white" 
+                                      : "bg-[rgb(var(--zx-surface))] border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text-muted))]"
+                                  }`}
+                              >
+                                  {isCompleted ? <Check size={18} strokeWidth={3} /> : stepNum}
+                              </div>
+                              
+                              {/* Floating/Inline Label */}
+                              <span className={`absolute top-14 text-[10px] font-bold uppercase tracking-widest transition-colors duration-300 w-max text-center hidden sm:block
+                                  ${isActive ? "text-brand-teal-500" : "text-[rgb(var(--zx-text-muted))]"}`}>
+                                  {label}
+                              </span>
+                          </div>
 
-                            {/* Connector Line */}
-                            {!isLastStep && (
-                                <div className={`flex-1 lg:flex-none h-[2px] lg:h-10 w-full lg:w-[2px] mx-2 lg:mx-0 lg:ml-[19px] lg:my-1 rounded-full transition-colors duration-500 ease-out 
-                                    ${stepNum < step ? "bg-brand-teal-500" : "bg-[rgb(var(--zx-border))]" }
-                                `} />
-                            )}
-                        </Fragment>
-                    );
-                })}
-            </div>
+                          {/* Connector Line */}
+                          {!isLastStep && (
+                              <div className={`flex-1 h-[2px] mx-2 sm:mx-4 rounded-full transition-colors duration-500 ease-out 
+                                  ${stepNum < step ? "bg-brand-teal-500" : "bg-[rgb(var(--zx-border))]" }
+                              `} />
+                          )}
+                      </Fragment>
+                  );
+              })}
           </div>
         </div>
 
-        {/* RIGHT COLUMN: MAIN FORM CARD */}
-        <div className="lg:col-span-8 xl:col-span-9">
+        {/* MAIN FORM CARD */}
+        <div className="w-full max-w-4xl mx-auto">
           <div className="bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] rounded-3xl shadow-sm p-6 sm:p-8 min-h-[400px] flex flex-col">
             
             {/* STEP 1: Details */}
             {step === 1 && (
-              <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+              <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
                 <h3 className="text-xs font-extrabold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest border-b border-[rgb(var(--zx-border))] pb-4 mb-6 flex items-center gap-2">
                   <User size={16} /> Student Information
                 </h3>
 
                 <div className="space-y-6">
                   
-                  {/* Row 1: Name & Email */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Name Input */}
-                    <div className="space-y-2">
-                      <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
-                        Full Name <span className="text-red-500">*</span>
-                      </label>
-                      <div className="relative group">
-                        <User className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500 transition-colors" size={20} />
-                        <input
-                          name="name"
-                          placeholder="e.g. John Doe"
-                          value={form.name}
-                          onChange={handleChange}
-                          className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:border-brand-teal-500 focus:outline-none focus:ring-0 transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    {/* Email Input */}
-                    <div className="space-y-2">
-                      <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
-                        Email Address <span className="text-red-500">*</span>
-                      </label>
-                      <div className="relative group">
-                        <Mail className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500 transition-colors" size={20} />
-                        <input
-                          name="email"
-                          type="email"
-                          placeholder="e.g. john@email.com"
-                          value={form.email}
-                          onChange={handleChange}
-                          className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:border-brand-teal-500 focus:outline-none focus:ring-0 transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
-                          required
-                        />
-                      </div>
+                  {/* Row 1: Name */}
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
+                      Full Name <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative group">
+                      <User className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500 transition-colors" size={20} />
+                      <input
+                        name="name"
+                        placeholder="e.g. John Doe"
+                        value={form.name}
+                        onChange={handleChange}
+                        className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:border-brand-teal-500 focus:outline-none focus:ring-0 transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
+                        required
+                      />
                     </div>
                   </div>
 
-                  {/* Row 2: Course & Batch */}
+                  {/* Row 2: Email */}
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
+                      Email Address <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative group">
+                      <Mail className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-brand-teal-500 transition-colors" size={20} />
+                      <input
+                        name="email"
+                        type="email"
+                        placeholder="e.g. john@email.com"
+                        value={form.email}
+                        onChange={handleChange}
+                        className="w-full border border-[rgb(var(--zx-border))] rounded-xl pl-12 pr-4 py-3.5 text-[14px] bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] focus:border-brand-teal-500 focus:outline-none focus:ring-0 transition-all placeholder:text-[rgb(var(--zx-text-muted))]/60 font-medium"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 3: Course & Batch */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Course Select */}
                     <div className="space-y-2">
@@ -325,20 +320,27 @@ export default function AddStudent() {
 
                 <div className="bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] rounded-3xl overflow-hidden divide-y divide-[rgb(var(--zx-border))] mb-8">
                   
-                  {/* Name and Email on the same row with natural auto-spacing */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 gap-2">
+                  {/* Row 1: Name */}
+                  <div className="px-6 py-4">
                     <PreviewAuto label="Full Name" value={form.name} icon={<User size={16} />} />
+                  </div>
+                  
+                  {/* Row 2: Email */}
+                  <div className="px-6 py-4">
                     <PreviewAuto label="Email Address" value={form.email} icon={<Mail size={16} />} />
                   </div>
                   
-                  {/* Course and Batch on another row */}
+                  {/* Row 3: Course and Batch side-by-side */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[rgb(var(--zx-border))]">
-                    <PreviewStacked 
+                    <div className="px-6 py-4 flex items-center">
+                      <PreviewAuto 
                         label="Course" 
                         value={courses.find(c => c.id == form.course_id)?.name || <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>} 
                         icon={<BookOpen size={16} />} 
                       />
-                      <PreviewStacked 
+                    </div>
+                    <div className="px-6 py-4 flex items-center">
+                      <PreviewAuto 
                         label="Batch" 
                         value={(() => {
                           const batch = batches.find(b => b.id == form.batch_id);
@@ -347,6 +349,7 @@ export default function AddStudent() {
                         })()} 
                         icon={<Layers size={16} />} 
                       />
+                    </div>
                   </div>
 
                 </div>
@@ -448,21 +451,7 @@ function PreviewAuto({ label, value, icon }) {
         </div>
         <span className="text-[11px] font-bold uppercase tracking-widest">{label}:</span>
       </div>
-      <span className="font-bold text-[rgb(var(--zx-text))] text-[14px]">{value}</span>
-    </div>
-  );
-}
-
-function PreviewStacked({ label, value, icon }) {
-  return (
-    <div className="flex flex-col px-6 py-3.5 gap-1.5">
-      <div className="flex items-center gap-2.5 text-[rgb(var(--zx-text-muted))]">
-        <div className="p-2 bg-[rgb(var(--zx-surface))] rounded-lg border border-[rgb(var(--zx-border))] shadow-sm">
-            {icon}
-        </div>
-        <span className="text-[11px] font-bold uppercase tracking-widest">{label}</span>
-      </div>
-      <span className="font-bold text-[rgb(var(--zx-text))] text-[14px] line-clamp-1">{value}</span>
+      <span className="font-bold text-[rgb(var(--zx-text))] text-[14px] truncate">{value}</span>
     </div>
   );
 }
