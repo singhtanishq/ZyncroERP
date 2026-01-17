@@ -5,7 +5,8 @@ import { COUNTRIES } from "../../constants/countries";
 import {
   ArrowLeft, User, Calendar, Phone,
   Lock, CheckCircle2, AlertCircle, KeyRound,
-  ShieldCheck, Save, Mail, Briefcase, X, ArrowRight
+  ShieldCheck, Save, Mail, Briefcase, X, ArrowRight,
+  Eye, EyeOff
 } from "lucide-react";
 
 import {
@@ -264,7 +265,7 @@ export default function ManageProfile() {
                 <select 
                     value={method} 
                     onChange={e=>setMethod(e.target.value)} 
-                    className="w-full bg-[rgb(var(--zx-bg))] border border-[rgb(var(--zx-border))] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-teal-500/40 focus:border-brand-teal-500 transition-all font-semibold text-[rgb(var(--zx-text))]"
+                    className="w-full bg-[rgb(var(--zx-bg))] border border-[rgb(var(--zx-border))] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-[rgb(var(--zx-text))]"
                 >
                     <option value="" disabled>Select Verification Method</option>
                     <option value="old">Verify via Current Password</option>
@@ -354,7 +355,7 @@ export default function ManageProfile() {
                         value={otp}
                         onChange={e=>setOtp(e.target.value.replace(/\D/g,""))}
                         maxLength={6}
-                        className="w-full bg-slate-50 border border-slate-300 p-4 text-center text-2xl font-mono tracking-[0.5em] font-bold text-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-teal-500/40 focus:border-brand-teal-500 transition-all placeholder:font-normal placeholder:tracking-normal"
+                        className="w-full bg-slate-50 border border-slate-300 p-4 text-center text-2xl font-mono tracking-[0.5em] font-bold text-slate-800 rounded-xl focus:outline-none focus:border-brand-teal-500 transition-all placeholder:font-normal placeholder:tracking-normal"
                         placeholder="------"
                     />
                 </div>
@@ -415,15 +416,39 @@ function Input({ label, value, onChange, icon, type="text" }) {
             type={type} 
             value={value} 
             onChange={(e)=>onChange(e.target.value)} 
-            className={`w-full bg-[rgb(var(--zx-bg))] border border-[rgb(var(--zx-border))] rounded-xl ${icon ? 'pl-11' : 'px-4'} pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-teal-500/40 focus:border-brand-teal-500 transition-all font-semibold text-[rgb(var(--zx-text))] placeholder:font-normal placeholder:text-[rgb(var(--zx-text-muted))]`}
+            className={`w-full bg-[rgb(var(--zx-bg))] border border-[rgb(var(--zx-border))] rounded-xl ${icon ? 'pl-11' : 'px-4'} pr-4 py-3 text-sm focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-[rgb(var(--zx-text))] placeholder:font-normal placeholder:text-[rgb(var(--zx-text-muted))]`}
         />
       </div>
     </div>
   );
 }
 
-function PasswordInput(props) {
-  return <Input {...props} type="password" icon={<Lock size={16}/>}/>;
+function PasswordInput({ label, value, onChange }) {
+  const [show, setShow] = useState(false);
+
+  return (
+    <div className="space-y-1.5 w-full">
+      <label className="text-[10px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">{label}</label>
+      <div className="relative">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+          <Lock size={16}/>
+        </div>
+        <input 
+            type={show ? "text" : "password"} 
+            value={value} 
+            onChange={(e)=>onChange(e.target.value)} 
+            className="w-full bg-[rgb(var(--zx-bg))] border border-[rgb(var(--zx-border))] rounded-xl pl-11 pr-11 py-3 text-sm focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-[rgb(var(--zx-text))] placeholder:font-normal placeholder:text-[rgb(var(--zx-text-muted))]"
+        />
+        <button
+          type="button"
+          onClick={() => setShow(!show)}
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[rgb(var(--zx-text))] transition-colors focus:outline-none"
+        >
+          {show ? <EyeOff size={16}/> : <Eye size={16}/>}
+        </button>
+      </div>
+    </div>
+  );
 }
 
 function Disabled({ label, value, icon }) {
@@ -449,7 +474,7 @@ function Select({ value, onChange }) {
       <select 
         value={value} 
         onChange={(e)=>onChange(e.target.value)} 
-        className="w-full bg-[rgb(var(--zx-bg))] border border-[rgb(var(--zx-border))] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-teal-500/40 focus:border-brand-teal-500 transition-all font-semibold text-[rgb(var(--zx-text))] appearance-none"
+        className="w-full bg-[rgb(var(--zx-bg))] border border-[rgb(var(--zx-border))] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-teal-500 transition-all font-semibold text-[rgb(var(--zx-text))] appearance-none"
       >
         {COUNTRIES.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
       </select>
