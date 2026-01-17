@@ -291,8 +291,16 @@ function ChartsSection({ data }) {
       }
     },
     scales: {
-      x: { grid: { display: false }, ticks: { font: { family: 'Inter', weight: '600', size: 11 }, color: 'rgb(var(--zx-text-muted))' }, border: { display: false } },
-      y: { grid: { color: 'rgb(var(--zx-border))', drawBorder: false }, ticks: { font: { family: 'Inter', weight: '600', size: 11 }, color: 'rgb(var(--zx-text-muted))', maxTicksLimit: 6 }, border: { display: false } }
+      x: { 
+        grid: { display: false }, 
+        ticks: { font: { family: 'Inter', weight: '600', size: 11 }, color: 'rgb(var(--zx-text-muted))' }, 
+        border: { display: false } 
+      },
+      y: { 
+        grid: { color: 'rgba(148, 163, 184, 0.15)', drawBorder: false }, 
+        ticks: { font: { family: 'Inter', weight: '600', size: 11 }, color: 'rgb(var(--zx-text-muted))', maxTicksLimit: 6 }, 
+        border: { display: false } 
+      }
     },
     interaction: { intersect: false, mode: 'index' },
   };
