@@ -325,11 +325,14 @@ export default function AddStudent() {
 
                 <div className="bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] rounded-3xl overflow-hidden divide-y divide-[rgb(var(--zx-border))] mb-8">
                   
-                  <Preview label="Full Name" value={form.name} icon={<User size={16} />} />
-                  <Preview label="Email Address" value={form.email} icon={<Mail size={16} />} />
+                  {/* Name and Email on the same row with natural auto-spacing */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 gap-2">
+                    <PreviewAuto label="Full Name" value={form.name} icon={<User size={16} />} />
+                    <PreviewAuto label="Email Address" value={form.email} icon={<Mail size={16} />} />
+                  </div>
                   
-                  {/* Stacked Layout for Course and Batch */}
-                  <div className="grid grid-cols-2 divide-x divide-[rgb(var(--zx-border))]">
+                  {/* Course and Batch on another row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[rgb(var(--zx-border))]">
                     <PreviewStacked 
                         label="Course" 
                         value={courses.find(c => c.id == form.course_id)?.name || <span className="text-[rgb(var(--zx-text-muted))] italic">Not Selected</span>} 
@@ -436,25 +439,25 @@ export default function AddStudent() {
 
 /* --- Sub Components --- */
 
-function Preview({ label, value, icon }) {
+function PreviewAuto({ label, value, icon }) {
   return (
-    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center px-6 py-3.5 hover:bg-[rgb(var(--zx-surface))] transition-colors group gap-1">
-      <div className="flex items-center gap-3 text-[rgb(var(--zx-text-muted))] group-hover:text-brand-teal-500 transition-colors">
-        <div className="p-2 bg-[rgb(var(--zx-surface))] rounded-lg border border-[rgb(var(--zx-border))] shadow-sm group-hover:border-brand-teal-500/30 group-hover:bg-brand-teal-500/10 transition-all">
+    <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 text-[rgb(var(--zx-text-muted))]">
+        <div className="p-2 bg-[rgb(var(--zx-surface))] rounded-lg border border-[rgb(var(--zx-border))] shadow-sm">
             {icon}
         </div>
-        <span className="text-[11px] font-bold uppercase tracking-widest">{label}</span>
+        <span className="text-[11px] font-bold uppercase tracking-widest">{label}:</span>
       </div>
-      <span className="font-bold text-[rgb(var(--zx-text))] text-[14px] sm:text-right">{value}</span>
+      <span className="font-bold text-[rgb(var(--zx-text))] text-[14px]">{value}</span>
     </div>
   );
 }
 
 function PreviewStacked({ label, value, icon }) {
   return (
-    <div className="flex flex-col px-6 py-3.5 hover:bg-[rgb(var(--zx-surface))] transition-colors group gap-1.5">
-      <div className="flex items-center gap-2.5 text-[rgb(var(--zx-text-muted))] group-hover:text-brand-teal-500 transition-colors">
-        <div className="p-2 bg-[rgb(var(--zx-surface))] rounded-lg border border-[rgb(var(--zx-border))] shadow-sm group-hover:border-brand-teal-500/30 group-hover:bg-brand-teal-500/10 transition-all">
+    <div className="flex flex-col px-6 py-3.5 gap-1.5">
+      <div className="flex items-center gap-2.5 text-[rgb(var(--zx-text-muted))]">
+        <div className="p-2 bg-[rgb(var(--zx-surface))] rounded-lg border border-[rgb(var(--zx-border))] shadow-sm">
             {icon}
         </div>
         <span className="text-[11px] font-bold uppercase tracking-widest">{label}</span>
