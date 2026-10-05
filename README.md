@@ -1,6 +1,6 @@
 # Zyncro ERP
 
-> A production-minded school/academy ERP for the management of students, faculty, franchises and corporate employees. Built with **Laravel 12** (REST API) and **React 19 + Vite 7** (SPA), covering the complete lifecycle from admissions through certificates, with role-scoped dashboards, secure two-step authentication and an internal payment management system.
+A production-minded school/academy ERP for the management of students, faculty, franchises and corporate employees. Built with **Laravel 12** (REST API) and **React 19 + Vite 7** (SPA), covering the complete lifecycle from admissions through certificates, with role-scoped dashboards, secure two-step authentication and an internal payment management system.
 
 Zyncro ERP stands on its own. The repository is the product, not a migration history.
 
