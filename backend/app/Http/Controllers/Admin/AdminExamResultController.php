@@ -9,6 +9,7 @@ use App\Models\Student;
 use App\Models\Certificate;
 use App\Models\StudentEnrollment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Enums\ExamStatus;
 use Carbon\Carbon;
 
@@ -60,63 +61,93 @@ class AdminExamResultController extends Controller
         ];
     }
 
+    /** Pass mark for every exam (shared by admin and student views). */
+    public const PASS_MARK = 40;
+
     public function save(Request $request)
     {
         $data = $request->validate([
             'student_id'        => 'required|exists:students,id',
-            'scores'            => 'required|array',
+            'scores'            => 'required|array|min:1',
             'scores.*.exam_id'  => 'required|exists:exams,id',
             'scores.*.score'    => 'nullable|numeric|min:0|max:100',
         ]);
 
         $student = Student::findOrFail($data['student_id']);
 
-        foreach ($data['scores'] as $row) {
+        DB::transaction(function () use ($data, $student) {
 
-            $existingCertificate = Certificate::where('certifiable_id', $student->id)
-                ->where('certifiable_type', Student::class)
-                ->where('exam_id', $row['exam_id'])
-                ->first();
+            foreach ($data['scores'] as $row) {
 
-            if ($existingCertificate && $existingCertificate->issued_at) {
-                return response()->json([
-                    'message' => 'Results are locked. Certificate already issued.'
-                ], 409);
-            }
+                $exam = Exam::findOrFail($row['exam_id']);
 
-            // Save exam result
-            ExamResult::updateOrCreate(
+                // Results can only be entered once the exam has actually run.
+                if ($exam->status === ExamStatus::CANCELLED || $exam->end_time->isFuture()) {
+                    abort(422, "Results for \"{$exam->name}\" can only be saved after the exam has ended.");
+                }
+
+                /*
+                 | Scores may only be recorded for students actively enrolled in
+                 | the exam's exact course + batch — this also blocks faculty
+                 | requests that mix in foreign exam ids (see Faculty controller).
+                 */
+                $enrolled = StudentEnrollment::where('student_id', $student->id)
+                    ->where('course_id', $exam->course_id)
+                    ->where('batch_id', $exam->batch_id)
+                    ->where('status', 'active')
+                    ->exists();
+
+                if (! $enrolled) {
+                    abort(422, "Student is not actively enrolled in \"{$exam->name}\"'s course and batch.");
+                }
+
+                $existingCertificate = Certificate::where('certifiable_id', $student->id)
+                    ->where('certifiable_type', Student::class)
+                    ->where('exam_id', $row['exam_id'])
+                    ->first();
+
+                if ($existingCertificate && $existingCertificate->issued_at) {
+                    abort(409, 'Results are locked. Certificate already issued.');
+                }
+
+                // Save exam result
+                ExamResult::updateOrCreate(
+                    [
+                        'exam_id'    => $row['exam_id'],
+                        'student_id' => $student->id,
+                    ],
+                    [
+                        'score' => $row['score'],
+                    ]
+                );
+
+                // Absent (no score): keep the result row but never mint a
+                // failed certificate for it.
+                if (! is_numeric($row['score'])) {
+                    if ($existingCertificate && ! $existingCertificate->issued_at) {
+                        $existingCertificate->delete();
+                    }
+                    continue;
+                }
+
+                $status = $row['score'] >= self::PASS_MARK ? 'passed' : 'failed';
+
+                Certificate::updateOrCreate(
                 [
-                    'exam_id'    => $row['exam_id'],
-                    'student_id' => $student->id,
+                    'certifiable_id'   => $student->id,
+                    'certifiable_type' => Student::class,
+                    'exam_id'          => $row['exam_id'],
+                    'type'             => 'course',
                 ],
                 [
-                    'score' => $row['score'],
+                    'course_id'  => $exam->course_id,
+                    'batch_id'   => $exam->batch_id,
+                    'status'     => $status,
+                    'score'      => $row['score'],
                 ]
-            );
-
-            // Determine pass / fail
-            $status = is_numeric($row['score']) && $row['score'] >= 40
-                ? 'passed'
-                : 'failed';
-
-            $exam = Exam::find($row['exam_id']);
-
-            Certificate::updateOrCreate(
-            [
-                'certifiable_id'   => $student->id,
-                'certifiable_type' => Student::class,
-                'exam_id'          => $row['exam_id'],
-                'type'             => 'course',
-            ],
-            [
-                'course_id'  => $exam->course_id,
-                'batch_id'   => $exam->batch_id,
-                'status'     => $status,
-                'score'      => $row['score'],
-            ]
-            );
-        }
+                );
+            }
+        });
 
         return response()->json([
             'message' => 'Scores saved and certificate eligibility updated',
