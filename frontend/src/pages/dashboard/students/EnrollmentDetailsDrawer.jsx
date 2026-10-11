@@ -618,30 +618,64 @@ export default function EnrollmentDetailsDrawer({
             </div>
 
             {/* Modal Footer Actions */}
-            <div className="px-6 py-4 border-t border-[rgb(var(--zx-border))] dark:border-slate-800 bg-[rgb(var(--zx-surface-hover))]/50 dark:bg-slate-800/50 flex justify-center gap-4">
-              <button
-                disabled={busy || previewDoc.verification_status === "verified"}
-                onClick={() => verifyDocument(previewDoc)}
-                className={`px-8 py-3 rounded-xl font-semibold transition-all flex items-center gap-2 ${
-                  previewDoc.verification_status === "verified"
-                    ? "bg-[rgb(var(--zx-surface-hover))] dark:bg-slate-800 text-[rgb(var(--zx-text-muted))] dark:text-slate-500 border border-[rgb(var(--zx-border))] dark:border-slate-700 cursor-not-allowed"
-                    : "bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/20"
-                }`}
-              >
-                <CheckCircle2 size={18} /> Verify Document
-              </button>
-              
-              <button
-                disabled={busy || previewDoc.verification_status === "verified" || previewDoc.verification_status === "rejected"}
-                onClick={() => rejectDocument(previewDoc)}
-                className={`px-8 py-3 rounded-xl font-semibold transition-all flex items-center gap-2 ${
-                  previewDoc.verification_status === "verified" || previewDoc.verification_status === "rejected"
-                    ? "bg-[rgb(var(--zx-surface-hover))] dark:bg-slate-800 text-[rgb(var(--zx-text-muted))] dark:text-slate-500 border border-[rgb(var(--zx-border))] dark:border-slate-700 cursor-not-allowed"
-                    : "bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/20"
-                }`}
-              >
-                <XCircle size={18} /> Reject Document
-              </button>
+            <div className="px-6 py-4 border-t border-[rgb(var(--zx-border))] dark:border-slate-800 bg-[rgb(var(--zx-surface-hover))]/50 dark:bg-slate-800/50 flex flex-col gap-3">
+              <div className="flex justify-center gap-4">
+                <button
+                  disabled={busy || previewDoc.verification_status === "verified"}
+                  onClick={() => verifyDocument(previewDoc)}
+                  className={`px-8 py-3 rounded-xl font-semibold transition-all flex items-center gap-2 ${
+                    previewDoc.verification_status === "verified"
+                      ? "bg-[rgb(var(--zx-surface-hover))] dark:bg-slate-800 text-[rgb(var(--zx-text-muted))] dark:text-slate-500 border border-[rgb(var(--zx-border))] dark:border-slate-700 cursor-not-allowed"
+                      : "bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/20"
+                  }`}
+                >
+                  <CheckCircle2 size={18} /> Verify Document
+                </button>
+
+                <button
+                  disabled={busy || previewDoc.verification_status === "verified" || previewDoc.verification_status === "rejected"}
+                  onClick={() => startDocReject(previewDoc)}
+                  className={`px-8 py-3 rounded-xl font-semibold transition-all flex items-center gap-2 ${
+                    previewDoc.verification_status === "verified" || previewDoc.verification_status === "rejected"
+                      ? "bg-[rgb(var(--zx-surface-hover))] dark:bg-slate-800 text-[rgb(var(--zx-text-muted))] dark:text-slate-500 border border-[rgb(var(--zx-border))] dark:border-slate-700 cursor-not-allowed"
+                      : "bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/20"
+                  }`}
+                >
+                  <XCircle size={18} /> Reject Document
+                </button>
+              </div>
+
+              {/* INLINE REJECT FLOW (inside preview) */}
+              {rejectDoc?.id === previewDoc.id && (
+                <div className="border border-rose-500/30 bg-rose-500/5 rounded-xl p-3 space-y-2">
+                  <textarea
+                    value={docRejectReason}
+                    onChange={(e) => setDocRejectReason(e.target.value)}
+                    rows={2}
+                    maxLength={500}
+                    placeholder="Rejection reason (required, max 500 characters)"
+                    className="w-full bg-[rgb(var(--zx-surface))] dark:bg-slate-900 border border-[rgb(var(--zx-border))] dark:border-slate-800 rounded-xl px-3 py-2 text-xs outline-none focus:border-brand-teal-500 transition-all font-medium text-[rgb(var(--zx-text))] dark:text-white placeholder:text-[rgb(var(--zx-text-muted))]/60 resize-none"
+                  />
+                  <div className="flex justify-end gap-2">
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={cancelDocReject}
+                      className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-[rgb(var(--zx-border))] dark:border-slate-700 text-[rgb(var(--zx-text-muted))] dark:text-slate-400 hover:bg-[rgb(var(--zx-surface-hover))] dark:hover:bg-slate-800 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      disabled={busy || !docRejectReason.trim()}
+                      onClick={submitDocReject}
+                      className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-600 text-white hover:bg-rose-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {busy ? "Rejecting..." : "Confirm Reject"}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
           </div>
