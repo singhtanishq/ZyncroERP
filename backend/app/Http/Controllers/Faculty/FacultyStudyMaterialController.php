@@ -35,7 +35,7 @@ class FacultyStudyMaterialController extends AdminStudyMaterialController
         $material = StudyMaterial::with('accessRules')
             ->findOrFail($id);
 
-        $this->authorizeAccess($material);
+        $this->authorizeAccessWrite($material);
 
         return parent::update($request, $id);
     }
@@ -45,7 +45,7 @@ class FacultyStudyMaterialController extends AdminStudyMaterialController
         $material = StudyMaterial::with('accessRules')
             ->findOrFail($id);
 
-        $this->authorizeAccess($material);
+        $this->authorizeAccessWrite($material);
 
         return parent::toggle($id);
     }
@@ -55,7 +55,7 @@ class FacultyStudyMaterialController extends AdminStudyMaterialController
         $material = StudyMaterial::with('accessRules')
             ->findOrFail($id);
 
-        $this->authorizeAccess($material);
+        $this->authorizeAccessWrite($material);
 
         return parent::destroy($id);
     }
@@ -65,7 +65,7 @@ class FacultyStudyMaterialController extends AdminStudyMaterialController
         $material = StudyMaterial::with('accessRules')
             ->findOrFail($id);
 
-        $this->authorizeAccess($material);
+        $this->authorizeAccessWrite($material);
 
         return parent::view($id);
     }
