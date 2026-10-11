@@ -17,6 +17,10 @@ import {
   ChevronDown
 } from "lucide-react";
 
+// Mirrors backend validation: mimes:pdf,doc,docx,ppt,pptx,zip | max:20480 (KB)
+const ALLOWED_FILE_EXTENSIONS = ["pdf", "doc", "docx", "ppt", "pptx", "zip"];
+const MAX_FILE_SIZE_KB = 20480;
+
 export default function AddAssignmentModal({
   apiPrefix = "/admin",
   open,
@@ -94,6 +98,31 @@ export default function AddAssignmentModal({
     );
 
     return res.data.path;
+  };
+
+  const handleFileChange = (e) => {
+    const selected = e.target.files?.[0];
+    e.target.value = ""; // allow re-selecting the same file after a rejection
+
+    if (!selected) return;
+
+    const extension = selected.name.split(".").pop()?.toLowerCase();
+    if (!extension || !ALLOWED_FILE_EXTENSIONS.includes(extension)) {
+      setFile(null);
+      setError(
+        "Invalid file type. Allowed types: PDF, DOC, DOCX, PPT, PPTX, ZIP."
+      );
+      return;
+    }
+
+    if (selected.size > MAX_FILE_SIZE_KB * 1024) {
+      setFile(null);
+      setError("File is too large. Maximum allowed size is 20 MB.");
+      return;
+    }
+
+    setError("");
+    setFile(selected);
   };
 
   const submit = async () => {
@@ -333,13 +362,14 @@ export default function AddAssignmentModal({
                   {file ? file.name : "Click to attach a document"}
                 </p>
                 <p className="text-xs text-[rgb(var(--zx-text-muted))] font-medium">
-                  {file ? `${(file.size / 1024 / 1024).toFixed(2)} MB` : "PDF, DOCX, or ZIP up to 25MB"}
+                  {file ? `${(file.size / 1024 / 1024).toFixed(2)} MB` : "PDF, DOC, DOCX, PPT, PPTX, or ZIP up to 20MB"}
                 </p>
               </div>
               <input
                 type="file"
                 hidden
-                onChange={(e) => setFile(e.target.files[0])}
+                accept=".pdf,.doc,.docx,.ppt,.pptx,.zip"
+                onChange={handleFileChange}
               />
             </label>
           </div>
