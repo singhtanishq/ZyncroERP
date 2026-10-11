@@ -10,14 +10,9 @@ class StudentIdCardPdfController extends Controller
 {
     private function generateQr(string $text): string
     {
-        $result = \Endroid\QrCode\Builder\Builder::create()
-            ->writer(new \Endroid\QrCode\Writer\PngWriter())
-            ->data($text)
-            ->size(200)
-            ->margin(4)
-            ->build();
-
-        return base64_encode($result->getString());
+        return base64_encode(
+            app(\App\Services\QrCodeService::class)->png($text, 200, 4)
+        );
     }
 
     public function view($token)
