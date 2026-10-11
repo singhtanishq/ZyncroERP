@@ -383,9 +383,10 @@ export default function ManageCourses() {
                                 </div>
                                 <button
                                     onClick={() => addBatch(c.id)}
-                                    className="w-full py-3 bg-brand-teal-500 text-white rounded-xl text-sm font-semibold hover:bg-brand-teal-600 transition-all shadow-md shadow-brand-teal-500/20 active:scale-95 flex justify-center items-center gap-2"
+                                    disabled={savingBatch}
+                                    className="w-full py-3 bg-brand-teal-500 text-white rounded-xl text-sm font-semibold hover:bg-brand-teal-600 transition-all shadow-md shadow-brand-teal-500/20 active:scale-95 flex justify-center items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                                 >
-                                    <Plus size={16} /> Create Batch
+                                    <Plus size={16} /> {savingBatch ? "Creating..." : "Create Batch"}
                                 </button>
                             </div>
                         </div>
