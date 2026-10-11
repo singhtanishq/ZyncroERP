@@ -103,8 +103,9 @@ class OtpController extends Controller
             $user->save();
         }
 
-        // set session flag — required by PendingLoginController::completeLogin
+        // set session flags — required by PendingLoginController::completeLogin
         $request->session()->put('two_factor_verified', true);
+        $request->session()->put('two_factor_verified_user_id', $user->id);
 
         return response()->json(['message' => 'Verified']);
     }
