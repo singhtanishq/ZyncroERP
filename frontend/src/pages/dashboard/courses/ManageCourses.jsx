@@ -84,7 +84,7 @@ function ConfirmDeleteModal({ open, title, message, onCancel, onConfirm, loading
 }
 
 /* ================= EDIT COURSE MODAL ================= */
-function EditCourseModal({ open, course, onClose, onSaved }) {
+function EditCourseModal({ open, course, onClose, onSaved, onError }) {
   const [form, setForm] = useState({
     name: "",
     code: "",
@@ -110,6 +110,8 @@ function EditCourseModal({ open, course, onClose, onSaved }) {
         amount: form.amount || 0,
       });
       onSaved();
+    } catch (e) {
+      onError?.(e?.response?.data?.message || "Failed to save course");
     } finally {
       setSaving(false);
     }
