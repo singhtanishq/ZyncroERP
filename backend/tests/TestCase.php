@@ -15,6 +15,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function refreshTestDatabase()
     {
+        dump('uses:', array_keys(class_uses_recursive(static::class)));
         throw new \RuntimeException('HOOK-OVERRIDE-RAN');
         if (config('database.connections.payments_db.driver') === 'sqlite') {
             Schema::connection('payments_db')->dropIfExists('payments');
