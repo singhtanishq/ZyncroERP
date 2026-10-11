@@ -17,7 +17,12 @@ class EnsureUserHasRole
     {
         $user = $request->user();
 
-        if (! $user || ! in_array($user->role, $roles, true)) {
+        if (! $user) {
+            // Distinguish "log in again" (401) from "wrong role" (403).
+            abort(401, 'Unauthenticated.');
+        }
+
+        if (! in_array($user->role, $roles, true)) {
             abort(403, 'You do not have permission to access this resource.');
         }
 
