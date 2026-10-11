@@ -32,6 +32,7 @@ const itemVariants = {
 
 export default function FacultyHome() {
     const [isLoading, setIsLoading] = useState(true);
+    const [loadError, setLoadError] = useState(false);
     const [courses, setCourses] = useState([]);
     const [students, setStudents] = useState([]);
     const [materials, setMaterials] = useState([]);
@@ -44,31 +45,41 @@ export default function FacultyHome() {
     }, []);
 
     async function loadDashboard() {
-        try {
-            const [
-                coursesRes,
-                studentsRes,
-                materialsRes,
-                classesRes,
-                examsRes,
-                communicationsRes,
-            ] = await Promise.all([
-                api.get("/faculty/courses"),
-                api.get("/faculty/students"),
-                api.get("/faculty/study-materials"),
-                api.get("/faculty/online-classes"),
-                api.get("/faculty/exams"),
-                api.get("/faculty/student-communications"),
-            ]);
+        setIsLoading(true);
+        setLoadError(false);
 
-            setCourses(coursesRes.data);
-            setStudents(studentsRes.data);
-            setMaterials(materialsRes.data);
-            setClasses(classesRes.data);
-            setExams(examsRes.data);
-            setCommunications(communicationsRes.data);
+        try {
+            /*
+             | allSettled: one failing endpoint must not silently zero the
+             | whole dashboard — a failed section reports visibly.
+             */
+            const [coursesRes, studentsRes, materialsRes, classesRes, examsRes, communicationsRes] =
+                await Promise.allSettled([
+                    api.get("/faculty/courses"),
+                    api.get("/faculty/students"),
+                    api.get("/faculty/study-materials"),
+                    api.get("/faculty/online-classes"),
+                    api.get("/faculty/exams"),
+                    api.get("/faculty/student-communications"),
+                ]);
+
+            const results = [coursesRes, studentsRes, materialsRes, classesRes, examsRes, communicationsRes];
+            const settled = results.filter((r) => r.status === "fulfilled");
+
+            if (settled.length === 0) {
+                setLoadError(true);
+                return;
+            }
+
+            if (coursesRes.status === "fulfilled") setCourses(coursesRes.value.data);
+            if (studentsRes.status === "fulfilled") setStudents(studentsRes.value.data);
+            if (materialsRes.status === "fulfilled") setMaterials(materialsRes.value.data);
+            if (classesRes.status === "fulfilled") setClasses(classesRes.value.data);
+            if (examsRes.status === "fulfilled") setExams(examsRes.value.data);
+            if (communicationsRes.status === "fulfilled") setCommunications(communicationsRes.value.data);
         } catch (error) {
             console.error(error);
+            setLoadError(true);
         } finally {
             setIsLoading(false);
         }
@@ -78,6 +89,17 @@ export default function FacultyHome() {
     const upcomingExams = exams.filter(e => e.status === "upcoming");
 
     if (isLoading) return <FacultySkeleton />;
+
+    if (loadError) {
+        return (
+            <div className="max-w-[1600px] mx-auto p-4 sm:p-6 md:p-8 pb-24">
+                <ErrorState
+                    message="We couldn't load your dashboard. Please try again."
+                    onRetry={loadDashboard}
+                />
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-[1600px] mx-auto p-4 sm:p-6 md:p-8 font-sans overflow-x-hidden pb-24">
