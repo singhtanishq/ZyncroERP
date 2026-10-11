@@ -229,9 +229,10 @@ export default function ManageCourses() {
             </button>
             <button
               onClick={createCourse}
-              className="px-6 py-2.5 bg-brand-teal-500 text-white hover:bg-brand-teal-600 rounded-xl text-sm font-semibold shadow-lg shadow-brand-teal-500/20 transition-all flex items-center gap-2 active:scale-95"
+              disabled={savingCourse}
+              className="px-6 py-2.5 bg-brand-teal-500 text-white hover:bg-brand-teal-600 rounded-xl text-sm font-semibold shadow-lg shadow-brand-teal-500/20 transition-all flex items-center gap-2 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              <Save size={16} /> Save Course
+              <Save size={16} /> {savingCourse ? "Saving..." : "Save Course"}
             </button>
           </div>
         </div>
