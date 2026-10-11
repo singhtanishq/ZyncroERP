@@ -86,7 +86,7 @@ export default function ManageAttendance({
   /* ---------------- RESTORE SESSIONS ON REFRESH ---------------- */
   useEffect(() => {
     const saved = JSON.parse(
-      localStorage.getItem(STORAGE_KEY) || "[]"
+      localStorage.getItem(storageKey) || "[]"
     );
 
     const active = saved.filter(
@@ -94,12 +94,12 @@ export default function ManageAttendance({
     );
 
     setSessions(active);
-  }, []);
+  }, [storageKey]);
 
   const persistSessions = useCallback((list) => {
     setSessions(list);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-  }, []);
+    localStorage.setItem(storageKey, JSON.stringify(list));
+  }, [storageKey]);
 
   /* ---------------- START ATTENDANCE ---------------- */
   const handleStart = (session) => {
