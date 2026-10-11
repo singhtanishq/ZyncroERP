@@ -21,8 +21,10 @@ class StudyMaterialController extends Controller
             ->orderByDesc('created_at')
             ->get()
             ->map(function ($m) {
-                $m->file_url = $m->file_path 
-                    ? asset($m->file_path)
+                // Files are stored on the private disk — only the streaming
+                // endpoint serves them.
+                $m->file_url = $m->file_path
+                    ? url("/api/admin/study-materials/{$m->id}/view")
                     : null;
                 return $m;
             });
@@ -63,11 +65,11 @@ class StudyMaterialController extends Controller
             if ($request->hasFile('file')) {
 
                 $file = $request->file('file');
-            
+
                 $filename =
-                    time() . '_' .
-                    $file->getClientOriginalName();
-            
+                    time() . '_' . Str::random(8) . '_' .
+                    preg_replace('/[^A-Za-z0-9\.\-_]/', '_', $file->getClientOriginalName());
+
                 $filePath = $file->storeAs(
                     'study-materials',
                     $filename,
@@ -114,9 +116,9 @@ class StudyMaterialController extends Controller
                 $file = $request->file('file');
 
                 $filename =
-                    time() . '_' .
-                    $file->getClientOriginalName();
-                
+                    time() . '_' . Str::random(8) . '_' .
+                    preg_replace('/[^A-Za-z0-9\.\-_]/', '_', $file->getClientOriginalName());
+
                 $material->file_path =
                     $file->storeAs(
                         'study-materials',
@@ -156,8 +158,6 @@ class StudyMaterialController extends Controller
     {
         $material = StudyMaterial::findOrFail($id);
 
-        $material->accessRules()->delete();
-
         DB::transaction(function () use ($material) {
 
             if ($material->file_path) {
@@ -165,7 +165,7 @@ class StudyMaterialController extends Controller
                 Storage::disk('private')
                     ->delete($material->file_path);
             }
-        
+
             $material->accessRules()->delete();
             $material->delete();
         });
