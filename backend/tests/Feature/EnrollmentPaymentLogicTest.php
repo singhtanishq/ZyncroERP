@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\Admin;
 use App\Models\Batch;
 use App\Models\Course;
+use App\Models\Exam;
 use App\Models\Payment;
 use App\Models\Student;
 use App\Models\StudentDocument;
@@ -145,11 +145,11 @@ class EnrollmentPaymentLogicTest extends TestCase
             ->postJson("/api/admin/enrollments/{$enrollment->id}/mark-paid", ['amount' => 1000])
             ->assertStatus(200);
 
-        $this->assertDatabaseCount('payments', 1);
-        $this->assertDatabaseHas('payments', [
-            'status' => 'success',
-            'payment_mode' => 'offline',
-        ]);
+        // The ledger lives on the payments_db connection.
+        $this->assertSame(1, Payment::count());
+        $ledgerEntry = Payment::first();
+        $this->assertSame('success', $ledgerEntry->status);
+        $this->assertSame('offline', $ledgerEntry->payment_mode);
         $this->assertEquals('paid', $enrollment->fresh()->payment_status);
     }
 
