@@ -382,6 +382,8 @@ export default function PublishResults({
                                   <div className="flex justify-center">
                                       <input
                                         type="number"
+                                        min={0}
+                                        max={100}
                                         onClick={(e) => e.stopPropagation()}
                                         className={`w-20 bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] rounded-xl px-2.5 py-2 text-sm focus:outline-none focus:border-brand-teal-500 text-center font-bold text-[rgb(var(--zx-text))] transition-all ${locked ? "opacity-50 cursor-not-allowed" : ""}`}
                                         disabled={locked}
@@ -432,20 +434,44 @@ export default function PublishResults({
                                 
                                 {isEditing ? (
                                   <>
+                                    <span className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider mr-auto flex items-center">
+                                      {isEditing ? "Editing Scores..." : "Actions"}
+                                    </span>
+
+                                    {saveError && (
+                                      <span className="flex items-center text-xs font-bold text-rose-500 bg-rose-500/10 border border-rose-500/20 px-3.5 py-2 rounded-xl">
+                                        {saveError}
+                                      </span>
+                                    )}
+
                                     <button
                                       className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] bg-[rgb(var(--zx-surface))] shadow-sm text-xs font-bold uppercase tracking-wider hover:bg-[rgb(var(--zx-surface-hover))] transition-all"
                                       onClick={(e) => {
                                           e.stopPropagation();
                                           setEditingStudentId(null);
+                                          setSaveError("");
                                       }}
                                     >
                                       <X size={14} /> Cancel
                                     </button>
                                     <button
-                                      className="flex items-center gap-1.5 px-5 py-2 rounded-xl bg-emerald-600 text-white shadow-sm text-xs font-bold uppercase tracking-wider hover:bg-emerald-700 transition-all active:scale-95"
+                                      className={`flex items-center gap-1.5 px-5 py-2 rounded-xl bg-emerald-600 text-white shadow-sm text-xs font-bold uppercase tracking-wider hover:bg-emerald-700 transition-all active:scale-95 ${
+                                        savingStudentId === student.id
+                                          ? "opacity-70 cursor-not-allowed active:scale-100"
+                                          : ""
+                                      }`}
                                       onClick={(e) => saveScores(student.id, e)}
+                                      disabled={savingStudentId === student.id}
                                     >
-                                      <Save size={14} /> Save Scores
+                                      {savingStudentId === student.id ? (
+                                        <>
+                                          <Loader2 size={14} className="animate-spin" /> Saving...
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Save size={14} /> Save Scores
+                                        </>
+                                      )}
                                     </button>
                                   </>
                                 ) : (
