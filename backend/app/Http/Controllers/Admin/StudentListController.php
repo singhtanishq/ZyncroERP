@@ -20,9 +20,9 @@ class StudentListController extends Controller
                 'users.id as user_id',
                 'users.name',
                 'users.email',
-                'users.mobile',
-                'users.password'
+                'users.mobile'
             )
+            ->addSelect('users.password IS NOT NULL as has_login')
             ->orderBy('students.created_at', 'desc')
             ->get()
             ->map(function ($s) {
@@ -36,7 +36,7 @@ class StudentListController extends Controller
                     'admission_date' => $s->admission_date, 
                     'course_name'    => optional($s->course)->name,
                     'batch_name'     => optional($s->batch)->name,
-                    'has_login'      => !is_null($s->password),
+                    'has_login'      => (bool) $s->has_login,
                 ];
             });
 
