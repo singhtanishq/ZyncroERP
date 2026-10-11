@@ -70,14 +70,30 @@ export default function DashboardHome() {
   const [data, setData] = useState(null);
   const { user } = useAuth();
 
-  useEffect(() => {
+  const loadDashboard = useCallback(() => {
     api
       .get("/admin/dashboard")
       .then((res) => setData(res.data))
       .catch(() => setData({ error: true }));
   }, []);
 
+  useEffect(() => {
+    loadDashboard();
+  }, [loadDashboard]);
+
   if (!data) return <DashboardSkeleton />;
+
+  // Never render KPIs/charts against the error sentinel object.
+  if (data.error) {
+    return (
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-10 font-sans">
+        <ErrorState
+          message="We couldn't load the dashboard overview. Check your connection and try again."
+          onRetry={loadDashboard}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="relative max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-24 lg:pb-32 pt-0 font-sans overflow-x-hidden">
