@@ -23,6 +23,7 @@ export default function SendBulkEmails() {
   const [selected, setSelected] = useState([]);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
   const [showModal, setShowModal] = useState(false);
   const [isSending, setIsSending] = useState(false);
