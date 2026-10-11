@@ -379,7 +379,7 @@ export default function EnrollmentDetailsDrawer({
 
                       <button
                         disabled={disableRejectBtn}
-                        onClick={() => rejectDocument(doc)}
+                        onClick={() => startDocReject(doc)}
                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                           !disableRejectBtn
                             ? "bg-rose-600 text-white hover:bg-rose-700 shadow-sm"
