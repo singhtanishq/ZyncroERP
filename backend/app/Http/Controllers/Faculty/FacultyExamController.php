@@ -27,8 +27,9 @@ class FacultyExamController extends AdminExamController
         $now = now();
     
         foreach ($exams as $exam) {
-    
-            if ($exam->status === 'cancelled') {
+
+            // status is cast to the ExamStatus enum — compare against the enum.
+            if ($exam->status === \App\Enums\ExamStatus::CANCELLED) {
                 continue;
             }
     
