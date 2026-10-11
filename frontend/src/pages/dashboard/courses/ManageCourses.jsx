@@ -213,12 +213,13 @@ function EditCourseModal({ open, course, onClose, onSaved, onError }) {
 }
 
 /* ================= EDIT BATCH MODAL ================= */
-function EditBatchModal({ open, batch, onClose, onSaved }) {
+function EditBatchModal({ open, batch, onClose, onSaved, onError }) {
   const [form, setForm] = useState({
     name: "",
     start_date: "",
     end_date: "",
   });
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (batch) setForm(batch);
@@ -227,8 +228,15 @@ function EditBatchModal({ open, batch, onClose, onSaved }) {
   if (!open || !batch) return null;
 
   const save = async () => {
-    await api.put(`/admin/batches/${batch.id}`, form);
-    onSaved(batch.course_id);
+    try {
+      setSaving(true);
+      await api.put(`/admin/batches/${batch.id}`, form);
+      onSaved(batch.course_id);
+    } catch (e) {
+      onError?.(e?.response?.data?.message || "Failed to save batch");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
