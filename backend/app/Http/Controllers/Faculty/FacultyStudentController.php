@@ -26,8 +26,12 @@ class FacultyStudentController extends Controller
                 'course:id,name',
                 'batch:id,name',
             ])
-            ->where('status', 'active')
-            ->where(function ($query) use ($assignments) {
+            ->where('status', 'active');
+
+        // No assignments => no students; an empty closure would leak the
+        // whole institution.
+        if ($assignments->isNotEmpty()) {
+            $query->where(function ($query) use ($assignments) {
 
                 foreach ($assignments as $assignment) {
 
@@ -41,12 +45,15 @@ class FacultyStudentController extends Controller
                             'batch_id',
                             $assignment->batch_id
                         );
-                    
+
                     });
 
                 }
 
             });
+        } else {
+            $query->whereRaw('1 = 0');
+        }
 
         return $query
             ->latest()
