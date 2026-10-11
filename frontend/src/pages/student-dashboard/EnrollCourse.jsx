@@ -175,21 +175,21 @@ export default function EnrollCourse() {
         <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             
-            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight flex items-center gap-4">
+            <h1 className="text-3xl md:text-4xl font-extrabold text-[rgb(var(--zx-text))] tracking-tight flex items-center gap-4">
               <div className="flex items-center justify-center p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-sm text-white shrink-0">
                 <GraduationCap size={24} />
               </div>
               Enroll Course
             </h1>
-            <p className="text-slate-500 mt-3 text-m max-w-2xl leading-relaxed">
+            <p className="text-[rgb(var(--zx-text-muted))] mt-3 text-m max-w-2xl leading-relaxed">
               Browse available courses and submit a new enrollment request to begin your academic journey.
             </p>
           </div>
         </motion.div>
 
         {/* CONTROLS & FILTERS */}
-        <motion.div variants={itemVariants} className="bg-white/60 backdrop-blur-xl p-4 rounded-3xl border border-slate-200/80 shadow-[0_2px_10px_rgb(0,0,0,0.02)] flex flex-col md:flex-row gap-4 items-center z-30">
-          <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider px-2 shrink-0">
+        <motion.div variants={itemVariants} className="bg-[rgb(var(--zx-surface))] backdrop-blur-xl p-4 rounded-3xl border border-[rgb(var(--zx-border))] shadow-[0_2px_10px_rgb(0,0,0,0.02)] flex flex-col md:flex-row gap-4 items-center z-30">
+          <div className="flex items-center gap-2 text-xs font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider px-2 shrink-0">
              Explore By
           </div>
 
@@ -197,7 +197,7 @@ export default function EnrollCourse() {
             <div className="relative group w-full">
               <BookOpen
                 size={18}
-                className="absolute left-4 top-3.5 text-slate-400 group-focus-within:text-indigo-500 transition-colors duration-300 z-10"
+                className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-indigo-500 transition-colors duration-300 z-10"
               />
               <select
                 value={selectedCourse}
@@ -205,7 +205,7 @@ export default function EnrollCourse() {
                   setSelectedCourse(e.target.value);
                   setSelectedBatch("all");
                 }}
-                className="w-full appearance-none bg-white border border-slate-200/60 text-slate-700 pl-11 pr-10 py-3 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-400 transition-all font-medium text-sm cursor-pointer shadow-sm hover:border-indigo-200"
+                className="w-full appearance-none bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] pl-11 pr-10 py-3 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-400 transition-all font-medium text-sm cursor-pointer shadow-sm hover:border-indigo-200"
               >
                 {courseOptions.map((course) => (
                   <option key={course.id} value={course.id}>
@@ -215,19 +215,19 @@ export default function EnrollCourse() {
               </select>
               <ChevronDown
                 size={18}
-                className="absolute right-4 top-3.5 text-slate-400 pointer-events-none"
+                className="absolute right-4 top-3.5 text-[rgb(var(--zx-text-muted))] pointer-events-none"
               />
             </div>
 
             <div className="relative group w-full">
               <Layers
                 size={18}
-                className="absolute left-4 top-3.5 text-slate-400 group-focus-within:text-indigo-500 transition-colors duration-300 z-10"
+                className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-indigo-500 transition-colors duration-300 z-10"
               />
               <select
                 value={selectedBatch}
                 onChange={(e) => setSelectedBatch(e.target.value)}
-                className="w-full appearance-none bg-white border border-slate-200/60 text-slate-700 pl-11 pr-10 py-3 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-400 transition-all font-medium text-sm cursor-pointer shadow-sm hover:border-indigo-200"
+                className="w-full appearance-none bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] pl-11 pr-10 py-3 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-400 transition-all font-medium text-sm cursor-pointer shadow-sm hover:border-indigo-200"
               >
                 {batchOptions.map((batch) => (
                   <option key={batch.id} value={batch.id}>
@@ -237,7 +237,7 @@ export default function EnrollCourse() {
               </select>
               <ChevronDown
                 size={18}
-                className="absolute right-4 top-3.5 text-slate-400 pointer-events-none"
+                className="absolute right-4 top-3.5 text-[rgb(var(--zx-text-muted))] pointer-events-none"
               />
             </div>
           </div>
@@ -254,7 +254,7 @@ export default function EnrollCourse() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="flex flex-col items-center justify-center py-32 text-slate-500 bg-white/40 backdrop-blur-2xl rounded-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
+                className="flex flex-col items-center justify-center py-32 text-[rgb(var(--zx-text-muted))] bg-[rgb(var(--zx-surface))] backdrop-blur-2xl rounded-3xl border border-[rgb(var(--zx-border))] shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
               >
                 <Loader2 size={40} className="animate-spin text-indigo-500 mb-4" />
                 <p className="font-medium tracking-wide">Loading available courses...</p>
@@ -266,15 +266,15 @@ export default function EnrollCourse() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white/40 backdrop-blur-2xl rounded-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] py-32 flex flex-col items-center transition-all duration-500"
+                className="bg-[rgb(var(--zx-surface))] backdrop-blur-2xl rounded-3xl border border-[rgb(var(--zx-border))] shadow-[0_8px_30px_rgb(0,0,0,0.04)] py-32 flex flex-col items-center transition-all duration-500"
               >
-                <div className="bg-slate-100/50 p-6 rounded-full mb-6">
-                  <GraduationCap size={48} className="text-slate-400" />
+                <div className="bg-[rgb(var(--zx-surface-hover))] p-6 rounded-full mb-6">
+                  <GraduationCap size={48} className="text-[rgb(var(--zx-text-muted))]" />
                 </div>
-                <h3 className="text-2xl font-bold text-slate-800 tracking-tight">
+                <h3 className="text-2xl font-bold text-[rgb(var(--zx-text))] tracking-tight">
                   No Courses Found
                 </h3>
-                <p className="mt-2 text-slate-500 font-medium text-center max-w-md">
+                <p className="mt-2 text-[rgb(var(--zx-text-muted))] font-medium text-center max-w-md">
                   No active courses match your selected filters. Please adjust your criteria.
                 </p>
               </motion.div>
@@ -303,7 +303,7 @@ export default function EnrollCourse() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.1 }}
-                      className="bg-white/60 backdrop-blur-2xl rounded-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 relative overflow-hidden group hover:bg-white/90 transition-all duration-300 flex flex-col"
+                      className="bg-[rgb(var(--zx-surface))] backdrop-blur-2xl rounded-3xl border border-[rgb(var(--zx-border))] shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 relative overflow-hidden group hover:bg-[rgb(var(--zx-surface-hover))] transition-all duration-300 flex flex-col"
                     >
                       {/* Very Subtle Decorative Glows */}
                       <div className="absolute -right-20 -top-20 w-48 h-48 bg-gradient-to-br from-indigo-500/10 to-purple-600/10 rounded-full blur-3xl pointer-events-none group-hover:scale-150 transition-transform duration-700"></div>
@@ -312,7 +312,7 @@ export default function EnrollCourse() {
                         
                         {/* Top: Icon & Status */}
                         <div className="flex items-start justify-between">
-                          <div className="p-3 bg-slate-50 border border-slate-100/60 text-indigo-500 rounded-2xl shrink-0 group-hover:bg-indigo-50 group-hover:border-indigo-100 transition-colors shadow-sm">
+                          <div className="p-3 bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] text-indigo-500 rounded-2xl shrink-0 group-hover:bg-indigo-50 group-hover:border-indigo-100 transition-colors shadow-sm">
                             <BookOpen size={22} />
                           </div>
                           
@@ -341,18 +341,18 @@ export default function EnrollCourse() {
 
                         {/* Title & Batch */}
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-extrabold text-xl text-slate-800 tracking-tight leading-tight group-hover:text-indigo-900 transition-colors line-clamp-2">
+                          <h3 className="font-extrabold text-xl text-[rgb(var(--zx-text))] tracking-tight leading-tight group-hover:text-indigo-900 transition-colors line-clamp-2">
                             {item.course_name}
                           </h3>
-                          <div className="inline-flex items-center gap-1.5 mt-2.5 px-2.5 py-1 rounded-lg bg-slate-50/80 border border-slate-100/80 text-xs font-semibold text-slate-500 truncate max-w-full">
-                            <Layers size={14} className="text-slate-400 shrink-0" />
+                          <div className="inline-flex items-center gap-1.5 mt-2.5 px-2.5 py-1 rounded-lg bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] text-xs font-semibold text-[rgb(var(--zx-text-muted))] truncate max-w-full">
+                            <Layers size={14} className="text-[rgb(var(--zx-text-muted))] shrink-0" />
                             <span className="truncate">{item.batch_name}</span>
                           </div>
                         </div>
 
                         {/* Dates Info */}
-                        <div className="bg-slate-50/50 border border-slate-100/60 rounded-xl p-3.5 mt-auto">
-                          <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+                        <div className="bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] rounded-xl p-3.5 mt-auto">
+                          <div className="flex items-center gap-2 text-xs font-semibold text-[rgb(var(--zx-text-muted))]">
                             <CalendarDays size={14} className="text-indigo-400 shrink-0" />
                             <span className="truncate">
                               {new Date(item.start_date).toLocaleDateString("en-IN", {
@@ -371,13 +371,13 @@ export default function EnrollCourse() {
                         </div>
 
                         {/* Action Button */}
-                        <div className="mt-1 pt-4 border-t border-slate-100/50">
+                        <div className="mt-1 pt-4 border-t border-[rgb(var(--zx-border))]">
                           <button
                             disabled={!isAvailable || saving}
                             onClick={() => setConfirmItem(item)}
                             className={`w-full py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 text-sm ${
                               isActive
-                                ? "bg-slate-50/80 text-slate-400 border border-slate-200/60 cursor-not-allowed shadow-none"
+                                ? "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border border-[rgb(var(--zx-border))] cursor-not-allowed shadow-none"
                                 : isPending
                                 ? "bg-amber-50/30 text-amber-600 border border-amber-200/50 cursor-not-allowed shadow-none"
                                 : isCompleted
@@ -436,8 +436,8 @@ export default function EnrollCourse() {
             <div
               className={`flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-xl shadow-slate-200/50 border backdrop-blur-xl ${
                 toast.type === "success"
-                  ? "bg-white/90 border-emerald-100 text-emerald-700"
-                  : "bg-white/90 border-rose-100 text-rose-700"
+                  ? "bg-[rgb(var(--zx-surface))] border-emerald-100 text-emerald-700"
+                  : "bg-[rgb(var(--zx-surface))] border-rose-100 text-rose-700"
               }`}
             >
               {toast.type === "success" ? (
