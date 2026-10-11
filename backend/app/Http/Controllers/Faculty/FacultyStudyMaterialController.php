@@ -21,8 +21,10 @@ class FacultyStudyMaterialController extends AdminStudyMaterialController
         ->get()
         ->map(function ($material) {
 
+            // Files live on the private disk; only the streaming endpoint
+            // serves them.
             $material->file_url = $material->file_path
-                ? asset($material->file_path)
+                ? url("/api/faculty/study-materials/{$material->id}/view")
                 : null;
 
             return $material;
@@ -65,7 +67,7 @@ class FacultyStudyMaterialController extends AdminStudyMaterialController
         $material = StudyMaterial::with('accessRules')
             ->findOrFail($id);
 
-        $this->authorizeAccessWrite($material);
+        $this->authorizeAccess($material);
 
         return parent::view($id);
     }
