@@ -1,5 +1,6 @@
 import React, { useEffect, useState, Fragment } from "react";
 import api from "../../../lib/api/apiClient";
+import { useToast } from "../../../components/common/ToastProvider";
 import { 
   Award, 
   BookOpen, 
@@ -19,6 +20,8 @@ import {
 export default function PublishResults({
     apiPrefix = "/admin",
 }) {
+  const { toast } = useToast();
+
   const [courses, setCourses] = useState([]);
   const [batches, setBatches] = useState([]);
 
@@ -35,6 +38,8 @@ export default function PublishResults({
   const [expandedStudentId, setExpandedStudentId] = useState(null);
   const [editingStudentId, setEditingStudentId] = useState(null);
   const [scoresDraft, setScoresDraft] = useState({});
+  const [savingStudentId, setSavingStudentId] = useState(null);
+  const [saveError, setSaveError] = useState("");
 
   // ---------------- LOADERS ----------------
 
@@ -108,6 +113,7 @@ export default function PublishResults({
   const startEdit = (studentId, e) => {
     e.stopPropagation();
     setEditingStudentId(studentId);
+    setSaveError("");
 
     const draft = {};
     exams.forEach(exam => {
@@ -120,6 +126,18 @@ export default function PublishResults({
   const saveScores = async (studentId, e) => {
     e.stopPropagation();
 
+    // Client-side validation: scores must be between 0 and 100
+    const hasInvalidScore = Object.entries(scoresDraft).some(([examId, score]) => {
+      if (score === "" || isLocked(studentId, Number(examId))) return false;
+      const num = Number(score);
+      return Number.isNaN(num) || num < 0 || num > 100;
+    });
+
+    if (hasInvalidScore) {
+      setSaveError("Scores must be between 0 and 100.");
+      return;
+    }
+
     const scores = Object.entries(scoresDraft)
       .filter(([examId]) => !isLocked(studentId, Number(examId)))
       .map(([examId, score]) => ({
@@ -129,6 +147,7 @@ export default function PublishResults({
 
     if (!scores.length) {
       setEditingStudentId(null);
+      setSaveError("");
       return;
     }
 
@@ -137,14 +156,25 @@ export default function PublishResults({
       scores,
     };
 
-    await api.post(
-      `${apiPrefix}/exam-results/save`,
-      payload
-    );
+    setSavingStudentId(studentId);
+    setSaveError("");
+    try {
+      await api.post(
+        `${apiPrefix}/exam-results/save`,
+        payload
+      );
 
-    setEditingStudentId(null);
-    setScoresDraft({});
-    loadResults();
+      setEditingStudentId(null);
+      setScoresDraft({});
+      loadResults();
+    } catch (err) {
+      const message =
+        err?.response?.data?.message || "Failed to save scores. Please try again.";
+      toast(message, "error");
+      setSaveError(message);
+    } finally {
+      setSavingStudentId(null);
+    }
   };
 
   // ---------------- UI ----------------
