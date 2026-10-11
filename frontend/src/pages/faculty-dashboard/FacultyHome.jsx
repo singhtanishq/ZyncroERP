@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import api from "../../lib/api/apiClient";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import useAuth from "../../lib/auth/useAuth";
+import { ErrorState } from "../../components/common/States";
 import {
   BookOpen,
   Users,
@@ -168,6 +170,7 @@ export default function FacultyHome() {
 /* ================= HEADER ================= */
 function Header() {
     const [greeting, setGreeting] = useState("");
+    const { user } = useAuth();
 
     useEffect(() => {
         const hour = new Date().getHours();
@@ -179,16 +182,16 @@ function Header() {
     return (
         <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-                <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
-                    {greeting}, Faculty
+                <h1 className="text-3xl md:text-4xl font-extrabold text-[rgb(var(--zx-text))] tracking-tight">
+                    {greeting}, {user?.name?.split(" ")[0] || "Faculty"}
                 </h1>
-                <p className="text-slate-500 mt-2 font-medium max-w-2xl text-sm sm:text-base">
+                <p className="text-[rgb(var(--zx-text-muted))] mt-2 font-medium max-w-2xl text-sm sm:text-base">
                     Here's the overview of your classes, student metrics, and academic responsibilities.
                 </p>
             </div>
-            <div className="bg-white px-5 py-2.5 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-3 shrink-0 w-fit">
-                <Clock size={18} className="text-slate-400" />
-                <span className="text-sm font-bold text-slate-700">
+            <div className="bg-[rgb(var(--zx-surface))] px-5 py-2.5 rounded-2xl shadow-sm border border-[rgb(var(--zx-border))] flex items-center gap-3 shrink-0 w-fit">
+                <Clock size={18} className="text-[rgb(var(--zx-text-muted))]" />
+                <span className="text-sm font-bold text-[rgb(var(--zx-text))]">
                     {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
                 </span>
             </div>
@@ -323,39 +326,61 @@ function CoursesTable({ courses }) {
 }
 
 /* ================= RECENT ACTIVITY WIDGET ================= */
+const LIST_LINKS = {
+    "Upcoming Classes": "/faculty/classes",
+    "Upcoming Exams": "/faculty/exams/manage",
+    "Recent Study Materials": "/faculty/materials",
+    "Student Communications": "/faculty/announcements",
+};
+
 function RecentListCard({ title, icon: Icon, data }) {
+    const navigate = useNavigate();
+    const target = LIST_LINKS[title];
+
     return (
-        <motion.div variants={itemVariants} className="bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/40 flex flex-col overflow-hidden w-full h-full max-h-[420px]">
-            <div className="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between shrink-0">
+        <motion.div variants={itemVariants} className="bg-[rgb(var(--zx-surface))] rounded-3xl border border-[rgb(var(--zx-border))] shadow-xl shadow-slate-200/40 dark:shadow-black/20 flex flex-col overflow-hidden w-full h-full max-h-[420px]">
+            <div className="px-6 py-5 border-b border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface-hover))] flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 bg-white rounded-lg shadow-sm text-slate-600">
+                    <div className="p-2 bg-[rgb(var(--zx-surface))] rounded-lg shadow-sm text-[rgb(var(--zx-text-muted))]">
                         <Icon size={18} />
                     </div>
-                    <h3 className="font-bold text-slate-800 text-lg truncate">{title}</h3>
+                    <h3 className="font-bold text-[rgb(var(--zx-text))] text-lg truncate">{title}</h3>
                 </div>
+                {target && data.length > 0 && (
+                    <button
+                        onClick={() => navigate(target)}
+                        className="text-xs font-bold uppercase tracking-wider text-brand-teal-600 hover:text-brand-teal-500 transition-colors"
+                    >
+                        View All
+                    </button>
+                )}
             </div>
             
             <div className="p-2 flex-1 overflow-y-auto custom-dashboard-scroll">
                 {data.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-full min-h-[150px] p-8 text-slate-400">
+                    <div className="flex flex-col items-center justify-center h-full min-h-[150px] p-8 text-[rgb(var(--zx-text-muted))]">
                         <Inbox size={32} className="mb-2 opacity-20" />
                         <span className="text-sm font-medium">No recent activity</span>
                     </div>
                 ) : (
                     <ul className="space-y-1">
                         {data.map((item, idx) => (
-                            <li key={item.id || idx} className="flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl transition-colors group cursor-pointer">
+                            <li
+                                key={item.id || idx}
+                                onClick={() => target && navigate(target)}
+                                className="flex items-center justify-between p-3 hover:bg-[rgb(var(--zx-surface-hover))] rounded-xl transition-colors group cursor-pointer"
+                            >
                                 <div className="flex items-center gap-3 min-w-0">
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center font-bold text-slate-500 text-sm shrink-0 border border-slate-200/60">
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center font-bold text-[rgb(var(--zx-text-muted))] text-sm shrink-0 border border-[rgb(var(--zx-border))]">
                                         {item.title?.charAt(0)?.toUpperCase() || "-"}
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-sm font-bold text-slate-800 truncate group-hover:text-indigo-600 transition-colors">
+                                        <p className="text-sm font-bold text-[rgb(var(--zx-text))] truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                                             {item.title}
                                         </p>
                                     </div>
                                 </div>
-                                <ArrowRight size={14} className="text-slate-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                                <ArrowRight size={14} className="text-[rgb(var(--zx-text-muted))] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                             </li>
                         ))}
                     </ul>
