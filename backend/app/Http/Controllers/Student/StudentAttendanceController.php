@@ -209,13 +209,35 @@ class StudentAttendanceController extends Controller
                 'courses.name as course_name',
                 'batches.name as batch_name',
             ]);
-    
-        $totalSessions = $history->count();
-    
+
+        /*
+         | Denominator = every session HELD for the student's enrollments
+         | (attendance rows only exist for present marks, so counting them
+         | alone made the percentage 100% by construction).
+         */
+        $heldQuery = DB::table('attendance_sessions')
+            ->join('student_enrollments', function ($join) {
+                $join->on('student_enrollments.course_id', '=', 'attendance_sessions.course_id')
+                    ->on('student_enrollments.batch_id', '=', 'attendance_sessions.batch_id');
+            })
+            ->where('student_enrollments.student_id', $student->id)
+            ->whereIn('student_enrollments.status', ['active', 'completed'])
+            ->where('attendance_sessions.status', 'expired');
+
+        if ($courseId) {
+            $heldQuery->where('attendance_sessions.course_id', $courseId);
+        }
+
+        if ($batchId) {
+            $heldQuery->where('attendance_sessions.batch_id', $batchId);
+        }
+
+        $totalSessions = $heldQuery->count();
+
         $presentCount = $history
             ->where('status', 'present')
             ->count();
-    
+
         $percentage = $totalSessions > 0
             ? round(($presentCount / $totalSessions) * 100, 2)
             : 0;
