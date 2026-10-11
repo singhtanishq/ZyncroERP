@@ -20,8 +20,9 @@ export default function GenerateDigitalIdCards() {
 
   const [activateOpen, setActivateOpen] = useState(false);
   const [activateTarget, setActivateTarget] = useState(null);
+  const [activating, setActivating] = useState(false);
 
-  const [toast, setToast] = useState("");
+  const [toast, setToast] = useState(null);
 
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewUrl, setPreviewUrl] = useState("");
@@ -30,9 +31,9 @@ export default function GenerateDigitalIdCards() {
     fetchStudents();
   }, []);
 
-  const showToast = (msg) => {
-    setToast(msg);
-    setTimeout(() => setToast(""), 2500);
+  const showToast = (msg, type = "success") => {
+    setToast({ message: msg, type });
+    setTimeout(() => setToast(null), 2500);
   };
 
   const fetchStudents = async () => {
@@ -72,18 +73,25 @@ export default function GenerateDigitalIdCards() {
   };
 
   const confirmActivate = async () => {
+    if (activating) return;
+
+    setActivating(true);
     try {
       await api.post(
         `/admin/student-id-cards/${activateTarget}/activate`
       );
       fetchStudents();
       showToast("Student ID Card generated successfully");
-    } catch (e) {
-      console.error(e);
-      showToast("Failed to activate ID card");
-    } finally {
       setActivateOpen(false);
       setActivateTarget(null);
+    } catch (e) {
+      console.error(e);
+      showToast(
+        e?.response?.data?.message || "Failed to activate ID card",
+        "error"
+      );
+    } finally {
+      setActivating(false);
     }
   };
 
@@ -281,6 +289,7 @@ export default function GenerateDigitalIdCards() {
         title="Generate Student ID Card"
         message="This will generate or regenerate the student's Digital ID Card. Any previous card will automatically be replaced with the latest version."
         confirmText="Generate ID Card"
+        busy={activating}
       />
 
       <PdfPreviewModal
@@ -301,10 +310,10 @@ export default function GenerateDigitalIdCards() {
             exit={{ opacity: 0, y: 20 }}
             className="fixed bottom-8 right-8 z-50 bg-[rgb(var(--zx-text))] text-[rgb(var(--zx-surface))] px-6 py-4 rounded-2xl shadow-2xl shadow-black/20 flex items-center gap-3 border border-[rgb(var(--zx-border))]"
           >
-            <div className="bg-emerald-500 rounded-full p-1 text-white">
+            <div className={`rounded-full p-1 text-white ${toast.type === "error" ? "bg-rose-500" : "bg-emerald-500"}`}>
               <CheckCircle2 size={14} strokeWidth={3} />
             </div>
-            <span className="text-[14px] font-bold tracking-wide">{toast}</span>
+            <span className="text-[14px] font-bold tracking-wide">{toast.message}</span>
           </motion.div>
         )}
       </AnimatePresence>
