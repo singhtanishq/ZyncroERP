@@ -3,24 +3,32 @@
 namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\File;
 
 abstract class TestCase extends BaseTestCase
 {
     /**
-     * The payments ledger lives on its own connection. On sqlite (test
-     * mode) it must be dropped before migrate:fresh re-runs the ledger
-     * migration, otherwise the second test class hits "table already
-     * exists" on a database migrate:fresh never resets.
+     * Set once per PHPUnit process after the payments ledger file has been
+     * reset (the ledger lives on its own sqlite connection that neither
+     * migrate:fresh nor the per-test transaction rollback touches).
      */
-    protected function refreshTestDatabase()
+    protected static bool $ledgerReset = false;
+
+    protected function setUp(): void
     {
-        dump('uses:', array_keys(class_uses_recursive(static::class)));
-        throw new \RuntimeException('HOOK-OVERRIDE-RAN');
-        if (config('database.connections.payments_db.driver') === 'sqlite') {
-            Schema::connection('payments_db')->dropIfExists('payments');
+        // Runs before the app boots — no container helpers yet, so the
+        // ledger path is resolved relative to this file (backend/tests/).
+        $ledger = __DIR__ . '/../database/testing-payments.sqlite';
+
+        if (! static::$ledgerReset && file_exists(dirname($ledger))) {
+            if (is_file($ledger)) {
+                unlink($ledger);
+            }
+            file_put_contents($ledger, '');
+
+            static::$ledgerReset = true;
         }
 
-        parent::refreshTestDatabase();
+        parent::setUp();
     }
 }
