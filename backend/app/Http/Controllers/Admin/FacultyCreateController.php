@@ -64,15 +64,21 @@ class FacultyCreateController extends Controller
             ]);
         });
 
-        app(EmailService::class)->userCredentials(
+        $mailResult = app(EmailService::class)->userCredentials(
             strtolower($data['email']),
             $data['name'],
             $plainPassword,
             'faculty'
         );
 
+        $message = 'Faculty created successfully.';
+
+        if (! ($mailResult['ok'] ?? false)) {
+            $message .= ' However, the credentials email could not be sent — use "Reset Login" to re-send.';
+        }
+
         return response()->json([
-            'message' => 'Faculty created successfully.',
+            'message' => $message,
             'faculty' => $faculty,
         ], 201);
     }
