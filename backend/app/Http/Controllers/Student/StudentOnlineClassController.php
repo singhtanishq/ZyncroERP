@@ -27,62 +27,38 @@ class StudentOnlineClassController extends Controller
         if ($activeEnrollments->isEmpty()) {
             return [];
         }
-        
-        $courseIds = $activeEnrollments
-            ->pluck('course_id')
-            ->unique()
-            ->values();
-        
-        $batchIds = $activeEnrollments
-            ->pluck('batch_id')
-            ->unique()
-            ->values();
 
+        /*
+         | Rules are matched against exact (course, batch) enrollment pairs —
+         | matching course ids and batch ids independently would let a rule
+         | for (course A, batch of course B) leak through.
+         */
         $classes = OnlineClass::query()
-            ->whereHas(
-                'accessRules',
-                function ($q) use (
-                    $courseIds,
-                    $batchIds
-                ) {
-            
-                    $q->where('access_type', 'all')
-            
-                    ->orWhere(function ($q) use ($courseIds) {
-            
-                        $q->where(
-                            'access_type',
-                            'course'
-                        )
-                        ->whereIn(
-                            'course_id',
-                            $courseIds
-                        );
-            
-                    })
-            
-                    ->orWhere(function ($q) use (
-                        $courseIds,
-                        $batchIds
-                    ) {
-            
-                        $q->where(
-                            'access_type',
-                            'batch'
-                        )
-                        ->whereIn(
-                            'course_id',
-                            $courseIds
-                        )
-                        ->whereIn(
-                            'batch_id',
-                            $batchIds
-                        );
-            
+            ->where(function ($q) use ($activeEnrollments) {
+
+                $q->whereHas('accessRules', function ($rule) {
+                    $rule->where('access_type', 'all');
+                });
+
+                foreach ($activeEnrollments as $enrollment) {
+
+                    $q->orWhereHas('accessRules', function ($rule) use ($enrollment) {
+
+                        $rule->where(function ($courseRule) use ($enrollment) {
+                            $courseRule->where('access_type', 'course')
+                                ->where('course_id', $enrollment->course_id);
+                        });
+
+                        $rule->orWhere(function ($batchRule) use ($enrollment) {
+                            $batchRule->where('access_type', 'batch')
+                                ->where('course_id', $enrollment->course_id)
+                                ->where('batch_id', $enrollment->batch_id);
+                        });
+
                     });
-            
+
                 }
-            )
+            })
             ->with('accessRules')
             ->latest()
             ->get();
@@ -153,21 +129,31 @@ class StudentOnlineClassController extends Controller
         $batchIds = $activeEnrollments->pluck('batch_id')->unique()->values();
 
         $class = \App\Models\OnlineClass::query()
-            ->whereHas(
-                'accessRules',
-                function ($q) use ($courseIds, $batchIds) {
-                    $q->where('access_type', 'all')
-                    ->orWhere(function ($q) use ($courseIds) {
-                        $q->where('access_type', 'course')
-                        ->whereIn('course_id', $courseIds);
-                    })
-                    ->orWhere(function ($q) use ($courseIds, $batchIds) {
-                        $q->where('access_type', 'batch')
-                        ->whereIn('course_id', $courseIds)
-                        ->whereIn('batch_id', $batchIds);
+            ->where(function ($q) use ($activeEnrollments) {
+
+                $q->whereHas('accessRules', function ($rule) {
+                    $rule->where('access_type', 'all');
+                });
+
+                foreach ($activeEnrollments as $enrollment) {
+
+                    $q->orWhereHas('accessRules', function ($rule) use ($enrollment) {
+
+                        $rule->where(function ($courseRule) use ($enrollment) {
+                            $courseRule->where('access_type', 'course')
+                                ->where('course_id', $enrollment->course_id);
+                        });
+
+                        $rule->orWhere(function ($batchRule) use ($enrollment) {
+                            $batchRule->where('access_type', 'batch')
+                                ->where('course_id', $enrollment->course_id)
+                                ->where('batch_id', $enrollment->batch_id);
+                        });
+
                     });
+
                 }
-            )
+            })
             ->with('accessRules')
             ->findOrFail($id);
 
