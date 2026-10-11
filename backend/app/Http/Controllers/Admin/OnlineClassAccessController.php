@@ -54,6 +54,28 @@ class OnlineClassAccessController extends Controller
             'batch_id'    => 'nullable|exists:batches,id',
         ]);
 
+        // A batch rule must reference a batch that belongs to the course —
+        // otherwise the rule can never match any student.
+        if ($data['access_type'] === 'course' && empty($data['course_id'])) {
+            return response()->json(['message' => 'Course is required for course-level access.'], 422);
+        }
+
+        if ($data['access_type'] === 'batch') {
+            if (empty($data['course_id']) || empty($data['batch_id'])) {
+                return response()->json(['message' => 'Course and batch are required for batch-level access.'], 422);
+            }
+
+            $batchMatches = \App\Models\Batch::where('id', $data['batch_id'])
+                ->where('course_id', $data['course_id'])
+                ->exists();
+
+            if (! $batchMatches) {
+                return response()->json([
+                    'message' => 'Selected batch does not belong to selected course.',
+                ], 422);
+            }
+        }
+
         DB::transaction(function () use ($class, $data) {
 
             $class->accessRules()->delete();
