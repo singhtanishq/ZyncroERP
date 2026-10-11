@@ -100,7 +100,7 @@ export default function StudentAdmitCardViewModal({
           {/* FOOTER */}
           <div className="px-6 py-5 border-t border-slate-100/50 bg-slate-50/50 flex justify-end shrink-0">
             <button
-              onClick={() => onPreview(admitCard.id)}
+              onClick={() => onPreview(admitCard.qr_token)}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold tracking-wide shadow-sm hover:shadow focus:outline-none focus:ring-4 focus:ring-indigo-500/20 transition-all duration-200 active:scale-[0.98]"
             >
               <Eye size={18} />
