@@ -127,17 +127,22 @@ export default function ManageAttendance({
         await api.post(`${apiPrefix}/attendance/sessions/end`, {
           session_id: sessionId,
         });
+
+        // Only drop the session once the API confirms it ended.
+        const updated = sessions.filter(
+          (s) => s.session_id !== sessionId
+        );
+        persistSessions(updated);
+        setLiveSession(null);
       } catch (e) {
         console.error("End session failed", e);
+        toast(
+          e?.response?.data?.message || "Failed to end the attendance session",
+          "error"
+        );
       }
-
-      const updated = sessions.filter(
-        (s) => s.session_id !== sessionId
-      );
-      persistSessions(updated);
-      setLiveSession(null);
     },
-    [sessions, persistSessions, apiPrefix]
+    [sessions, persistSessions, apiPrefix, toast]
   );
 
   /* ---------------- LOAD REPORT ---------------- */
@@ -146,6 +151,7 @@ export default function ManageAttendance({
 
     try {
       setLoadingReport(true);
+      setReportError(false);
 
       const res = await api.get(
         `${apiPrefix}/attendance/report?course_id=${courseId}&batch_id=${batchId}`
@@ -154,6 +160,7 @@ export default function ManageAttendance({
       setReportData(res.data);
     } catch {
       setReportData(null);
+      setReportError(true);
     } finally {
       setLoadingReport(false);
     }
