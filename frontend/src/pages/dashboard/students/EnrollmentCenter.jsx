@@ -34,6 +34,7 @@ const itemVariants = {
 };
 
 export default function EnrollmentCenter() {
+  const { toast } = useToast();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -44,12 +45,14 @@ export default function EnrollmentCenter() {
   const [students, setStudents] = useState([]);
   const [courses, setCourses] = useState([]);
   const [batches, setBatches] = useState([]);
+  const [franchises, setFranchises] = useState([]);
   const [saving, setSaving] = useState(false);
 
   const [form, setForm] = useState({
     student_id: "",
     course_id: "",
     batch_id: "",
+    franchise_id: "",
   });
 
   const loadData = async () => {
