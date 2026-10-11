@@ -27,14 +27,23 @@ class GenerateStudentLoginController extends Controller
             return $user;
         });
 
-        app(EmailService::class)->studentCredentials(
+        // The reset invalidates every existing session.
+        $user->tokens()->delete();
+
+        $mailResult = app(EmailService::class)->studentCredentials(
             $user->email,
             $user->name,
             $plainPassword
         );
 
+        $message = 'Credentials reset and emailed successfully';
+
+        if (! ($mailResult['ok'] ?? false)) {
+            $message = 'Credentials were reset, but the email could not be sent. Try again.';
+        }
+
         return response()->json([
-            'message' => 'Credentials reset and emailed successfully'
+            'message' => $message
         ]);
     }
 }
