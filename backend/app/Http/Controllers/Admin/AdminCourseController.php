@@ -42,7 +42,23 @@ class AdminCourseController extends Controller
 
         $data['amount'] = $data['amount'] ?? 0;
 
+        $oldAmount = (float) $course->amount;
+
         $course->update($data);
+
+        /*
+         | Fee totals are snapshotted at enrollment time. Propagate a price
+         | change to every fee row that is not fully paid yet.
+         */
+        if ((float) $course->amount !== $oldAmount) {
+            DB::table('student_fees')
+                ->where('course_id', $course->id)
+                ->where('status', '!=', 'paid')
+                ->update([
+                    'total_fees' => $course->amount,
+                    'updated_at' => now(),
+                ]);
+        }
 
         return $course;
     }
@@ -61,11 +77,44 @@ class AdminCourseController extends Controller
     {
         $course = Course::findOrFail($id);
 
+        /*
+         | Beyond direct student links, deleting a course cascades exams,
+         | results, admit cards, assignments, submissions, enrollments and
+         | fee rows — all of that academic/financial history must block it.
+         */
         $hasStudents = Student::where('course_id', $course->id)->exists();
 
         if ($hasStudents) {
             return response()->json([
                 'message' => 'Students are associated with this course. Deletion not allowed.'
+            ], 409);
+        }
+
+        $hasExams = \App\Models\Exam::where('course_id', $course->id)->exists();
+        if ($hasExams) {
+            return response()->json([
+                'message' => 'Exams exist for this course. Deletion not allowed.'
+            ], 409);
+        }
+
+        $hasAssignments = \App\Models\Assignment::where('course_id', $course->id)->exists();
+        if ($hasAssignments) {
+            return response()->json([
+                'message' => 'Assignments exist for this course. Deletion not allowed.'
+            ], 409);
+        }
+
+        $hasEnrollments = \App\Models\StudentEnrollment::where('course_id', $course->id)->exists();
+        if ($hasEnrollments) {
+            return response()->json([
+                'message' => 'Enrollment records exist for this course. Deletion not allowed.'
+            ], 409);
+        }
+
+        $hasFees = \App\Models\StudentFee::where('course_id', $course->id)->exists();
+        if ($hasFees) {
+            return response()->json([
+                'message' => 'Fee records exist for this course. Deletion not allowed.'
             ], 409);
         }
 
