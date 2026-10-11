@@ -191,7 +191,7 @@ export default function MyCertificates() {
                       <button
                         onClick={() =>
                           window.open(
-                            `${import.meta.env.VITE_API_BASE_URL}/certificate/${certificate.certificate_number}`,
+                            `${import.meta.env.VITE_API_BASE_URL}/api/certificate/${certificate.certificate_number}`,
                             "_blank"
                           )
                         }
