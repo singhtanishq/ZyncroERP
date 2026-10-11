@@ -72,9 +72,9 @@ export default function AdmitCards({
       }
   };
 
-  const viewAdmitCard = (admitCardId) => {
+  const viewAdmitCard = (admitCardToken) => {
     setPreviewData(
-      `${import.meta.env.VITE_API_BASE_URL}/admit-card/${admitCardId}/pdf`
+      `${import.meta.env.VITE_API_BASE_URL}/api/admit-card/token/${admitCardToken}/pdf`
     );
   };
 
@@ -286,7 +286,7 @@ export default function AdmitCards({
                                     <CheckCircle2 size={12}/> Generated
                                 </span>
                                 <button
-                                    onClick={() => viewAdmitCard(student.admit_card_id)}
+                                    onClick={() => viewAdmitCard(student.admit_card_token)}
                                     className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] text-xs font-bold uppercase tracking-wider hover:bg-[rgb(var(--zx-surface-hover))] hover:text-brand-teal-500 hover:border-brand-teal-500/40 transition-all shadow-sm"
                                 >
                                     <Eye size={14} /> View
