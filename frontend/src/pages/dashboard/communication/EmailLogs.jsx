@@ -50,21 +50,26 @@ const itemVariants = {
 };
 
 export default function EmailLogs() {
+  const { toast } = useToast();
   const [logs, setLogs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [selectedLog, setSelectedLog] = useState(null);
   const [loadingLogId, setLoadingLogId] = useState(null);
 
   // ================= FETCH LOGS =================
   const fetchLogs = async () => {
     setIsLoading(true);
+    setError(false);
     try {
       const res = await api.get("/admin/communication/logs", {
         withCredentials: true,
       });
       setLogs(res.data);
-    } catch (error) {
-      console.error("Failed to fetch logs", error);
+    } catch (err) {
+      console.error("Failed to fetch logs", err);
+      setLogs([]);
+      setError(true);
     } finally {
       setIsLoading(false);
     }
@@ -82,8 +87,12 @@ export default function EmailLogs() {
         withCredentials: true,
       });
       setSelectedLog(res.data);
-    } catch (error) {
-      console.error("Failed to fetch log details", error);
+    } catch (err) {
+      console.error("Failed to fetch log details", err);
+      toast(
+        err?.response?.data?.message || "Failed to load log details",
+        "error"
+      );
     } finally {
       setLoadingLogId(null);
     }
