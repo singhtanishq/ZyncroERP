@@ -211,7 +211,7 @@ export default function DigitalIdCard() {
                           </button>
 
                           <a
-                            href={`${import.meta.env.VITE_API_BASE_URL}/id-card/${student.public_token}/download`}
+                            href={`${import.meta.env.VITE_API_BASE_URL}/api/id-card/${student.public_token}/download`}
                             target="_blank"
                             rel="noreferrer"
                             className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold transition-all active:scale-[0.98] bg-white border border-slate-200/80 text-slate-700 hover:bg-slate-50 hover:border-indigo-300 hover:text-indigo-600 shadow-sm text-sm"
@@ -237,7 +237,7 @@ export default function DigitalIdCard() {
           <PdfPreviewModal
             open={previewOpen}
             onClose={() => setPreviewOpen(false)}
-            url={`${import.meta.env.VITE_API_BASE_URL}/id-card/${student.public_token}/view`}
+            url={`${import.meta.env.VITE_API_BASE_URL}/api/id-card/${student.public_token}/view`}
             title="Digital ID Card"
             iframeTitle="Student ID Card Preview"
             orientation="portrait"
