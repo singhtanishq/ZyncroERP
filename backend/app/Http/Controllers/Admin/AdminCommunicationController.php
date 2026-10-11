@@ -39,9 +39,10 @@ class AdminCommunicationController extends Controller
     public function send(Request $request)
     {
         $data = $request->validate([
-            'user_ids' => ['required', 'array'],
-            'subject' => ['required'],
-            'content' => ['required'],
+            'user_ids' => ['required', 'array', 'min:1'],
+            'user_ids.*' => ['integer', 'exists:users,id'],
+            'subject' => ['required', 'string', 'max:255'],
+            'content' => ['required', 'string', 'max:20000'],
         ]);
 
         $users = User::whereIn('id', $data['user_ids'])->get();
@@ -50,8 +51,18 @@ class AdminCommunicationController extends Controller
             SendBulkEmailJob::dispatch($user->id, $data['subject'], $data['content']);
         }
 
+        /*
+         | The jobs are queued, not delivered — report the queued count and
+         | flag any requested ids that matched no user so the admin knows.
+         */
+        $skipped = count($data['user_ids']) - $users->count();
+
+        $message = $users->count() . ' emails queued for delivery'
+            . ($skipped > 0 ? " ({$skipped} selected id(s) matched no user and were skipped)." : '.');
+
         return response()->json([
-            'message' => count($users) . ' emails sent successfully'
+            'message' => $message,
+            'queued' => $users->count(),
         ]);
     }
 
