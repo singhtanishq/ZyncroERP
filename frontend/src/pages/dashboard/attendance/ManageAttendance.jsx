@@ -232,6 +232,7 @@ export default function ManageAttendance({
                     onChange={(e) => {
                       setCourseId(e.target.value);
                       setReportData(null); // Reset report when filter changes
+                      setReportError(false);
                     }}
                 >
                     <option value="">Select Academic Course</option>
@@ -253,6 +254,7 @@ export default function ManageAttendance({
                     onChange={(e) => {
                       setBatchId(e.target.value);
                       setReportData(null); // Reset report when filter changes
+                      setReportError(false);
                     }}
                     disabled={!courseId}
                 >
