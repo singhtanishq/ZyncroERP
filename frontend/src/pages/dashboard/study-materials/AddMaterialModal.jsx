@@ -87,6 +87,34 @@ export default function AddMaterialModal({
 
   if (!open) return null;
 
+  /* ================= FILE VALIDATION ================= */
+
+  const handleFileChange = (e) => {
+    const selected = e.target.files?.[0];
+    if (!selected) return;
+
+    const isPdf =
+      selected.type === "application/pdf" ||
+      selected.name.toLowerCase().endsWith(".pdf");
+
+    if (!isPdf) {
+      setError("Only PDF files are allowed.");
+      e.target.value = "";
+      return;
+    }
+
+    if (selected.size > MAX_PDF_SIZE) {
+      setError(
+        `File is too large (${(selected.size / 1024 / 1024).toFixed(1)}MB). Maximum allowed size is 10MB.`
+      );
+      e.target.value = "";
+      return;
+    }
+
+    setError("");
+    setFile(selected);
+  };
+
   /* ================= VALIDATION ================= */
 
   const validate = () => {
@@ -95,11 +123,17 @@ export default function AddMaterialModal({
     if (form.type === "pdf" && !file)
       return "Please upload a PDF file";
 
+    if (form.type === "pdf" && file && file.size > MAX_PDF_SIZE)
+      return "File is too large. Maximum allowed size is 10MB.";
+
     if (form.type === "video" && !form.video_url.trim())
       return "Video URL is required";
 
     if (form.type === "notes" && !form.notes.trim())
       return "Notes content is required";
+
+    if (accessType === "course" && !courseId)
+      return "Please select a course";
 
     if (accessType === "batch" && (!courseId || !batchId))
       return "Please select course and batch";
@@ -154,21 +188,23 @@ export default function AddMaterialModal({
         {
           access_type: accessType,
           course_id:
-              accessType === "batch"
-                  ? courseId
+              accessType === "batch" || accessType === "course"
+                  ? Number(courseId)
                   : null,
 
           batch_id:
               accessType === "batch"
-                  ? batchId
+                  ? Number(batchId)
                   : null,
         }
       );
 
       onSaved();
       reset();
-    } catch {
-      setError("Failed to add study material");
+    } catch (err) {
+      setError(
+        err?.response?.data?.message || "Failed to add study material"
+      );
     } finally {
       setSaving(false);
     }
@@ -317,7 +353,7 @@ export default function AddMaterialModal({
                   type="file"
                   accept="application/pdf"
                   hidden
-                  onChange={(e) => setFile(e.target.files[0])}
+                  onChange={handleFileChange}
                 />
               </label>
             </div>
