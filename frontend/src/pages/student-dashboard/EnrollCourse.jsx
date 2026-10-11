@@ -7,8 +7,6 @@ import {
   CalendarDays,
   BookOpen,
   CheckCircle2,
-  Search,
-  Sparkles,
   ChevronDown,
   Loader2,
   Inbox,
@@ -417,6 +415,8 @@ export default function EnrollCourse() {
         onClose={() => setConfirmItem(null)}
         onConfirm={() => enroll(confirmItem)}
         title="Confirm Enrollment"
+        confirmText="Confirm Enrollment"
+        busy={saving}
         message={
           confirmItem
             ? `Are you sure you want to request enrollment for "${confirmItem.course_name}" (${confirmItem.batch_name})?`
