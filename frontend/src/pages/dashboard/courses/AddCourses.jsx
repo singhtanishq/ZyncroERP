@@ -256,8 +256,16 @@ export default function ManageCourses() {
           </div>
         )}
 
+        {/* Error State */}
+        {!loading && loadError && (
+          <ErrorState
+            message="We couldn't load the course list. Please try again."
+            onRetry={loadCourses}
+          />
+        )}
+
         {/* Table Body */}
-        {!loading && (
+        {!loading && !loadError && (
           <div className="divide-y divide-[rgb(var(--zx-border))]">
             {courses.length === 0 ? (
                 <div className="p-20 text-center text-[rgb(var(--zx-text-muted))]">
