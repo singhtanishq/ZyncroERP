@@ -15,6 +15,8 @@ import {
   X,
   Save,
   CheckCircle2,
+  AlertCircle,
+  Loader2,
   Inbox
 } from "lucide-react";
 
@@ -30,11 +32,14 @@ export default function ManageExams({
   const [postponeExam, setPostponeExam] = useState(null);
   const [editExam, setEditExam] = useState(null);
 
-  const [toast, setToast] = useState("");
+  const [confirmBusy, setConfirmBusy] = useState(false);
+  const [savingExam, setSavingExam] = useState(false);
 
-  const showToast = (msg) => {
-    setToast(msg);
-    setTimeout(() => setToast(""), 2500);
+  const [toast, setToast] = useState(null);
+
+  const showToast = (msg, type = "success") => {
+    setToast({ message: msg, type });
+    setTimeout(() => setToast(null), 3000);
   };
 
   const loadExams = async () => {
@@ -52,14 +57,24 @@ export default function ManageExams({
   }, [apiPrefix]);
 
   const cancelExam = async (examId) => {
-    await api.put(`${apiPrefix}/exams/${examId}/cancel`);
-    showToast("Exam cancelled");
-    setConfirm(null);
-    loadExams();
+    setConfirmBusy(true);
+    try {
+      await api.put(`${apiPrefix}/exams/${examId}/cancel`);
+      showToast("Exam cancelled");
+      setConfirm(null);
+      loadExams();
+    } catch (err) {
+      showToast(
+        err?.response?.data?.message || "Failed to cancel exam. Please try again.",
+        "error"
+      );
+    } finally {
+      setConfirmBusy(false);
+    }
   };
 
   const saveExamUpdates = async () => {
-    if (!editExam) return;
+    if (!editExam || savingExam) return;
 
     const {
       start_time,
@@ -71,13 +86,23 @@ export default function ManageExams({
       ...payload
     } = editExam;
 
-    await api.put(
-      `${apiPrefix}/exams/${editExam.id}`,
-      payload
-    );
-    showToast("Exam updated");
-    setEditExam(null);
-    loadExams();
+    setSavingExam(true);
+    try {
+      await api.put(
+        `${apiPrefix}/exams/${editExam.id}`,
+        payload
+      );
+      showToast("Exam updated");
+      setEditExam(null);
+      loadExams();
+    } catch (err) {
+      showToast(
+        err?.response?.data?.message || "Failed to update exam. Please try again.",
+        "error"
+      );
+    } finally {
+      setSavingExam(false);
+    }
   };
 
   // Helper for status colors
@@ -259,6 +284,7 @@ export default function ManageExams({
         }
         onConfirm={() => cancelExam(confirm.id)}
         onClose={() => setConfirm(null)}
+        busy={confirmBusy}
       />
 
       {/* VIEW MODAL */}
@@ -292,10 +318,21 @@ export default function ManageExams({
                 Cancel
               </button>
               <button 
-                className="px-6 py-2.5 rounded-xl bg-brand-teal-500 text-white text-sm font-semibold hover:bg-brand-teal-600 shadow-lg shadow-brand-teal-500/20 transition-all flex items-center gap-2 active:scale-95" 
+                className={`px-6 py-2.5 rounded-xl bg-brand-teal-500 text-white text-sm font-semibold hover:bg-brand-teal-600 shadow-lg shadow-brand-teal-500/20 transition-all flex items-center gap-2 active:scale-95 ${
+                  savingExam ? "opacity-70 cursor-not-allowed shadow-none" : ""
+                }`} 
                 onClick={saveExamUpdates}
+                disabled={savingExam}
               >
-                <Save size={16} /> Save Changes
+                {savingExam ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" /> Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save size={16} /> Save Changes
+                  </>
+                )}
               </button>
             </div>
           }
@@ -432,10 +469,18 @@ export default function ManageExams({
       {toast && (
         <div className="fixed bottom-8 right-8 z-50 animate-in slide-in-from-bottom-5 duration-300">
           <div className="bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-[rgb(var(--zx-border))] backdrop-blur-xl">
-            <div className="bg-emerald-500/20 text-emerald-500 rounded-full p-1 border border-emerald-500/30">
-                <CheckCircle2 size={14} strokeWidth={3} />
+            <div className={`rounded-full p-1 border ${
+              toast.type === "error"
+                ? "bg-rose-500/20 text-rose-500 border-rose-500/30"
+                : "bg-emerald-500/20 text-emerald-500 border-emerald-500/30"
+            }`}>
+                {toast.type === "error" ? (
+                  <AlertCircle size={14} strokeWidth={3} />
+                ) : (
+                  <CheckCircle2 size={14} strokeWidth={3} />
+                )}
             </div>
-            <span className="text-sm font-bold tracking-wide">{toast}</span>
+            <span className="text-sm font-bold tracking-wide">{toast.message}</span>
           </div>
         </div>
       )}
