@@ -20,10 +20,22 @@ class AttendanceOtpVerifyController extends Controller
             ->where('otp', hash('sha256', $data['otp']))
             ->whereNull('verified_at')
             ->where('expires_at', '>', now())
+            ->where('attempts', '<', 5)
             ->orderByDesc('id')
             ->first();
 
         if (!$otpRow) {
+            /*
+             | Failed guesses burn down every live code for this email, so a
+             | wrong OTP rate cannot be distributed across multiple codes.
+             */
+            DB::table('attendance_otps')
+                ->where('email', $data['email'])
+                ->whereNull('verified_at')
+                ->where('expires_at', '>', now())
+                ->where('attempts', '<', 5)
+                ->increment('attempts');
+
             return response()->json(['message' => 'Invalid or expired OTP'], 422);
         }
 
