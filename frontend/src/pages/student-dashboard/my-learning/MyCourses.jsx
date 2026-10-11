@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../../../lib/api/apiClient";
+import { useToast } from "../../../components/common/ToastProvider";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -9,7 +10,6 @@ import {
   Clock,
   XCircle,
   Loader2,
-  Sparkles,
   Inbox,
   Hash,
   Layers,
@@ -33,6 +33,7 @@ const itemVariants = {
 };
 
 export default function MyCourses() {
+  const { toast } = useToast();
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -62,7 +63,11 @@ export default function MyCourses() {
       setSelectedCourse(res.data);
       setModalOpen(true);
     } catch (err) {
-      console.error(err);
+      toast(
+        err?.response?.data?.message ||
+          "Unable to load course details. Please try again.",
+        "error"
+      );
     } finally {
       setLoadingId(null);
     }
