@@ -99,4 +99,39 @@ class StudentAssignmentController extends Controller
             'submission' => $submission,
         ]);
     }
+
+    /**
+     * Streams the assignment's attachment to an enrolled student.
+     * (The admin file route is role-gated and unusable from the student
+     * dashboard.)
+     */
+    public function attachment($id)
+    {
+        $student = Student::where('user_id', auth()->id())->firstOrFail();
+
+        $assignment = Assignment::findOrFail($id);
+
+        $allowed = $student
+            ->enrollments()
+            ->where('status', 'active')
+            ->where('course_id', $assignment->course_id)
+            ->where('batch_id', $assignment->batch_id)
+            ->exists();
+
+        if (!$allowed) {
+            abort(403);
+        }
+
+        if (empty($assignment->assignment_file)) {
+            abort(404);
+        }
+
+        $path = storage_path('app/private/' . $assignment->assignment_file);
+
+        if (!file_exists($path)) {
+            abort(404);
+        }
+
+        return response()->file($path);
+    }
 }
