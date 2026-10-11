@@ -14,6 +14,13 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // The ledger lives on a separate connection that migrate:fresh never
+        // resets (and sqlite :memory: test connections are recreated per
+        // process) — so guard against re-creation.
+        if (Schema::connection('payments_db')->hasTable('payments')) {
+            return;
+        }
+
         Schema::connection('payments_db')->create('payments', function (Blueprint $table) {
             $table->id();
 
