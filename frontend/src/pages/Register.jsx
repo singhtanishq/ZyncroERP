@@ -53,9 +53,16 @@ export default function RegisterPage() {
   const [otpCode, setOtpCode] = useState("");
   const [otpError, setOtpError] = useState("");
   const [verifyingOtp, setVerifyingOtp] = useState(false);
+  const [resendIn, setResendIn] = useState(0);
   const [otpAttempts, setOtpAttempts] = useState(0);
 
   const countryDialCode = COUNTRY_CODE_BY_NAME[country] ?? "";
+
+  useEffect(() => {
+    if (resendIn <= 0) return undefined;
+    const t = setTimeout(() => setResendIn((n) => n - 1), 1000);
+    return () => clearTimeout(t);
+  }, [resendIn]);
 
   function resetOtpState() {
     setOtpOpen(false);
@@ -90,6 +97,7 @@ export default function RegisterPage() {
       await registerStart(trimmedName, trimmedEmail, role);
       setEmailVerified(false);
       setOtpOpen(true);
+      setResendIn(60);
       setSuccessMsg("Verification code sent to your email.");
       setTimeout(() => setSuccessMsg(""), 2500);
     } catch (err) {
@@ -367,6 +375,7 @@ export default function RegisterPage() {
                       autoComplete="name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
+                      disabled={emailVerified}
                       required
                       placeholder="John Doe"
                       className="w-full rounded-2xl pl-11 pr-4 py-3.5 bg-white border border-slate-200/80 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-teal-500/50 focus:ring-4 focus:ring-teal-500/10 transition-all text-[15px] font-medium shadow-sm"
@@ -426,6 +435,7 @@ export default function RegisterPage() {
                       id="role"
                       value={role}
                       onChange={(e) => setRole(e.target.value)}
+                      disabled={emailVerified}
                       required
                       className="w-full appearance-none rounded-2xl pl-11 pr-4 py-3.5 bg-white border border-slate-200/80 text-slate-900 focus:outline-none focus:border-teal-500/50 focus:ring-4 focus:ring-teal-500/10 transition-all text-[15px] font-medium shadow-sm"
                     >
@@ -733,6 +743,25 @@ export default function RegisterPage() {
               </div>
 
               {otpError && <div className="text-[13px] font-semibold text-red-600 text-center bg-red-50 py-2.5 rounded-xl">{otpError}</div>}
+
+              <div className="text-center">
+                {resendIn > 0 ? (
+                  <span className="text-[13px] font-medium text-slate-500">Resend code in {resendIn}s</span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setOtpError("");
+                      await handleSendSignupOtp();
+                      setResendIn(60);
+                    }}
+                    disabled={sendingOtp || verifyingOtp}
+                    className="text-[13px] font-semibold text-teal-600 hover:text-teal-700 disabled:opacity-60 transition-colors"
+                  >
+                    {sendingOtp ? "Resending..." : "Didn't receive it? Resend code"}
+                  </button>
+                )}
+              </div>
 
               <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
                 <button
