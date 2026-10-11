@@ -10,16 +10,14 @@ class StudentIdCardPdfController extends Controller
 {
     private function generateQr(string $text): string
     {
-        $url = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data='
-             . urlencode($text);
-    
-        $image = @file_get_contents($url);
-    
-        if ($image === false) {
-            return '';
-        }
-    
-        return base64_encode($image);
+        $result = \Endroid\QrCode\Builder\Builder::create()
+            ->writer(new \Endroid\QrCode\Writer\PngWriter())
+            ->data($text)
+            ->size(200)
+            ->margin(4)
+            ->build();
+
+        return base64_encode($result->getString());
     }
 
     public function view($token)
