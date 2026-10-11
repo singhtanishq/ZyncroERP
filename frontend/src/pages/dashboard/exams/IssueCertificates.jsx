@@ -1,6 +1,7 @@
 import React, { useEffect, useState, Fragment } from "react";
 import api from "../../../lib/api/apiClient";
 import ConfirmModal from "../../../components/ConfirmModal";
+import { useToast } from "../../../components/common/ToastProvider";
 import { 
   Award, 
   User, 
@@ -20,6 +21,8 @@ export default function IssueCertificates({
   const [isLoading, setIsLoading] = useState(true);
   const [confirm, setConfirm] = useState(null);
   const [expandedId, setExpandedId] = useState(null);
+  const [issuing, setIssuing] = useState(false);
+  const { toast } = useToast();
 
   const loadCertificates = () => {
     setIsLoading(true);
@@ -33,13 +36,24 @@ export default function IssueCertificates({
   }, [apiPrefix]);
 
   const issueCertificate = async () => {
-    if (!confirm) return;
+    if (!confirm || issuing) return;
 
-    await api.post(
-      `${apiPrefix}/certificates/${confirm.id}/issue`
-    );
-    setConfirm(null);
-    loadCertificates();
+    setIssuing(true);
+    try {
+      await api.post(
+        `${apiPrefix}/certificates/${confirm.id}/issue`
+      );
+      toast("Certificate issued successfully.", "success");
+      setConfirm(null);
+      loadCertificates();
+    } catch (err) {
+      toast(
+        err?.response?.data?.message || "Failed to issue certificate. Please try again.",
+        "error"
+      );
+    } finally {
+      setIssuing(false);
+    }
   };
 
   const toggleExpand = (id) => {
@@ -232,6 +246,7 @@ export default function IssueCertificates({
           }
           onConfirm={issueCertificate}
           onClose={() => setConfirm(null)}
+          busy={issuing}
         />
       )}
     </div>
