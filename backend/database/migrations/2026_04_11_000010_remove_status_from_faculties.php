@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -11,6 +12,15 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // sqlite keeps the status index alive after dropColumn and then
+        // errors on every write — drop it explicitly first.
+        if (DB::connection()->getDriverName() === 'sqlite'
+            && Schema::hasIndex('faculties', 'faculties_status_index')) {
+            Schema::table('faculties', function (Blueprint $table) {
+                $table->dropIndex('faculties_status_index');
+            });
+        }
+
         Schema::table('faculties', function (Blueprint $table) {
             $table->dropColumn('status');
         });
