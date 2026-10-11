@@ -15,44 +15,50 @@ export default function CommunicationViewModal({
 }) {
   if (!open || !communication) return null;
 
+  const chipClass =
+    "inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-brand-teal-500/10 text-brand-teal-500 border border-brand-teal-500/20 text-[10px] uppercase tracking-widest font-bold";
+
   function audience() {
-    const access = communication.accessRules?.[0];
+    // Backend eager-loads access_rules: [{ access_type, course: {name}, batch: {name} }]
+    const rules = Array.isArray(communication.access_rules)
+      ? communication.access_rules
+      : [];
 
-    if (!access) {
+    if (rules.length === 0) {
       return (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-brand-teal-500/10 text-brand-teal-500 border border-brand-teal-500/20 text-[10px] uppercase tracking-widest font-bold">
+        <span className={chipClass}>
           <Globe size={12} />
           All Students
         </span>
       );
     }
 
-    if (access.access_type === "all") {
+    return rules.map((access, idx) => {
+      if (access.access_type === "course") {
+        return (
+          <span key={idx} className={chipClass}>
+            <BookOpen size={12} />
+            {access.course?.name || "Course"}
+          </span>
+        );
+      }
+
+      if (access.access_type === "batch") {
+        return (
+          <span key={idx} className={chipClass}>
+            <Layers size={12} />
+            {access.course?.name || "Course"} • {access.batch?.name || "Batch"}
+          </span>
+        );
+      }
+
       return (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-brand-teal-500/10 text-brand-teal-500 border border-brand-teal-500/20 text-[10px] uppercase tracking-widest font-bold">
+        <span key={idx} className={chipClass}>
           <Globe size={12} />
           All Students
         </span>
       );
-    }
-
-    if (access.access_type === "course") {
-      return (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-brand-teal-500/10 text-brand-teal-500 border border-brand-teal-500/20 text-[10px] uppercase tracking-widest font-bold">
-          <BookOpen size={12} />
-          {access.course?.name}
-        </span>
-      );
-    }
-
-    return (
-      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-brand-teal-500/10 text-brand-teal-500 border border-brand-teal-500/20 text-[10px] uppercase tracking-widest font-bold">
-        <Layers size={12} />
-        {access.course?.name}
-        {" • "}
-        {access.batch?.name}
-      </span>
-    );
+    });
   }
 
   return (
