@@ -65,13 +65,13 @@ export default function MyCertificates() {
       
       {/* HEADER */}
       <div className="mb-10">
-        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 flex items-center gap-4">
+        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-[rgb(var(--zx-text))] flex items-center gap-4">
           <div className="flex items-center justify-center p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-sm text-white shrink-0">
             <Award size={24} />
           </div>
           My Certificates
         </h1>
-        <p className="text-slate-500 mt-3 text-m max-w-2xl leading-relaxed">
+        <p className="text-[rgb(var(--zx-text-muted))] mt-3 text-m max-w-2xl leading-relaxed">
           View, verify, and download all official credentials and certificates issued to you across your enrolled courses.
         </p>
       </div>
@@ -80,12 +80,12 @@ export default function MyCertificates() {
       <div className="relative group max-w-xl mb-10">
         <BookOpen
           size={20}
-          className="absolute left-4 top-3.5 text-slate-400 group-focus-within:text-indigo-500 transition-colors duration-300 z-10"
+          className="absolute left-4 top-3.5 text-[rgb(var(--zx-text-muted))] group-focus-within:text-indigo-500 transition-colors duration-300 z-10"
         />
         <select
           value={selectedEnrollment}
           onChange={(e) => setSelectedEnrollment(e.target.value)}
-          className="w-full appearance-none pl-12 pr-10 py-3.5 bg-white/60 backdrop-blur-xl rounded-2xl border border-slate-200/80 shadow-[0_2px_10px_rgb(0,0,0,0.02)] focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-400 transition-all duration-300 text-slate-700 font-medium cursor-pointer"
+          className="w-full appearance-none pl-12 pr-10 py-3.5 bg-[rgb(var(--zx-surface))] backdrop-blur-xl rounded-2xl border border-[rgb(var(--zx-border))] shadow-[0_2px_10px_rgb(0,0,0,0.02)] focus:bg-[rgb(var(--zx-surface))] focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-400 transition-all duration-300 text-[rgb(var(--zx-text))] font-medium cursor-pointer"
         >
           <option value="">Select Academic Enrollment...</option>
           {enrollments.map((enrollment) => (
@@ -96,46 +96,46 @@ export default function MyCertificates() {
         </select>
         <ChevronDown
           size={20}
-          className="absolute right-4 top-3.5 text-slate-400 pointer-events-none"
+          className="absolute right-4 top-3.5 text-[rgb(var(--zx-text-muted))] pointer-events-none"
         />
       </div>
 
       {/* CONTENT AREA */}
       {!selectedEnrollment ? (
-        <div className="bg-white/40 backdrop-blur-2xl rounded-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] py-32 flex flex-col items-center transition-all duration-500">
-          <div className="bg-slate-100/50 p-6 rounded-full mb-6">
-            <Search size={48} className="text-slate-400" />
+        <div className="bg-[rgb(var(--zx-surface))] backdrop-blur-2xl rounded-3xl border border-[rgb(var(--zx-border))] shadow-[0_8px_30px_rgb(0,0,0,0.04)] py-32 flex flex-col items-center transition-all duration-500">
+          <div className="bg-[rgb(var(--zx-surface-hover))] p-6 rounded-full mb-6">
+            <Search size={48} className="text-[rgb(var(--zx-text-muted))]" />
           </div>
-          <h3 className="text-2xl font-bold text-slate-800 tracking-tight">
+          <h3 className="text-2xl font-bold text-[rgb(var(--zx-text))] tracking-tight">
             Select an Enrollment
           </h3>
-          <p className="mt-2 text-slate-500 font-medium text-center max-w-md">
+          <p className="mt-2 text-[rgb(var(--zx-text-muted))] font-medium text-center max-w-md">
             Choose a specific course and batch from the dropdown above to view your earned certificates.
           </p>
         </div>
       ) : loadingCerts ? (
-        <div className="flex flex-col items-center justify-center py-32 text-slate-500 bg-white/40 backdrop-blur-2xl rounded-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+        <div className="flex flex-col items-center justify-center py-32 text-[rgb(var(--zx-text-muted))] bg-[rgb(var(--zx-surface))] backdrop-blur-2xl rounded-3xl border border-[rgb(var(--zx-border))] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
           <Loader2 size={40} className="animate-spin text-indigo-500 mb-4" />
           <p className="font-medium tracking-wide">Fetching certificates...</p>
         </div>
       ) : certificates.length === 0 ? (
-        <div className="bg-white/40 backdrop-blur-2xl rounded-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] py-32 flex flex-col items-center transition-all duration-500">
-          <div className="bg-slate-100/50 p-6 rounded-full mb-6">
-            <Inbox size={48} className="text-slate-400" />
+        <div className="bg-[rgb(var(--zx-surface))] backdrop-blur-2xl rounded-3xl border border-[rgb(var(--zx-border))] shadow-[0_8px_30px_rgb(0,0,0,0.04)] py-32 flex flex-col items-center transition-all duration-500">
+          <div className="bg-[rgb(var(--zx-surface-hover))] p-6 rounded-full mb-6">
+            <Inbox size={48} className="text-[rgb(var(--zx-text-muted))]" />
           </div>
-          <h3 className="text-2xl font-bold text-slate-800 tracking-tight">
+          <h3 className="text-2xl font-bold text-[rgb(var(--zx-text))] tracking-tight">
             No Certificates Found
           </h3>
-          <p className="mt-2 text-slate-500 font-medium text-center max-w-md">
+          <p className="mt-2 text-[rgb(var(--zx-text-muted))] font-medium text-center max-w-md">
             You haven't been issued any certificates for this specific enrollment yet.
           </p>
         </div>
       ) : (
-        <div className="bg-white/60 backdrop-blur-2xl rounded-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden transition-all duration-500">
+        <div className="bg-[rgb(var(--zx-surface))] backdrop-blur-2xl rounded-3xl border border-[rgb(var(--zx-border))] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden transition-all duration-500">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse whitespace-nowrap min-w-[800px]">
               <thead>
-                <tr className="bg-slate-50/80 border-b border-slate-200/60 text-slate-500 text-xs uppercase tracking-wider font-bold">
+                <tr className="bg-[rgb(var(--zx-surface-hover))] border-b border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text-muted))] text-xs uppercase tracking-wider font-bold">
                   <th className="p-5 pl-6">Certificate Name</th>
                   <th className="p-5">Certificate No.</th>
                   <th className="p-5">Program Details</th>
@@ -143,43 +143,43 @@ export default function MyCertificates() {
                   <th className="p-5 pr-6 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200/50">
+              <tbody className="divide-y divide-[rgb(var(--zx-border))]">
                 {certificates.map((certificate) => (
                   <tr 
                     key={certificate.id} 
-                    className="group hover:bg-white/90 transition-all duration-300"
+                    className="group hover:bg-[rgb(var(--zx-surface-hover))] transition-all duration-300"
                   >
                     <td className="p-5 pl-6">
                       <div className="flex items-center gap-4">
-                        <div className="bg-slate-50 border border-slate-100 text-slate-400 rounded-xl p-2.5 shrink-0 group-hover:bg-indigo-50 group-hover:text-indigo-600 group-hover:border-indigo-100 transition-colors duration-300 shadow-sm">
+                        <div className="bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text-muted))] rounded-xl p-2.5 shrink-0 group-hover:bg-indigo-50 group-hover:text-indigo-600 group-hover:border-indigo-100 transition-colors duration-300 shadow-sm">
                           <GraduationCap size={18} />
                         </div>
-                        <span className="font-bold text-slate-800 text-base group-hover:text-indigo-900 transition-colors duration-300">
+                        <span className="font-bold text-[rgb(var(--zx-text))] text-base group-hover:text-indigo-900 transition-colors duration-300">
                           {certificate.exam?.name || "Official Certificate"}
                         </span>
                       </div>
                     </td>
                     <td className="p-5">
-                      <span className="inline-flex items-center gap-1.5 bg-slate-100/60 px-3 py-1.5 rounded-lg border border-slate-200/60 text-slate-600 font-semibold text-sm">
-                        <Hash size={14} className="text-slate-400" /> 
+                      <span className="inline-flex items-center gap-1.5 bg-[rgb(var(--zx-surface-hover))] px-3 py-1.5 rounded-lg border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text-muted))] font-semibold text-sm">
+                        <Hash size={14} className="text-[rgb(var(--zx-text-muted))]" /> 
                         {certificate.certificate_number}
                       </span>
                     </td>
                     <td className="p-5">
                       <div className="flex flex-col gap-1.5 text-sm font-medium">
-                        <span className="text-slate-700 flex items-center gap-2">
-                          <BookOpen size={14} className="text-slate-400" /> 
+                        <span className="text-[rgb(var(--zx-text))] flex items-center gap-2">
+                          <BookOpen size={14} className="text-[rgb(var(--zx-text-muted))]" /> 
                           {certificate.course?.name || "N/A"}
                         </span>
-                        <span className="text-slate-500 flex items-center gap-2">
-                          <Layers size={14} className="text-slate-400" /> 
+                        <span className="text-[rgb(var(--zx-text-muted))] flex items-center gap-2">
+                          <Layers size={14} className="text-[rgb(var(--zx-text-muted))]" /> 
                           {certificate.batch?.name || "N/A"}
                         </span>
                       </div>
                     </td>
                     <td className="p-5">
-                      <span className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600">
-                        <Calendar size={14} className="text-slate-400" />
+                      <span className="inline-flex items-center gap-1.5 text-sm font-medium text-[rgb(var(--zx-text-muted))]">
+                        <Calendar size={14} className="text-[rgb(var(--zx-text-muted))]" />
                         {certificate.issued_at ? new Date(certificate.issued_at).toLocaleDateString(undefined, {
                           year: 'numeric',
                           month: 'short',
