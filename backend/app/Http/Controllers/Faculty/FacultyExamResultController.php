@@ -28,19 +28,24 @@ class FacultyExamResultController extends AdminExamResultController
     {
         $request->validate([
             'student_id'        => 'required|exists:students,id',
-            'scores'            => 'required|array',
+            'scores'            => 'required|array|min:1',
             'scores.*.exam_id'  => 'required|exists:exams,id',
             'scores.*.score'    => 'nullable|numeric|min:0|max:100',
         ]);
 
-        $exam = Exam::findOrFail(
-            $request->scores[0]['exam_id']
-        );
+        /*
+         | EVERY row must belong to a course/batch this faculty teaches —
+         | checking only scores[0] would let a foreign exam ride along in
+         | the same request.
+         */
+        foreach ($request->scores as $row) {
+            $exam = Exam::findOrFail($row['exam_id']);
 
-        FacultyAssignmentService::authorize(
-            $exam->course_id,
-            $exam->batch_id
-        );
+            FacultyAssignmentService::authorize(
+                $exam->course_id,
+                $exam->batch_id
+            );
+        }
 
         return parent::save($request);
     }
