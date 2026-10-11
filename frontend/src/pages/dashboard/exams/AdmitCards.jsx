@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../../../lib/api/apiClient";
 import PdfPreviewModal from "../../../components/PdfPreviewModal";
+import { useToast } from "../../../components/common/ToastProvider";
 import { 
   Ticket, 
   ArrowLeft, 
@@ -26,7 +27,8 @@ export default function AdmitCards({
   const [previewData, setPreviewData] = useState(null);
   
   const [generatingId, setGeneratingId] = useState(null);
-  
+  const { toast } = useToast();
+
   // Load exams
   useEffect(() => {
     setLoadingExams(true);
@@ -34,8 +36,11 @@ export default function AdmitCards({
       .then((res) => {
         setExams(res.data);
       })
+      .catch(() => {
+        toast("Failed to load exams. Please try again.", "error");
+      })
       .finally(() => setLoadingExams(false));
-  }, [apiPrefix]);
+  }, [apiPrefix, toast]);
 
   // Load students for selected exam
   const openExam = async (exam) => {
@@ -44,6 +49,8 @@ export default function AdmitCards({
     try {
       const res = await api.get(`${apiPrefix}/admit-cards/${exam.id}/students`);
       setStudents(res.data);
+    } catch {
+      toast("Failed to load students for this exam.", "error");
     } finally {
       setLoadingStudents(false);
     }
@@ -66,6 +73,11 @@ export default function AdmitCards({
           console.error(
               "Failed to generate admit card",
               error
+          );
+          toast(
+              error?.response?.data?.message ||
+                "Failed to generate admit card. Please try again.",
+              "error"
           );
       } finally {
           setGeneratingId(null);
