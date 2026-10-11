@@ -329,13 +329,13 @@ export default function ManageProfile() {
       {/* OTP MODAL */}
       {otpOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden flex flex-col transform transition-all animate-in zoom-in-95 duration-200 border border-slate-100">
-            
-            <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+          <div className="bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden flex flex-col transform transition-all animate-in zoom-in-95 duration-200 border border-[rgb(var(--zx-border))]">
+
+            <div className="px-6 py-5 border-b border-[rgb(var(--zx-border))] flex justify-between items-center bg-[rgb(var(--zx-surface-hover))]/50">
                 <div>
-                    <h2 className="text-xl font-bold text-slate-900">Security Verification</h2>
+                    <h2 className="text-xl font-bold text-[rgb(var(--zx-text))]">Security Verification</h2>
                 </div>
-                <button onClick={()=>setOtpOpen(false)} className="text-slate-400 hover:text-slate-600 hover:bg-slate-200 p-2 rounded-full transition-colors">
+                <button onClick={()=>setOtpOpen(false)} className="text-[rgb(var(--zx-text-muted))] hover:text-[rgb(var(--zx-text))] hover:bg-[rgb(var(--zx-surface-hover))] p-2 rounded-full transition-colors">
                     <X size={20} />
                 </button>
             </div>
@@ -344,10 +344,10 @@ export default function ManageProfile() {
                 <div className="w-16 h-16 bg-brand-teal-500/10 rounded-full flex items-center justify-center text-brand-teal-600 mb-2">
                     <KeyRound size={32} />
                 </div>
-                
+
                 <div className="text-center space-y-1">
-                    <h3 className="font-bold text-lg text-slate-800">Enter OTP</h3>
-                    <p className="text-sm text-slate-500">Enter the 6-digit verification code sent to your registered email address.</p>
+                    <h3 className="font-bold text-lg text-[rgb(var(--zx-text))]">Enter OTP</h3>
+                    <p className="text-sm text-[rgb(var(--zx-text-muted))]">Enter the 6-digit verification code sent to your registered email address.</p>
                 </div>
 
                 <div className="w-full relative">
@@ -355,7 +355,7 @@ export default function ManageProfile() {
                         value={otp}
                         onChange={e=>setOtp(e.target.value.replace(/\D/g,""))}
                         maxLength={6}
-                        className="w-full bg-slate-50 border border-slate-300 p-4 text-center text-2xl font-mono tracking-[0.5em] font-bold text-slate-800 rounded-xl focus:outline-none focus:border-brand-teal-500 transition-all placeholder:font-normal placeholder:tracking-normal"
+                        className="w-full bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] p-4 text-center text-2xl font-mono tracking-[0.5em] font-bold text-[rgb(var(--zx-text))] rounded-xl focus:outline-none focus:border-brand-teal-500 transition-all placeholder:font-normal placeholder:tracking-normal"
                         placeholder="------"
                     />
                 </div>
@@ -365,8 +365,8 @@ export default function ManageProfile() {
                     disabled={loading || otp.length < 6}
                     className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 active:scale-95 ${
                         (!loading && otp.length === 6)
-                        ? "bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-900/20"
-                        : "bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200"
+                        ? "bg-[rgb(var(--zx-text))] text-[rgb(var(--zx-surface))] hover:opacity-90 shadow-lg"
+                        : "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] cursor-not-allowed border border-[rgb(var(--zx-border))]"
                     }`}
                 >
                     {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : "Verify & Update Password"}
@@ -376,7 +376,7 @@ export default function ManageProfile() {
                     <button
                         onClick={handleSendOtp}
                         disabled={otpLoading || timer > 0}
-                        className="text-xs font-bold uppercase tracking-widest transition-colors hover:underline disabled:no-underline disabled:text-slate-400 text-brand-teal-600"
+                        className="text-xs font-bold uppercase tracking-widest transition-colors hover:underline disabled:no-underline disabled:text-[rgb(var(--zx-text-muted))] text-brand-teal-600 dark:text-brand-teal-400"
                     >
                         {otpLoading ? "Sending..." : timer > 0 ? `Resend OTP in ${timer}s` : "Resend OTP"}
                     </button>
