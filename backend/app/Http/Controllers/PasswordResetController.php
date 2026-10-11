@@ -43,8 +43,10 @@ class PasswordResetController extends Controller
             ], 422);
         }
 
-        // Store email in session for the next steps
+        // Store email in session for the next steps; a new start invalidates
+        // any verification completed for a previous reset attempt.
         $request->session()->put('password_reset_email', $email);
+        $request->session()->forget(['password_reset_verified', 'password_reset_user_id']);
 
         return response()->json([
             'message' => 'Email verified. Please answer your security questions.',
@@ -73,6 +75,15 @@ class PasswordResetController extends Controller
             ], 422);
         }
 
+        // Per-account lockout on failed identity checks — the IP throttle on
+        // the route is not enough for guessable PII (dob/country/mobile).
+        $securityKey = 'password-reset-security:' . $email;
+        if (RateLimiter::tooManyAttempts($securityKey, 5)) {
+            return response()->json([
+                'message' => 'Too many failed attempts. Please restart the reset process later.',
+            ], 429);
+        }
+
         // Validate security answers
         $data = $request->validate([
             'dob'     => ['required', 'date'],
@@ -92,7 +103,10 @@ class PasswordResetController extends Controller
             ->first();
 
         if (! $user) {
-            // Generic message; do not reveal which field is wrong
+            // Generic message; do not reveal which field is wrong.
+            // The per-account counter only ticks on failures.
+            RateLimiter::hit($securityKey, 60 * 60);
+
             return response()->json([
                 'message' => 'The details you entered do not match our records.',
             ], 422);
@@ -184,15 +198,23 @@ class PasswordResetController extends Controller
     public function reset(Request $request)
     {
         $data = $request->validate([
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
         $verified = $request->session()->get('password_reset_verified');
         $userId   = $request->session()->get('password_reset_user_id');
+        $email    = $request->session()->get('password_reset_email');
 
-        if (! $verified || ! $userId) {
+        if (! $verified || ! $userId || ! $email) {
             return response()->json([
                 'message' => 'OTP verification required before resetting password.',
+            ], 422);
+        }
+
+        // The verified identity must still be the identity that started the flow.
+        if ((int) User::where('email', $email)->value('id') !== (int) $userId) {
+            return response()->json([
+                'message' => 'Password reset session is invalid. Please start again.',
             ], 422);
         }
 
