@@ -183,11 +183,40 @@ Route::get('/unauthenticated', function () {
 */
 Route::middleware(['web', 'auth:sanctum'])->group(function () {
     
+    /*
+    |--------------------------------------------------------------------------
+    | Shared assignment-submission file serving (admin / faculty / student)
+    |--------------------------------------------------------------------------
+    | The controller itself verifies the caller's role against the submission
+    | (owner, assigned faculty, or admin), so no route-level role gate.
+    */
+    Route::get('/assignments/submissions/file/{path}', [StudentAssignmentFileController::class, 'view'])
+        ->where('path', '.*');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Local QR generation (keeps tokens off third-party QR services)
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/qr', function (Request $request) {
+        $data = (string) $request->query('data', '');
+        abort_if($data === '' || strlen($data) > 512, 422, 'Missing QR payload.');
+
+        $result = \Endroid\QrCode\Builder\Builder::create()
+            ->writer(new \Endroid\QrCode\Writer\PngWriter())
+            ->data($data)
+            ->size(220)
+            ->margin(8)
+            ->build();
+
+        return response($result->getString(), 200, ['Content-Type' => 'image/png']);
+    });
+
     // ================= Manage Profile =================
     Route::put('/user/profile', [ProfileController::class, 'update']);
     Route::post('/user/change-password', [ProfileController::class, 'changePassword']);
-    Route::post('/user/send-otp', [ProfileController::class, 'sendOtp']);
-    Route::post('/user/verify-otp-password', [ProfileController::class, 'verifyOtpPassword']);
+    Route::post('/user/send-otp', [ProfileController::class, 'sendOtp'])->middleware('throttle:10,1');
+    Route::post('/user/verify-otp-password', [ProfileController::class, 'verifyOtpPassword'])->middleware('throttle:10,1');
 
     /*
     |--------------------------------------------------------------------------
@@ -417,6 +446,7 @@ Route::middleware(['web', 'auth:sanctum'])->group(function () {
     
     Route::get('/student/assignments', [StudentAssignmentController::class, 'index']);
     Route::get('/student/assignments/{id}', [StudentAssignmentController::class, 'show']);
+    Route::get('/student/assignments/{id}/attachment', [StudentAssignmentController::class, 'attachment']);
     Route::post('/student/assignments/upload-file', [StudentAssignmentFileController::class, 'upload']);
     Route::post('/student/assignments/{assignmentId}/submit', [StudentAssignmentSubmissionController::class, 'submit']);
     Route::get('/student/assignments/file/{path}', [StudentAssignmentFileController::class, 'view'])->where('path', '.*');
