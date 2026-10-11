@@ -46,6 +46,18 @@ class CorporateRoleController extends Controller
 
     public function destroy($id)
     {
+        /*
+         | corporate_employees.role_id cascades on delete — removing a role
+         | in use would silently delete every employee holding it.
+         */
+        $inUse = \App\Models\CorporateEmployee::where('role_id', $id)->exists();
+
+        if ($inUse) {
+            return response()->json([
+                'message' => 'This role is assigned to one or more employees. Deletion not allowed.',
+            ], 409);
+        }
+
         CorporateRole::destroy($id);
 
         return response()->json([
