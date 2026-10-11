@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../../../lib/api/apiClient";
+import { ErrorState } from "../../../components/common/States";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   QrCode,
@@ -13,7 +14,8 @@ import {
   Loader2,
   Inbox,
   ScanLine,
-  CalendarClock
+  CalendarClock,
+  RefreshCw
 } from "lucide-react";
 
 import StudentAttendanceQrModal from "../../../components/student-dashboard/StudentAttendanceQrModal";
@@ -44,10 +46,17 @@ export default function QrAttendance() {
   });
   const [showQr, setShowQr] = useState(false);
   const [loadingHistory, setLoadingHistory] = useState(true);
+  const [liveError, setLiveError] = useState("");
+  const [enrollError, setEnrollError] = useState("");
+  const [historyError, setHistoryError] = useState("");
 
   useEffect(() => {
     loadLiveAttendance();
     loadEnrollments();
+
+    // Poll so a session started after page load appears without a manual refresh.
+    const interval = setInterval(loadLiveAttendance, 20000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -56,17 +65,24 @@ export default function QrAttendance() {
 
   async function loadLiveAttendance() {
     try {
+      setLiveError("");
       const res = await api.get("/student/attendance/live");
       if (res.data.active) {
         setLiveSession(res.data.session);
+      } else {
+        setLiveSession(null);
       }
     } catch (err) {
-      console.error(err);
+      setLiveError(
+        err?.response?.data?.message ||
+          "Unable to check for live attendance sessions."
+      );
     }
   }
 
   async function loadEnrollments() {
     try {
+      setEnrollError("");
       const res = await api.get("/student/attendance/enrollments");
       const unique = [];
       const seen = new Set();
@@ -81,7 +97,10 @@ export default function QrAttendance() {
 
       setEnrollments(unique);
     } catch (err) {
-      console.error(err);
+      setEnrollError(
+        err?.response?.data?.message ||
+          "Unable to load your enrollments. Please try again."
+      );
     }
   }
 
@@ -89,6 +108,7 @@ export default function QrAttendance() {
     try {
 
       setLoadingHistory(true);
+      setHistoryError("");
 
       const params = {};
 
@@ -123,7 +143,16 @@ export default function QrAttendance() {
 
     } catch (err) {
 
-      console.error(err);
+      setHistory([]);
+      setSummary({
+        total_sessions: 0,
+        present: 0,
+        percentage: 0,
+      });
+      setHistoryError(
+        err?.response?.data?.message ||
+          "Unable to load your attendance history. Please try again."
+      );
 
     } finally {
 
@@ -155,7 +184,12 @@ export default function QrAttendance() {
 
         {/* LIVE ATTENDANCE BANNER */}
         <motion.div variants={itemVariants}>
-          {liveSession ? (
+          {liveError && !liveSession ? (
+            <ErrorState
+              message={liveError}
+              onRetry={loadLiveAttendance}
+            />
+          ) : liveSession ? (
             <div className="bg-emerald-600 rounded-3xl p-6 md:p-8 text-white shadow-[0_8px_30px_rgb(16,185,129,0.2)] flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden group">
               <div className="absolute -right-10 -top-10 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
               
@@ -190,10 +224,11 @@ export default function QrAttendance() {
               </div>
               
               <button
-                disabled
-                className="shrink-0 inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold bg-slate-100/80 text-slate-400 cursor-not-allowed w-full md:w-auto border border-slate-200/50"
+                onClick={loadLiveAttendance}
+                className="shrink-0 inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold transition-all active:scale-[0.98] bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm hover:shadow w-full md:w-auto focus:outline-none focus:ring-4 focus:ring-indigo-500/10"
               >
-                Ongoing Attendance
+                <RefreshCw size={18} />
+                Refresh
               </button>
             </div>
           )}
@@ -201,6 +236,13 @@ export default function QrAttendance() {
 
         {/* CONTROLS & FILTERS */}
         <motion.div variants={itemVariants} className="relative group max-w-xl z-20">
+          {enrollError ? (
+            <ErrorState
+              message={enrollError}
+              onRetry={loadEnrollments}
+            />
+          ) : (
+            <>
           <BookOpen
             size={20}
             className="absolute left-4 top-3.5 text-slate-400 group-focus-within:text-indigo-500 transition-colors duration-300 z-10"
@@ -230,6 +272,8 @@ export default function QrAttendance() {
             size={20}
             className="absolute right-4 top-3.5 text-slate-400 pointer-events-none"
           />
+            </>
+          )}
         </motion.div>
 
         <motion.div
@@ -295,6 +339,13 @@ export default function QrAttendance() {
                 <Loader2 size={40} className="animate-spin text-indigo-500 mb-4" />
                 <p className="font-medium tracking-wide">Fetching attendance records...</p>
               </motion.div>
+            ) : historyError ? (
+              /* ERROR STATE */
+              <ErrorState
+                key="error-history"
+                message={historyError}
+                onRetry={loadHistory}
+              />
             ) : history.length === 0 ? (
               /* EMPTY STATE */
               <motion.div 
