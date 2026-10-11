@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../../lib/auth/useAuth";
 import BrandLogo from "../common/BrandLogo";
 import ThemeToggle from "../common/ThemeToggle";
-import { ROLE_LABEL } from "../../config/navigation";
+import { ROLE_LABEL, ROLE_HOME } from "../../config/navigation";
 
 /**
  * Unified topbar for every role: mobile menu button, brand logo,
