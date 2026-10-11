@@ -25,6 +25,7 @@ class StudentAdminController extends Controller
             'email'     => 'required|email|unique:users,email',
             'course_id' => 'nullable|exists:courses,id',
             'batch_id'  => 'nullable|exists:batches,id',
+            'franchise_id' => 'nullable|exists:franchises,id',
         ]);
 
         // Logical validation
@@ -64,6 +65,7 @@ class StudentAdminController extends Controller
                 'sid'       => $this->generateSid(),
                 'course_id' => $data['course_id'] ?? null,
                 'batch_id'  => $data['batch_id'] ?? null,
+                'franchise_id' => $data['franchise_id'] ?? null,
             ]);
 
             if (!empty($data['course_id'])) {
@@ -93,14 +95,26 @@ class StudentAdminController extends Controller
             return $student;
         });
 
-        app(EmailService::class)->studentCredentials(
+        $mailResult = app(EmailService::class)->studentCredentials(
             $data['email'],
             $data['name'],
             $plainPassword
         );
 
+        /*
+         | The plaintext password is never stored or shown again — if the
+         | credentials email fails, the admin must know right away so the
+         | login can be reset instead of silently locking the student out.
+         */
+        $message = 'Student created successfully';
+
+        if (! ($mailResult['ok'] ?? false)) {
+            $message .= ', but the credentials email could not be sent. '
+                . 'Use "Reset Login" to re-send credentials.';
+        }
+
         return response()->json([
-            'message' => 'Student created successfully',
+            'message' => $message,
             'student' => $result,
         ], 201);
     }
