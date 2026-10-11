@@ -452,33 +452,42 @@ export default function EnrollmentDetailsDrawer({
               <Info label="Balance" value={`₹${balanceFee}`} />
             </div>
 
-            <div className="flex gap-2">
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="Enter amount"
-                className="flex-1 bg-[rgb(var(--zx-surface))] dark:bg-slate-900 border border-[rgb(var(--zx-border))] dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm outline-none focus:border-brand-teal-500 transition-all font-medium text-[rgb(var(--zx-text))] dark:text-white placeholder:text-[rgb(var(--zx-text-muted))]/60 dark:placeholder:text-slate-500"
-              />
+            {isFreeCourse ? (
+              <div className="text-xs font-semibold text-emerald-500 mt-1 flex items-center gap-1">
+                <CheckCircle2 size={13} /> No fee due — this course is free.
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  placeholder="Enter amount"
+                  className="flex-1 bg-[rgb(var(--zx-surface))] dark:bg-slate-900 border border-[rgb(var(--zx-border))] dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm outline-none focus:border-brand-teal-500 transition-all font-medium text-[rgb(var(--zx-text))] dark:text-white placeholder:text-[rgb(var(--zx-text-muted))]/60 dark:placeholder:text-slate-500"
+                />
 
-              <button
-                disabled={!canMarkPaid || busy}
-                onClick={markPaid}
-                className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
-                  canMarkPaid
-                    ? "bg-brand-teal-500 hover:bg-brand-teal-600 text-white shadow-md shadow-brand-teal-500/20"
-                    : "bg-[rgb(var(--zx-surface-hover))] dark:bg-slate-800 text-[rgb(var(--zx-text-muted))] dark:text-slate-500 border border-[rgb(var(--zx-border))] dark:border-slate-700 cursor-not-allowed"
-                }`}
-              >
-                Mark Paid
-              </button>
-            </div>
+                <button
+                  disabled={!canMarkPaid || busy}
+                  onClick={markPaid}
+                  className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+                    canMarkPaid
+                      ? "bg-brand-teal-500 hover:bg-brand-teal-600 text-white shadow-md shadow-brand-teal-500/20"
+                      : "bg-[rgb(var(--zx-surface-hover))] dark:bg-slate-800 text-[rgb(var(--zx-text-muted))] dark:text-slate-500 border border-[rgb(var(--zx-border))] dark:border-slate-700 cursor-not-allowed"
+                  }`}
+                >
+                  Mark Paid
+                </button>
+              </div>
+            )}
 
             {!paymentProofVerified && (
               <div className="text-xs font-medium text-rose-500 mt-2.5 flex items-center gap-1">
-                <XCircle size={13} /> Verify payment proof before recording payment.
+                <XCircle size={13} />{" "}
+                {isFreeCourse
+                  ? "Verify payment proof before approving."
+                  : "Verify payment proof before recording payment."}
               </div>
             )}
           </div>
