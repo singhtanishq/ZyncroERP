@@ -21,6 +21,8 @@ import {
   Loader2
 } from "lucide-react";
 
+const MAX_PDF_SIZE = 10 * 1024 * 1024; // 10MB
+
 export default function AddMaterialModal({
       open,
       onClose,
@@ -58,7 +60,10 @@ export default function AddMaterialModal({
           : "/admin/courses"
   )
   .then((res) => setCourses(res.data))
-  .catch(() => {});
+  .catch(() => {
+    setCourses([]);
+    setError("Could not load course options. Please close and reopen this dialog.");
+  });
   }, [open, isFaculty]);
 
   useEffect(() => {
@@ -74,7 +79,10 @@ export default function AddMaterialModal({
           : `/admin/courses/${courseId}/batches`
   )
   .then((res) => setBatches(res.data))
-  .catch(() => {});
+  .catch(() => {
+    setBatches([]);
+    setError("Could not load batches for the selected course.");
+  });
   }, [courseId, isFaculty]);
 
   if (!open) return null;
