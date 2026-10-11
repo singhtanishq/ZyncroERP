@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../../lib/api/apiClient";
+import { useToast } from "../../../components/common/ToastProvider";
+import { ErrorState } from "../../../components/common/States";
 import {
   Plus,
   ChevronDown,
@@ -13,10 +15,14 @@ import {
 } from "lucide-react";
 
 export default function ManageCourses() {
+  const { toast } = useToast();
   const [courses, setCourses] = useState([]);
   const [expanded, setExpanded] = useState(null);
   const [batches, setBatches] = useState({});
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [savingCourse, setSavingCourse] = useState(false);
+  const [savingBatch, setSavingBatch] = useState(false);
 
   const [showAddCourse, setShowAddCourse] = useState(false);
   const [courseForm, setCourseForm] = useState({
@@ -33,9 +39,16 @@ export default function ManageCourses() {
 
   const loadCourses = async () => {
     setLoading(true);
-    const res = await api.get("/admin/courses");
-    setCourses(res.data);
-    setLoading(false);
+    setLoadError(false);
+    try {
+      const res = await api.get("/admin/courses");
+      setCourses(res.data);
+    } catch (err) {
+      console.warn("Failed to load courses", err);
+      setLoadError(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const loadBatches = async (courseId) => {
@@ -60,17 +73,27 @@ export default function ManageCourses() {
   const createCourse = async () => {
     if (!courseForm.name.trim() || !courseForm.code.trim()) return;
 
-    await api.post("/admin/courses", {
-      ...courseForm,
-      amount: courseForm.amount || 0,
-    });
-    setCourseForm({
-      name: "",
-      code: "",
-      amount: "",
-    });
-    setShowAddCourse(false);
-    loadCourses();
+    try {
+      setSavingCourse(true);
+      await api.post("/admin/courses", {
+        ...courseForm,
+        amount: courseForm.amount || 0,
+      });
+      setCourseForm({
+        name: "",
+        code: "",
+        amount: "",
+      });
+      setShowAddCourse(false);
+      loadCourses();
+    } catch (err) {
+      toast(
+        err?.response?.data?.message || "Failed to create course. Please try again.",
+        "error"
+      );
+    } finally {
+      setSavingCourse(false);
+    }
   };
 
   /* ================= Batches ================= */
@@ -79,19 +102,29 @@ export default function ManageCourses() {
     const { name, start_date, end_date } = batchForm;
     if (!name || !start_date || !end_date) return;
 
-    await api.post("/admin/batches", {
-      course_id: courseId,
-      name,
-      start_date,
-      end_date,
-    });
+    try {
+      setSavingBatch(true);
+      await api.post("/admin/batches", {
+        course_id: courseId,
+        name,
+        start_date,
+        end_date,
+      });
 
-    setBatchForm({
-      name: "",
-      start_date: "",
-      end_date: "",
-    });
-    loadBatches(courseId);
+      setBatchForm({
+        name: "",
+        start_date: "",
+        end_date: "",
+      });
+      loadBatches(courseId);
+    } catch (err) {
+      toast(
+        err?.response?.data?.message || "Failed to create batch. Please try again.",
+        "error"
+      );
+    } finally {
+      setSavingBatch(false);
+    }
   };
 
   const [batchLoading, setBatchLoading] = useState({});
