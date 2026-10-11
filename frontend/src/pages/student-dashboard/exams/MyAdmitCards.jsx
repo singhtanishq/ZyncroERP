@@ -35,10 +35,10 @@ export default function MyAdmitCards() {
     }
   };
 
-  const openPdf = (admitCardId) => {
+  const openPdf = (qrToken) => {
     setSelectedCard(null); 
     setPreviewUrl(
-      `${import.meta.env.VITE_API_BASE_URL}/admit-card/${admitCardId}/pdf`
+      `${import.meta.env.VITE_API_BASE_URL}/api/admit-card/token/${qrToken}/pdf`
     );
   };
 
