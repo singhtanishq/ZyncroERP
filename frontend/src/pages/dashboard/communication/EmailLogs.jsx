@@ -183,6 +183,15 @@ export default function EmailLogs() {
                       </div>
                     </td>
                   </tr>
+                ) : error ? (
+                  <tr>
+                    <td colSpan="6" className="px-6 py-8">
+                      <ErrorState
+                        message="We couldn't load the email logs. Please try again."
+                        onRetry={fetchLogs}
+                      />
+                    </td>
+                  </tr>
                 ) : logs.length === 0 ? (
                   <tr>
                     <td colSpan="6" className="px-6 py-32 text-center text-[rgb(var(--zx-text-muted))]">
