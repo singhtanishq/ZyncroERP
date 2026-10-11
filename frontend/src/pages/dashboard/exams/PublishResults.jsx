@@ -434,10 +434,6 @@ export default function PublishResults({
                                 
                                 {isEditing ? (
                                   <>
-                                    <span className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider mr-auto flex items-center">
-                                      {isEditing ? "Editing Scores..." : "Actions"}
-                                    </span>
-
                                     {saveError && (
                                       <span className="flex items-center text-xs font-bold text-rose-500 bg-rose-500/10 border border-rose-500/20 px-3.5 py-2 rounded-xl">
                                         {saveError}
