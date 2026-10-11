@@ -145,7 +145,7 @@ class RegisterController extends Controller
     public function complete(Request $request)
     {
         $data = $request->validate([
-            'password'              => ['required', 'string', 'min:6', 'confirmed'],
+            'password'              => ['required', 'string', 'min:8', 'confirmed'],
             'dob'                   => ['required', 'date'],
             'country'               => ['required', 'string', 'max:100'],
             'mobile'                => ['required', 'string', 'max:30'],
