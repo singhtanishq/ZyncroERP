@@ -27,17 +27,20 @@ class FacultyStudyMaterialAccessController extends StudyMaterialAccessController
             true
         );
 
-            $batch = Batch::where(
-                'id',
-                $data['batch_id']
-            )
-            ->where(
-                'course_id',
-                $data['course_id']
-            )
-            ->firstOrFail();
+        $data = $request->validate([
+            'access_type' => 'required|in:batch',
+            'course_id'   => 'required|exists:courses,id',
+            'batch_id'    => 'required|exists:batches,id',
+        ]);
 
-        }
+        FacultyAssignmentService::authorize(
+            $data['course_id'],
+            $data['batch_id']
+        );
+
+        Batch::where('id', $data['batch_id'])
+            ->where('course_id', $data['course_id'])
+            ->firstOrFail();
 
         return parent::store($request, $id);
     }
