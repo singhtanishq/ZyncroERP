@@ -53,6 +53,7 @@ class AttendanceSessionController extends Controller
                 ->where('status', 'active')
                 ->update([
                     'status' => 'expired',
+                    'active_lock' => null,
                     'updated_at' => $now
                 ]);
 
