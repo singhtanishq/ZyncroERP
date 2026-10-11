@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\File;
 
@@ -200,74 +201,59 @@ class StudyMaterialController extends Controller
             'user_id',
             auth()->id()
         )
-        ->with('activeEnrollment')
         ->firstOrFail();
-    
-        $enrollment = $student->activeEnrollment;
-    
-        if (!$enrollment) {
+
+        /*
+         | Access is matched against EVERY active/completed enrollment — the
+         | single activeEnrollment relation used to 403 students with
+         | multiple enrollments and lock out completed students who still
+         | see the material in the list.
+         */
+        $enrollments = $student->enrollments()
+            ->whereIn('status', ['active', 'completed'])
+            ->get(['course_id', 'batch_id']);
+
+        if ($enrollments->isEmpty()) {
             abort(403);
         }
-    
-        $material = StudyMaterial::where(
-            'id',
-            $id
-        )
-    
-        ->where('status', 'active')
-    
-        ->whereHas(
-            'accessRules',
-            function ($q) use ($enrollment) {
-    
-                $q->where(
-                    'access_type',
-                    'all'
-                )
-    
-                ->orWhere(function ($q) use ($enrollment) {
-    
-                    $q->where(
-                        'access_type',
-                        'course'
-                    )
-    
-                    ->where(
-                        'course_id',
-                        $enrollment->course_id
-                    );
-                })
-    
-                ->orWhere(function ($q) use ($enrollment) {
-    
-                    $q->where(
-                        'access_type',
-                        'batch'
-                    )
-    
-                    ->where(
-                        'course_id',
-                        $enrollment->course_id
-                    )
-    
-                    ->where(
-                        'batch_id',
-                        $enrollment->batch_id
-                    );
+
+        $material = StudyMaterial::where('id', $id)
+            ->where('status', 'active')
+            ->where(function ($q) use ($enrollments) {
+
+                $q->whereHas('accessRules', function ($rule) {
+                    $rule->where('access_type', 'all');
                 });
-            }
-        )
-    
-        ->firstOrFail();
-    
+
+                foreach ($enrollments as $enrollment) {
+
+                    $q->orWhereHas('accessRules', function ($rule) use ($enrollment) {
+
+                        $rule->where(function ($courseRule) use ($enrollment) {
+                            $courseRule->where('access_type', 'course')
+                                ->where('course_id', $enrollment->course_id);
+                        });
+
+                        $rule->orWhere(function ($batchRule) use ($enrollment) {
+                            $batchRule->where('access_type', 'batch')
+                                ->where('course_id', $enrollment->course_id)
+                                ->where('batch_id', $enrollment->batch_id);
+                        });
+
+                    });
+
+                }
+            })
+            ->firstOrFail();
+
         $path = storage_path(
             'app/private/' . $material->file_path
         );
-        
+
         if (!file_exists($path)) {
             abort(404);
         }
-        
+
         return response()->file($path);
     }
 
