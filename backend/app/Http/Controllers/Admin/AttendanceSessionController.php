@@ -82,6 +82,7 @@ class AttendanceSessionController extends Controller
                 'qr_token'     => $qrToken,
                 'created_by'   => auth()->id(),
                 'status'       => 'active',
+                'active_lock'  => 1,
                 'created_at'   => $now,
                 'updated_at'   => $now,
             ]);
@@ -117,6 +118,7 @@ class AttendanceSessionController extends Controller
             ->where('status', 'active')
             ->update([
                 'status' => 'expired',
+                'active_lock' => null,
                 'ends_at' => $now,
                 'updated_at' => $now,
             ]);
