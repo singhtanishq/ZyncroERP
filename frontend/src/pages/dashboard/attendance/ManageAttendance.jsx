@@ -1,14 +1,15 @@
 import React, { useEffect, useState, useCallback } from "react";
 import api from "../../../lib/api/apiClient";
+import { useToast } from "../../../components/common/ToastProvider";
 import StartAttendanceModal from "./StartAttendanceModal";
 import LiveQrModal from "./LiveQrModal";
 import OngoingAttendanceModal from "./OngoingAttendanceModal";
-import { 
-  PlayCircle, 
-  Activity, 
-  BookOpen, 
-  Layers, 
-  Users, 
+import {
+  PlayCircle,
+  Activity,
+  BookOpen,
+  Layers,
+  Users,
   QrCode,
   Filter,
   ChevronDown,
@@ -19,12 +20,15 @@ import {
   Search
 } from "lucide-react";
 
-const STORAGE_KEY = "attendance_sessions";
-
 export default function ManageAttendance({
     apiPrefix = "/admin",
     isFaculty = false,
 }) {
+  const { toast } = useToast();
+
+  // Per-role localStorage key so admin/faculty sessions never collide.
+  const storageKey = `attendance_sessions_${apiPrefix || "admin"}`;
+
   /* FILTERS */
   const [courseId, setCourseId] = useState("");
   const [batchId, setBatchId] = useState("");
@@ -42,6 +46,7 @@ export default function ManageAttendance({
   const [sessions, setSessions] = useState([]);
 
   const [reportData, setReportData] = useState(null);
+  const [reportError, setReportError] = useState(false);
   const [loadingReport, setLoadingReport] = useState(false);
 
   /* ---------------- LOAD COURSES ---------------- */
