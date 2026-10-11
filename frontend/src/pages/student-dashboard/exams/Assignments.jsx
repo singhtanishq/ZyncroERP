@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../../../lib/api/apiClient";
+import { useToast } from "../../../components/common/ToastProvider";
 import {
   ClipboardList,
   CheckCircle2,
@@ -19,7 +20,11 @@ import {
   Layers
 } from "lucide-react";
 
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB — matches backend max:10240 (KB)
+const ALLOWED_FILE_EXTENSIONS = ["pdf", "doc", "docx", "ppt", "pptx", "zip"];
+
 function AssignmentModal({ assignment, onClose, onSubmitted }) {
+  const { toast } = useToast();
   const [responseLink, setResponseLink] = useState("");
   const [responseFile, setResponseFile] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -33,8 +38,22 @@ function AssignmentModal({ assignment, onClose, onSubmitted }) {
   const uploadFile = async (file) => {
     if (!file) return;
 
+    const extension = file.name.split(".").pop()?.toLowerCase() || "";
+    if (!ALLOWED_FILE_EXTENSIONS.includes(extension)) {
+      toast(
+        "Unsupported file type. Allowed: PDF, DOC, DOCX, PPT, PPTX, ZIP.",
+        "error"
+      );
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      toast("File is too large. Maximum allowed size is 10MB.", "error");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("assignment_id", detail.id);
     setFileName(file.name);
 
     try {
@@ -46,7 +65,7 @@ function AssignmentModal({ assignment, onClose, onSubmitted }) {
       });
       setResponseFile(res.data.path);
     } catch (e) {
-      alert(e?.response?.data?.message || "Upload failed");
+      toast(e?.response?.data?.message || "Upload failed", "error");
       setFileName("");
     } finally {
       setUploading(false);
@@ -55,7 +74,7 @@ function AssignmentModal({ assignment, onClose, onSubmitted }) {
 
   const submitAssignment = async () => {
     if (!responseLink && !responseFile) {
-      alert("Provide a response link or upload a file.");
+      toast("Provide a response link or upload a file.", "error");
       return;
     }
 
@@ -67,7 +86,7 @@ function AssignmentModal({ assignment, onClose, onSubmitted }) {
       });
       onSubmitted();
     } catch (e) {
-      alert(e?.response?.data?.message || "Submission failed");
+      toast(e?.response?.data?.message || "Submission failed", "error");
     } finally {
       setSubmitting(false);
     }
@@ -220,9 +239,13 @@ function AssignmentModal({ assignment, onClose, onSubmitted }) {
                         </div>
                         <input
                           type="file"
+                          accept=".pdf,.doc,.docx,.ppt,.pptx,.zip"
                           hidden
                           disabled={uploading || submitting}
-                          onChange={(e) => uploadFile(e.target.files[0])}
+                          onChange={(e) => {
+                            uploadFile(e.target.files?.[0]);
+                            e.target.value = "";
+                          }}
                         />
                       </label>
                     </div>
