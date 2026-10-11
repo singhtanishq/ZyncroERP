@@ -17,7 +17,7 @@ class AdminAdmitCardController extends Controller
     public function exams()
     {
         return Exam::with(['course', 'batch'])
-            ->where('status', '!=', ExamStatus::PAST)
+            ->whereNotIn('status', [ExamStatus::PAST, ExamStatus::CANCELLED])
             ->orderBy('start_time')
             ->get();
     }
@@ -52,10 +52,27 @@ class AdminAdmitCardController extends Controller
 
     public function generate(Exam $exam, Student $student)
     {
-        if ($exam->status !== ExamStatus::UPCOMING) {
+        if ($exam->status === ExamStatus::CANCELLED || $exam->start_time->isPast()) {
             return response()->json([
                 'message' => 'Admit card generation is locked'
             ], 403);
+        }
+
+        /*
+         | Only actively enrolled students of the exam's course + batch may
+         | receive an admit card — the route accepts bare ids, so this must
+         | be verified here.
+         */
+        $enrolled = StudentEnrollment::where('student_id', $student->id)
+            ->where('course_id', $exam->course_id)
+            ->where('batch_id', $exam->batch_id)
+            ->whereIn('status', ['active', 'pending'])
+            ->exists();
+
+        if (! $enrolled) {
+            return response()->json([
+                'message' => 'Student is not enrolled in this exam\'s course and batch.',
+            ], 422);
         }
 
         return AdmitCard::firstOrCreate(
