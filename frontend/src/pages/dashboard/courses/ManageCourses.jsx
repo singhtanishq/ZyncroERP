@@ -385,6 +385,24 @@ export default function ManageCourses() {
     loadCourses();
   }, []);
 
+  const toggleCourseStatus = async (course) => {
+    try {
+      await api.patch(`/admin/courses/${course.id}/toggle`);
+      loadCourses();
+    } catch (e) {
+      showToast(e?.response?.data?.message || "Failed to update course status", "error");
+    }
+  };
+
+  const toggleBatchStatus = async (batch, courseId) => {
+    try {
+      await api.patch(`/admin/batches/${batch.id}/toggle`);
+      loadBatches(courseId);
+    } catch (e) {
+      showToast(e?.response?.data?.message || "Failed to update batch status", "error");
+    }
+  };
+
   const confirmDelete = async () => {
     try {
       setDeleting(true);
@@ -526,11 +544,7 @@ export default function ManageCourses() {
                     </button>
 
                     <button
-                      onClick={() =>
-                        api
-                          .patch(`/admin/courses/${c.id}/toggle`)
-                          .then(loadCourses)
-                      }
+                      onClick={() => toggleCourseStatus(c)}
                       className={`p-2 rounded-xl transition-all ${c.status === 'active' ? 'text-[rgb(var(--zx-text-muted))] hover:text-emerald-600 hover:bg-emerald-500/10' : 'text-[rgb(var(--zx-text-muted))] hover:text-rose-600 hover:bg-rose-500/10'}`}
                       title="Toggle Status"
                     >
