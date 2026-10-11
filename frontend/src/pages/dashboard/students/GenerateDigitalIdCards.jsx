@@ -235,7 +235,7 @@ export default function GenerateDigitalIdCards() {
                   disabled={!s.active}
                   onClick={() => {
                     setPreviewUrl(
-                      `${import.meta.env.VITE_API_BASE_URL}/id-card/${s.public_token}/view`
+                      `${import.meta.env.VITE_API_BASE_URL}/api/id-card/${s.public_token}/view`
                     );
                     setPreviewOpen(true);
                   }}
@@ -254,7 +254,7 @@ export default function GenerateDigitalIdCards() {
                   disabled={!s.active}
                   onClick={() =>
                     window.open(
-                      `${import.meta.env.VITE_API_BASE_URL}/id-card/${s.public_token}/download`,
+                      `${import.meta.env.VITE_API_BASE_URL}/api/id-card/${s.public_token}/download`,
                       "_blank"
                     )
                   }
