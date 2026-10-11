@@ -13,6 +13,8 @@ import {
   ArrowRight,
   Save,
   CheckCircle2,
+  AlertCircle,
+  Loader2,
   ChevronDown
 } from "lucide-react";
 
@@ -53,11 +55,12 @@ export default function ScheduleExam({
     offline_notes: "",
   });
 
-  const [toast, setToast] = useState("");
+  const [toast, setToast] = useState(null);
+  const [saving, setSaving] = useState(false);
 
-  const showToast = (msg) => {
-    setToast(msg);
-    setTimeout(() => setToast(""), 2500);
+  const showToast = (msg, type = "success") => {
+    setToast({ message: msg, type });
+    setTimeout(() => setToast(null), 3000);
   };
 
   // ---------------- API LOADERS ----------------
@@ -170,6 +173,8 @@ export default function ScheduleExam({
   // ---------------- SUBMIT ----------------
 
   const submit = async () => {
+    if (saving) return;
+
     const payload = {
       ...form,
       exam_category:
@@ -178,15 +183,25 @@ export default function ScheduleExam({
           : form.exam_category,
     };
 
-    await api.post(`${apiPrefix}/exams`, payload);
-    showToast("Exam scheduled successfully");
-    setTimeout(() => {
-      navigate(
-        apiPrefix === "/faculty"
-            ? "/faculty/exams/manage"
-            : "/dashboard/exams"
+    setSaving(true);
+    try {
+      await api.post(`${apiPrefix}/exams`, payload);
+      showToast("Exam scheduled successfully");
+      setTimeout(() => {
+        navigate(
+          apiPrefix === "/faculty"
+              ? "/faculty/exams/manage"
+              : "/dashboard/exams"
+        );
+      }, 800);
+    } catch (err) {
+      showToast(
+        err?.response?.data?.message || "Failed to schedule the exam. Please try again.",
+        "error"
       );
-    }, 800);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const selectedCourse = courses.find(c => c.id == form.course_id);
