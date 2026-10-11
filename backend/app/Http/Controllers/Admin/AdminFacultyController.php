@@ -51,14 +51,23 @@ class AdminFacultyController extends Controller
 
         return DB::transaction(function () use ($faculty, $data) {
 
-            $faculty->update($data);
-
-            if (array_key_exists('email', $data) && $faculty->user_id) {
+            /*
+             | Sync the login email only when a non-empty one was submitted —
+             | writing '' used to brick the faculty login (users.email is NOT
+             | NULL + unique). A faculty with a login must always keep one.
+             */
+            if (! empty($data['email']) && $faculty->user_id) {
                 User::where('id', $faculty->user_id)->update([
                     'email' => strtolower((string) $data['email']),
                     'name' => $data['name'],
                 ]);
+            } elseif (empty($data['email']) && $faculty->user_id) {
+                User::where('id', $faculty->user_id)->update([
+                    'name' => $data['name'],
+                ]);
             }
+
+            $faculty->update($data);
 
             return $faculty;
         });
