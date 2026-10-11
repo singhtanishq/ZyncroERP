@@ -27,7 +27,7 @@ export default function DashboardTopbar({ role, onMenuClick, sidebarCollapsed = 
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const profilePath = role === "admin" ? "/dashboard/profile" : `${ROLE_HOME_PATH(role)}/profile`;
+  const profilePath = role === "admin" ? "/dashboard/profile" : `${ROLE_HOME[role] || "/"}/profile`;
 
   return (
     <header className="h-20 bg-[rgb(var(--zx-surface))]/90 backdrop-blur-md border-b border-[rgb(var(--zx-border))] flex items-center justify-between px-4 sm:px-8 sticky top-0 z-30 shrink-0">
@@ -119,8 +119,4 @@ export default function DashboardTopbar({ role, onMenuClick, sidebarCollapsed = 
       </div>
     </header>
   );
-}
-
-function ROLE_HOME_PATH(role) {
-  return { admin: "/dashboard", student: "/student", faculty: "/faculty", franchise: "/franchise", employee: "/employee" }[role] || "/";
 }
