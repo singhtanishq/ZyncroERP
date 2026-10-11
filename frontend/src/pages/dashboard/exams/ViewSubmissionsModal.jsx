@@ -172,7 +172,7 @@ export default function ViewSubmissionsModal({
                           <td className="px-6 py-4">
                             {submission.response_file ? (
                               <a
-                                href={`/api/student/assignments/file/${submission.response_file.replace("assignment-submissions/", "")}`}
+                                href={`/api/assignments/submissions/file/${submission.response_file.replace("assignment-submissions/", "")}`}
                                 target="_blank"
                                 rel="noreferrer"
                                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors active:scale-95 bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] hover:bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))]"
