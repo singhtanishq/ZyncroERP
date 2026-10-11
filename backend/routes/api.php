@@ -202,14 +202,11 @@ Route::middleware(['web', 'auth:sanctum'])->group(function () {
         $data = (string) $request->query('data', '');
         abort_if($data === '' || strlen($data) > 512, 422, 'Missing QR payload.');
 
-        $result = \Endroid\QrCode\Builder\Builder::create()
-            ->writer(new \Endroid\QrCode\Writer\PngWriter())
-            ->data($data)
-            ->size(220)
-            ->margin(8)
-            ->build();
-
-        return response($result->getString(), 200, ['Content-Type' => 'image/png']);
+        return response(
+            app(\App\Services\QrCodeService::class)->png($data),
+            200,
+            ['Content-Type' => 'image/png']
+        );
     });
 
     // ================= Manage Profile =================
