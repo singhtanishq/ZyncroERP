@@ -20,6 +20,19 @@ class FacultyStudentCommunicationAccessController extends AdminStudentCommunicat
 
     public function store(Request $request, $id)
     {
+        $communication = StudentCommunication::with('accessRules')->findOrFail($id);
+
+        /*
+         | The target communication must belong to this faculty (creator) or
+         | already carry a rule matching one of their assignments — otherwise
+         | any faculty could rewrite the audience of an admin announcement.
+         */
+        FacultyAssignmentService::authorizeAccessRules(
+            $communication,
+            'accessRules',
+            true
+        );
+
         $request->validate([
             'access_type' => 'required|in:batch',
             'course_id'   => 'required|exists:courses,id',
