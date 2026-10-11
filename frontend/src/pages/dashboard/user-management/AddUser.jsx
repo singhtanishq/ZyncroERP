@@ -128,7 +128,6 @@ export default function AddUser() {
                       >
                           <option value="student">Student</option>
                           <option value="faculty">Faculty</option>
-                          <option value="franchise">Franchise</option>
                           <option value="admin">Administrator</option>
                       </select>
                       <ChevronDown
@@ -136,6 +135,9 @@ export default function AddUser() {
                         className="absolute right-4 top-3.5 text-[rgb(var(--zx-text-muted))] pointer-events-none"
                       />
                     </div>
+                    <p className="text-[11px] text-[rgb(var(--zx-text-muted))] font-medium ml-1">
+                      Franchise and Employee logins are created via their dedicated management pages.
+                    </p>
                 </div>
             </div>
         </div>
