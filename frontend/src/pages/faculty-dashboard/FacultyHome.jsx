@@ -206,25 +206,25 @@ function FacultySkeleton() {
             <div className="animate-pulse space-y-8">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                     <div className="w-full">
-                        <div className="h-10 bg-slate-200 rounded-xl w-3/4 sm:w-1/3 mb-3"></div>
-                        <div className="h-4 bg-slate-200 rounded-lg w-full sm:w-1/2"></div>
+                        <div className="h-10 bg-[rgb(var(--zx-surface-hover))] rounded-xl w-3/4 sm:w-1/3 mb-3"></div>
+                        <div className="h-4 bg-[rgb(var(--zx-surface-hover))] rounded-lg w-full sm:w-1/2"></div>
                     </div>
-                    <div className="h-12 bg-slate-200 rounded-2xl w-48 shrink-0"></div>
+                    <div className="h-12 bg-[rgb(var(--zx-surface-hover))] rounded-2xl w-48 shrink-0"></div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {[...Array(6)].map((_, i) => (
-                        <div key={i} className="h-32 bg-slate-200/70 border border-slate-100 rounded-3xl"></div>
+                        <div key={i} className="h-32 bg-[rgb(var(--zx-surface-hover))]/70 border border-[rgb(var(--zx-border))] rounded-3xl"></div>
                     ))}
                 </div>
 
                 {/* Table Skeleton */}
-                <div className="h-[350px] bg-slate-200/70 border border-slate-100 rounded-3xl w-full"></div>
+                <div className="h-[350px] bg-[rgb(var(--zx-surface-hover))]/70 border border-[rgb(var(--zx-border))] rounded-3xl w-full"></div>
 
                 {/* 2x2 Grid Skeleton */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 w-full">
                     {[...Array(4)].map((_, i) => (
-                        <div key={i} className="h-[250px] bg-slate-200/70 border border-slate-100 rounded-3xl"></div>
+                        <div key={i} className="h-[250px] bg-[rgb(var(--zx-surface-hover))]/70 border border-[rgb(var(--zx-border))] rounded-3xl"></div>
                     ))}
                 </div>
             </div>
@@ -246,15 +246,15 @@ function TopKPISection({ stats }) {
     return (
         <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {kpis.map((kpi, idx) => (
-                <div key={idx} className="bg-white rounded-3xl p-6 border border-slate-100 shadow-xl shadow-slate-200/40 relative overflow-hidden group hover:-translate-y-1 hover:shadow-2xl hover:shadow-slate-200/60 transition-all duration-300">
+                <div key={idx} className="bg-[rgb(var(--zx-surface))] rounded-3xl p-6 border border-[rgb(var(--zx-border))] shadow-xl shadow-slate-200/40 dark:shadow-black/20 relative overflow-hidden group hover:-translate-y-1 hover:shadow-2xl hover:shadow-slate-200/60 transition-all duration-300">
                     <div className={`absolute -right-6 -top-6 w-24 h-24 bg-gradient-to-br ${kpi.color} rounded-full opacity-10 group-hover:scale-150 transition-transform duration-700 blur-2xl`}></div>
                     <div className="flex flex-col gap-4 relative z-10">
                         <div className={`w-12 h-12 rounded-2xl ${kpi.light} flex items-center justify-center shadow-sm shrink-0`}>
                             <kpi.icon size={24} strokeWidth={2.5} />
                         </div>
                         <div>
-                            <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-1 truncate">{kpi.title}</p>
-                            <h3 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight truncate">{kpi.value}</h3>
+                            <p className="text-sm font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider mb-1 truncate">{kpi.title}</p>
+                            <h3 className="text-2xl sm:text-3xl font-black text-[rgb(var(--zx-text))] tracking-tight truncate">{kpi.value}</h3>
                         </div>
                     </div>
                 </div>
@@ -266,52 +266,52 @@ function TopKPISection({ stats }) {
 /* ================= MY COURSES TABLE ================= */
 function CoursesTable({ courses }) {
     return (
-        <motion.div variants={itemVariants} className="bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/40 flex flex-col overflow-hidden w-full h-full">
-            <div className="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between shrink-0">
+        <motion.div variants={itemVariants} className="bg-[rgb(var(--zx-surface))] rounded-3xl border border-[rgb(var(--zx-border))] shadow-xl shadow-slate-200/40 dark:shadow-black/20 flex flex-col overflow-hidden w-full h-full">
+            <div className="px-6 py-5 border-b border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface-hover))] flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 bg-white rounded-lg shadow-sm text-slate-600">
+                    <div className="p-2 bg-white rounded-lg shadow-sm text-[rgb(var(--zx-text-muted))]">
                         <Layers size={18} />
                     </div>
-                    <h3 className="font-bold text-slate-800 text-lg">My Courses</h3>
+                    <h3 className="font-bold text-[rgb(var(--zx-text))] text-lg">My Courses</h3>
                 </div>
             </div>
             
             <div className="overflow-x-auto w-full">
                 {courses.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center min-h-[250px] p-8 text-slate-400">
+                    <div className="flex flex-col items-center justify-center min-h-[250px] p-8 text-[rgb(var(--zx-text-muted))]">
                         <Inbox size={32} className="mb-2 opacity-20" />
                         <span className="text-sm font-medium">No courses assigned yet</span>
                     </div>
                 ) : (
                     <table className="w-full text-left border-collapse min-w-[600px]">
                         <thead>
-                            <tr className="bg-slate-50 border-b border-slate-100">
-                                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Course</th>
-                                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider w-1/3">Batch</th>
-                                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider w-1/4">Students</th>
+                            <tr className="bg-[rgb(var(--zx-surface-hover))] border-b border-[rgb(var(--zx-border))]">
+                                <th className="px-6 py-4 text-xs font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider">Course</th>
+                                <th className="px-6 py-4 text-xs font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider w-1/3">Batch</th>
+                                <th className="px-6 py-4 text-xs font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-wider w-1/4">Students</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
                             {courses.map((course) => (
-                                <tr key={course.assignment_id} className="hover:bg-slate-50/80 transition-colors group">
+                                <tr key={course.assignment_id} className="hover:bg-[rgb(var(--zx-surface-hover))]/80 transition-colors group">
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
                                             <div className="w-9 h-9 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
                                                 <GraduationCap size={16} />
                                             </div>
-                                            <span className="font-bold text-slate-700 group-hover:text-indigo-600 transition-colors">
+                                            <span className="font-bold text-[rgb(var(--zx-text))] group-hover:text-indigo-600 transition-colors">
                                                 {course.course_name}
                                             </span>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
+                                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text))]">
                                             {course.batch_name}
                                         </span>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <div className="flex items-center gap-1.5 text-slate-600 font-semibold">
-                                            <Users size={16} className="text-slate-400" />
+                                        <div className="flex items-center gap-1.5 text-[rgb(var(--zx-text-muted))] font-semibold">
+                                            <Users size={16} className="text-[rgb(var(--zx-text-muted))]" />
                                             {course.students}
                                         </div>
                                     </td>
@@ -338,7 +338,7 @@ function RecentListCard({ title, icon: Icon, data }) {
     const target = LIST_LINKS[title];
 
     return (
-        <motion.div variants={itemVariants} className="bg-[rgb(var(--zx-surface))] rounded-3xl border border-[rgb(var(--zx-border))] shadow-xl shadow-slate-200/40 dark:shadow-black/20 flex flex-col overflow-hidden w-full h-full max-h-[420px]">
+        <motion.div variants={itemVariants} className="bg-[rgb(var(--zx-surface))] rounded-3xl border border-[rgb(var(--zx-border))] shadow-xl shadow-slate-200/40 dark:shadow-black/20 dark:shadow-black/20 flex flex-col overflow-hidden w-full h-full max-h-[420px]">
             <div className="px-6 py-5 border-b border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface-hover))] flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-[rgb(var(--zx-surface))] rounded-lg shadow-sm text-[rgb(var(--zx-text-muted))]">
@@ -371,7 +371,7 @@ function RecentListCard({ title, icon: Icon, data }) {
                                 className="flex items-center justify-between p-3 hover:bg-[rgb(var(--zx-surface-hover))] rounded-xl transition-colors group cursor-pointer"
                             >
                                 <div className="flex items-center gap-3 min-w-0">
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center font-bold text-[rgb(var(--zx-text-muted))] text-sm shrink-0 border border-[rgb(var(--zx-border))]">
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[rgb(var(--zx-surface-hover))] to-[rgb(var(--zx-border))] dark:from-slate-700 dark:to-slate-600 flex items-center justify-center font-bold text-[rgb(var(--zx-text-muted))] text-sm shrink-0 border border-[rgb(var(--zx-border))]">
                                         {item.title?.charAt(0)?.toUpperCase() || "-"}
                                     </div>
                                     <div className="min-w-0">
