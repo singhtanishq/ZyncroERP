@@ -105,6 +105,16 @@ class AdminFranchiseController extends Controller
     public function destroy($id)
     {
         $franchise = Franchise::findOrFail($id);
+
+        // Deleting the franchise must also retire its owner login.
+        if ($franchise->user_id) {
+            $user = User::find($franchise->user_id);
+            if ($user) {
+                $user->tokens()->delete();
+                $user->delete();
+            }
+        }
+
         $franchise->delete();
 
         return response()->json([
