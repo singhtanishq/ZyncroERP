@@ -556,9 +556,20 @@ export default function ScheduleExam({
                 <button
                     type="button"
                     onClick={submit}
-                    className="px-8 py-3.5 bg-emerald-600 text-white rounded-2xl font-bold text-base hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
+                    disabled={saving}
+                    className={`px-8 py-3.5 bg-emerald-600 text-white rounded-2xl font-bold text-base hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2 ${
+                      saving ? "opacity-70 cursor-not-allowed hover:scale-100" : ""
+                    }`}
                 >
-                    <Save size={20} /> Confirm & Schedule
+                    {saving ? (
+                      <>
+                        <Loader2 size={20} className="animate-spin" /> Scheduling...
+                      </>
+                    ) : (
+                      <>
+                        <Save size={20} /> Confirm & Schedule
+                      </>
+                    )}
                 </button>
             </div>
         )}
@@ -595,10 +606,18 @@ export default function ScheduleExam({
       {toast && (
         <div className="fixed bottom-8 right-8 z-50 animate-in slide-in-from-bottom-5 fade-in duration-300">
           <div className="bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-[rgb(var(--zx-border))] backdrop-blur-xl">
-            <div className="bg-emerald-500/20 text-emerald-500 rounded-full p-1 border border-emerald-500/30">
-                <Check size={14} strokeWidth={3} />
+            <div className={`rounded-full p-1 border ${
+              toast.type === "error"
+                ? "bg-rose-500/20 text-rose-500 border-rose-500/30"
+                : "bg-emerald-500/20 text-emerald-500 border-emerald-500/30"
+            }`}>
+                {toast.type === "error" ? (
+                  <AlertCircle size={14} strokeWidth={3} />
+                ) : (
+                  <Check size={14} strokeWidth={3} />
+                )}
             </div>
-            <span className="text-sm font-bold tracking-wide">{toast}</span>
+            <span className="text-sm font-bold tracking-wide">{toast.message}</span>
           </div>
         </div>
       )}
