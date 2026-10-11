@@ -92,6 +92,10 @@ export default function IssueCertificate() {
       setForm({ certificate_name: "", issued_date: "" });
     } catch (e) {
       console.error(e);
+      showToast(
+        e?.response?.data?.message || "Failed to issue certificate",
+        "error"
+      );
     } finally {
       setLoading(false);
     }
