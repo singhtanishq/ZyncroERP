@@ -7,12 +7,34 @@ use App\Models\Student;
 use App\Models\StudentDocument;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class StudentDocumentController extends Controller
 {
     private const ALLOWED_DOCUMENTS = [
         'payment_proof',
     ];
+
+    /**
+     * Lists every stored document for a student (admin document inbox).
+     */
+    public function index($studentId)
+    {
+        $student = Student::findOrFail($studentId);
+
+        $documents = StudentDocument::where('student_id', $student->id)
+            ->with('enrollment:id,course_id,batch_id,status')
+            ->orderByDesc('id')
+            ->get();
+
+        return response()->json([
+            'student' => [
+                'id' => $student->id,
+                'sid' => $student->sid,
+            ],
+            'documents' => $documents,
+        ]);
+    }
 
     public function upload(Request $request, $studentId)
     {
@@ -36,6 +58,8 @@ class StudentDocumentController extends Controller
         $filename =
             time() .
             '_' .
+            Str::random(8) .
+            '_' .
             preg_replace('/[^A-Za-z0-9\.\-_]/', '_', $file->getClientOriginalName());
 
         Storage::disk('local')->putFileAs(
@@ -50,6 +74,11 @@ class StudentDocumentController extends Controller
             ->first();
 
         if ($existing) {
+
+            // Replacing the file: drop the old blob so nothing is orphaned.
+            if ($existing->file_path) {
+                Storage::disk('local')->delete($existing->file_path);
+            }
 
             $existing->update([
                 'file_path' => 'student-documents/' . $filename,
