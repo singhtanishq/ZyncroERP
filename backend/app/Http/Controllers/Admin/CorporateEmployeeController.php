@@ -33,14 +33,19 @@ class CorporateEmployeeController extends Controller
             'create_login' => 'nullable|boolean',
         ]);
 
-        $data['employee_id'] = $this->nextEmployeeId();
         $data['status'] = $data['status'] ?? 'active';
 
         $employee = DB::transaction(function () use ($data, $request) {
 
+            /*
+             | Sequential EMP id generated inside the lock — two concurrent
+             | creates used to race on the same number.
+             */
+            $data['employee_id'] = $this->nextEmployeeId();
+
             $userId = null;
 
-            if (($data['create_login'] ?? true)) {
+            if (($data['create_login'] ?? false)) {
 
                 if (User::where('email', strtolower($data['email']))->exists()) {
                     abort(422, 'A login account with this email already exists.');
@@ -91,6 +96,14 @@ class CorporateEmployeeController extends Controller
 
         $employee->update($data);
 
+        // Keep the login identity in step with the HR record.
+        if ($employee->user_id) {
+            User::where('id', $employee->user_id)->update([
+                'name' => $data['name'],
+                'email' => strtolower($data['email']),
+            ]);
+        }
+
         return response()->json([
             'message' => 'Employee updated'
         ]);
@@ -109,7 +122,18 @@ class CorporateEmployeeController extends Controller
 
     public function destroy($id)
     {
-        CorporateEmployee::destroy($id);
+        $employee = CorporateEmployee::findOrFail($id);
+
+        // Terminated staff must lose their login immediately.
+        if ($employee->user_id) {
+            $user = User::find($employee->user_id);
+            if ($user) {
+                $user->tokens()->delete();
+                $user->delete();
+            }
+        }
+
+        $employee->delete();
 
         return response()->json([
             'message' => 'Employee deleted'
