@@ -318,6 +318,14 @@ export default function ManageAttendance({
               <div className="w-8 h-8 border-4 border-brand-teal-500/30 border-t-brand-teal-500 rounded-full animate-spin"></div>
               <span className="font-medium">Loading attendance...</span>
             </div>
+          ) : reportError ? (
+            <div className="flex flex-col items-center justify-center py-24 text-[rgb(var(--zx-text-muted))] m-auto">
+              <div className="w-16 h-16 bg-rose-500/10 rounded-2xl flex items-center justify-center mb-4 border border-rose-500/20 shadow-sm text-rose-500">
+                <XCircle size={24} />
+              </div>
+              <p className="text-lg font-bold text-[rgb(var(--zx-text))]">Couldn't Load Report</p>
+              <p className="text-sm mt-1">Something went wrong while fetching attendance. Please try again.</p>
+            </div>
           ) : !reportData ? (
             <div className="flex flex-col items-center justify-center py-24 text-[rgb(var(--zx-text-muted))] m-auto">
               <div className="w-16 h-16 bg-[rgb(var(--zx-surface-hover))] rounded-2xl flex items-center justify-center mb-4 border border-[rgb(var(--zx-border))] shadow-sm">
