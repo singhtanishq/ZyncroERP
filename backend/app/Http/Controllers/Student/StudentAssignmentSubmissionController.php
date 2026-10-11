@@ -25,6 +25,36 @@ class StudentAssignmentSubmissionController extends Controller
                 $assignmentId
             );
 
+        /*
+         | Submissions are only accepted from students actively enrolled in
+         | the assignment's exact course + batch, while the assignment is
+         | open and before its deadline.
+         */
+        $enrolled = $student
+            ->enrollments()
+            ->where('status', 'active')
+            ->where('course_id', $assignment->course_id)
+            ->where('batch_id', $assignment->batch_id)
+            ->exists();
+
+        if (! $enrolled) {
+            return response()->json([
+                'message' => 'You are not enrolled in this assignment\'s course and batch.',
+            ], 403);
+        }
+
+        if ($assignment->status !== 'active') {
+            return response()->json([
+                'message' => 'This assignment is no longer active.',
+            ], 422);
+        }
+
+        if ($assignment->deadline && now()->gt($assignment->deadline)) {
+            return response()->json([
+                'message' => 'The submission deadline for this assignment has passed.',
+            ], 422);
+        }
+
         $existing =
             AssignmentSubmission::where(
                 'assignment_id',
