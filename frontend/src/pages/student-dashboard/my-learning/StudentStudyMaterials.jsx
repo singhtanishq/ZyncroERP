@@ -94,13 +94,13 @@ export default function StudentStudyMaterials() {
       >
         {/* HEADER */}
         <motion.div variants={itemVariants} className="mb-10">
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 flex items-center gap-4">
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-[rgb(var(--zx-text))] flex items-center gap-4">
             <div className="flex items-center justify-center p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-sm text-white shrink-0">
               <BookOpen size={24} />
             </div>
             Study Materials
           </h1>
-          <p className="text-slate-500 mt-3 text-m max-w-2xl leading-relaxed">
+          <p className="text-[rgb(var(--zx-text-muted))] mt-3 text-m max-w-2xl leading-relaxed">
             Access digital notes, video tutorials, and assigned reading materials provided by your instructors.
           </p>
         </motion.div>
@@ -115,7 +115,7 @@ export default function StudentStudyMaterials() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="flex flex-col items-center justify-center py-32 text-slate-500 bg-white/40 backdrop-blur-2xl rounded-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
+                className="flex flex-col items-center justify-center py-32 text-[rgb(var(--zx-text-muted))] bg-[rgb(var(--zx-surface))] backdrop-blur-2xl rounded-3xl border border-[rgb(var(--zx-border))] shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
               >
                 {/* LOADING STATE */}
                 <Loader2 size={40} className="animate-spin text-indigo-500 mb-4" />
@@ -127,16 +127,16 @@ export default function StudentStudyMaterials() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white/40 backdrop-blur-2xl rounded-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] py-32 flex flex-col items-center transition-all duration-500"
+                className="bg-[rgb(var(--zx-surface))] backdrop-blur-2xl rounded-3xl border border-[rgb(var(--zx-border))] shadow-[0_8px_30px_rgb(0,0,0,0.04)] py-32 flex flex-col items-center transition-all duration-500"
               >
                 {/* EMPTY STATE */}
-                <div className="bg-slate-100/50 p-6 rounded-full mb-6">
-                  <BookOpen size={48} className="text-slate-400" />
+                <div className="bg-[rgb(var(--zx-surface-hover))] p-6 rounded-full mb-6">
+                  <BookOpen size={48} className="text-[rgb(var(--zx-text-muted))]" />
                 </div>
-                <h3 className="text-2xl font-bold text-slate-800 tracking-tight">
+                <h3 className="text-2xl font-bold text-[rgb(var(--zx-text))] tracking-tight">
                   No Materials Available
                 </h3>
-                <p className="mt-2 text-slate-500 font-medium text-center max-w-md">
+                <p className="mt-2 text-[rgb(var(--zx-text-muted))] font-medium text-center max-w-md">
                   Your instructors haven't uploaded any study materials for your enrolled courses yet.
                 </p>
               </motion.div>
@@ -158,7 +158,7 @@ export default function StudentStudyMaterials() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.1 }}
-                      className="bg-white/60 backdrop-blur-2xl rounded-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 md:p-8 relative overflow-hidden group hover:bg-white/90 transition-all duration-300 flex flex-col"
+                      className="bg-[rgb(var(--zx-surface))] backdrop-blur-2xl rounded-3xl border border-[rgb(var(--zx-border))] shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 md:p-8 relative overflow-hidden group hover:bg-[rgb(var(--zx-surface-hover))] transition-all duration-300 flex flex-col"
                     >
                       {/* Decorative Background Glows */}
                       <div className={`absolute -right-20 -top-20 w-64 h-64 rounded-full opacity-5 group-hover:opacity-10 group-hover:scale-150 transition-all duration-700 blur-3xl pointer-events-none ${theme.glow}`}></div>
@@ -168,7 +168,7 @@ export default function StudentStudyMaterials() {
                         {/* Top Row: Icon, Title & Badge */}
                         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
                           <div className="flex items-start gap-4 flex-1 min-w-0">
-                            <div className={`p-3 rounded-2xl shrink-0 mt-1 border border-white shadow-sm ${theme.iconBg}`}>
+                            <div className={`p-3 rounded-2xl shrink-0 mt-1 border border-[rgb(var(--zx-border))] shadow-sm ${theme.iconBg}`}>
                               {theme.icon}
                             </div>
                             <div className="flex-1 min-w-0">
@@ -177,17 +177,17 @@ export default function StudentStudyMaterials() {
                                   {theme.label}
                                 </span>
                               </div>
-                              <h3 className="font-bold text-slate-800 text-xl tracking-tight leading-tight break-words group-hover:text-indigo-900 transition-colors duration-300">
+                              <h3 className="font-bold text-[rgb(var(--zx-text))] text-xl tracking-tight leading-tight break-words group-hover:text-indigo-900 transition-colors duration-300">
                                 {m.title || "Untitled Document"}
                               </h3>
 
                               {/* NEW PROGRAM PILLS ADDED HERE */}
                               <div className="flex flex-wrap items-center gap-2 mt-3">
-                                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-500 bg-slate-50/80 border border-slate-100/80 px-2.5 py-1 rounded-lg">
+                                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] px-2.5 py-1 rounded-lg">
                                   <BookOpen size={12} className="text-indigo-400" />
                                   {m.student_course?.name || "N/A"}
                                 </span>
-                                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-500 bg-slate-50/80 border border-slate-100/80 px-2.5 py-1 rounded-lg">
+                                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[rgb(var(--zx-text-muted))] bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] px-2.5 py-1 rounded-lg">
                                   <Layers size={12} className="text-indigo-400" />
                                   {m.student_batch?.name || "N/A"}
                                 </span>
@@ -198,18 +198,18 @@ export default function StudentStudyMaterials() {
 
                         {/* Description Section */}
                         {m.description && (
-                          <div className="bg-slate-50/50 border border-slate-100/60 rounded-2xl p-4">
-                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+                          <div className="bg-[rgb(var(--zx-surface-hover))] border border-[rgb(var(--zx-border))] rounded-2xl p-4">
+                             <p className="text-[10px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
                                 <AlignLeft size={14} className="text-indigo-400" /> Description
                              </p>
-                             <p className="text-sm font-medium text-slate-600 leading-relaxed break-words">
+                             <p className="text-sm font-medium text-[rgb(var(--zx-text-muted))] leading-relaxed break-words">
                                {m.description}
                              </p>
                           </div>
                         )}
 
                         {/* Action / Content Section */}
-                        <div className="mt-auto pt-4 border-t border-slate-100/50">
+                        <div className="mt-auto pt-4 border-t border-[rgb(var(--zx-border))]">
                           
                           {/* VIDEO TYPE */}
                           {m.type === "video" && (
