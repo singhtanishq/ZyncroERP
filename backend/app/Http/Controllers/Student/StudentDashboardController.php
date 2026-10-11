@@ -324,12 +324,18 @@ class StudentDashboardController extends Controller
         ]);
         
         $paymentSummary = $student->enrollments
+            ->where('status', '!=', 'cancelled')
             ->map(function ($enrollment) use ($student) {
-        
+
+                // Fees are per (course, batch) — match both, never the first row.
                 $fee = $student->fees
                     ->where(
                         'course_id',
                         $enrollment->course_id
+                    )
+                    ->where(
+                        'batch_id',
+                        $enrollment->batch_id
                     )
                     ->first();
         
@@ -405,13 +411,13 @@ class StudentDashboardController extends Controller
 
                 'course' =>
                     $enrollment?->course?->name,
-            
+
                 'batch' =>
                     $enrollment?->batch?->name,
-            
+
                 'status' =>
-                    'Pending',
-            
+                    $enrollment?->status,
+
             ],
 
             'learning' => [
@@ -439,6 +445,7 @@ class StudentDashboardController extends Controller
             ],
 
             'active_enrollments' => $allEnrollments
+                ->where('status', '!=', 'cancelled')
                 ->map(function ($enrollment) {
             
                     return [
