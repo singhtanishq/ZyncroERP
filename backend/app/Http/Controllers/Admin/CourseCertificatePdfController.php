@@ -9,14 +9,19 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class CourseCertificatePdfController extends Controller
 {
     /**
-     * Generate QR code image (base64)
+     * Generate QR code image (base64) — generated locally so the public
+     * verification page never depends on a third-party service.
      */
     private function generateQr(string $text): string
     {
-        $url = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data='
-            . urlencode($text);
+        $result = \Endroid\QrCode\Builder\Builder::create()
+            ->writer(new \Endroid\QrCode\Writer\PngWriter())
+            ->data($text)
+            ->size(200)
+            ->margin(4)
+            ->build();
 
-        return base64_encode(file_get_contents($url));
+        return base64_encode($result->getString());
     }
 
     /**
