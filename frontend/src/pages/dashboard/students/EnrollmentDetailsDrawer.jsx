@@ -517,7 +517,7 @@ export default function EnrollmentDetailsDrawer({
 
               <button
                 disabled={isRejected || isCompleted || busy}
-                onClick={rejectEnrollment}
+                onClick={startEnrollmentReject}
                 className={`py-3 rounded-xl flex items-center justify-center gap-1.5 text-xs sm:text-sm font-semibold transition-all ${
                   !isRejected && !isCompleted
                     ? "bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-600/20"
