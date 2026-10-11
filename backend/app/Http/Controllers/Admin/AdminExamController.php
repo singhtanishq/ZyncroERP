@@ -68,32 +68,39 @@ class AdminExamController extends Controller
 
     public function update(Request $request, Exam $exam)
     {
-        if ($exam->status !== ExamStatus::UPCOMING) {
+        /*
+         | The DB status stays 'upcoming' for the exam's whole life — the live
+         | / past states are derived. Editing is therefore guarded by time,
+         | not by the stored status.
+         */
+        if ($exam->status === ExamStatus::CANCELLED || $exam->start_time->isPast()) {
             return response()->json(['message' => 'Exam cannot be updated'], 403);
         }
 
-        $exam->update($request->only([
-            'name',
-            'description',
-            'exam_category',
-            'platform_name',
-            'platform_description',
-            'exam_link',
-            'center_name',
-            'offline_notes',
-        ]));
+        $data = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'description' => 'nullable|string',
+            'exam_category' => 'sometimes|required|string|max:100',
+            'platform_name' => 'nullable|string|max:255',
+            'platform_description' => 'nullable|string',
+            'exam_link' => 'nullable|url',
+            'center_name' => 'nullable|string|max:255',
+            'offline_notes' => 'nullable|string',
+        ]);
 
-        return $exam;
+        $exam->update($data);
+
+        return $exam->fresh();
     }
 
     public function postpone(Request $request, Exam $exam)
     {
-        if ($exam->status !== ExamStatus::UPCOMING) {
+        if ($exam->status === ExamStatus::CANCELLED || $exam->start_time->isPast()) {
             return response()->json(['message' => 'Exam cannot be postponed'], 403);
         }
 
         $data = $request->validate([
-            'start_time' => 'required|date',
+            'start_time' => 'required|date|after:now',
             'duration_minutes' => 'required|integer|min:1',
             'end_time' => 'required|date|after:start_time',
         ]);
@@ -105,7 +112,11 @@ class AdminExamController extends Controller
 
     public function cancel(Request $request, Exam $exam)
     {
-        if ($exam->status === ExamStatus::PAST) {
+        if ($exam->status === ExamStatus::CANCELLED) {
+            return response()->json(['message' => 'Exam is already cancelled'], 422);
+        }
+
+        if ($exam->end_time->isPast()) {
             return response()->json(['message' => 'Past exam cannot be cancelled'], 403);
         }
 
