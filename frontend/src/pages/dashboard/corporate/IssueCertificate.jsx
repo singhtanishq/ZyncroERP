@@ -369,11 +369,15 @@ export default function IssueCertificate() {
       {toast && (
         <div className="fixed bottom-8 right-8 z-[100] transition-all duration-300">
           <div className="bg-[rgb(var(--zx-surface))] text-[rgb(var(--zx-text))] px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-[rgb(var(--zx-border))] backdrop-blur-xl min-w-[300px]">
-            <div className="rounded-full p-1 bg-emerald-500/20 text-emerald-500 border border-emerald-500/30">
-              <CheckCircle2 size={14} strokeWidth={3} />
+            <div className={`rounded-full p-1 border ${toast.type === "error" ? "bg-rose-500/20 text-rose-500 border-rose-500/30" : "bg-emerald-500/20 text-emerald-500 border-emerald-500/30"}`}>
+              {toast.type === "error" ? (
+                <AlertCircle size={14} strokeWidth={3} />
+              ) : (
+                <CheckCircle2 size={14} strokeWidth={3} />
+              )}
             </div>
-            <span className="text-sm font-bold tracking-wide mr-4">{toast}</span>
-            <button type="button" onClick={() => setToast("")} className="ml-auto text-[rgb(var(--zx-text-muted))] hover:text-[rgb(var(--zx-text))] transition-colors">
+            <span className="text-sm font-bold tracking-wide mr-4">{toast.msg}</span>
+            <button type="button" onClick={() => setToast(null)} className="ml-auto text-[rgb(var(--zx-text-muted))] hover:text-[rgb(var(--zx-text))] transition-colors">
               <X size={16} />
             </button>
           </div>
