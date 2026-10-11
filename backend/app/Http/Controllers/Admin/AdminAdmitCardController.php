@@ -39,13 +39,14 @@ class AdminAdmitCardController extends Controller
             ->get()
             ->map(function ($student) {
                 $admitCard = $student->admitCards->first();
-    
+
                 return [
                     'id' => $student->id,
                     'sid' => $student->sid,
                     'name' => $student->user?->name,
                     'admit_card_id' => $admitCard?->id,
                     'admit_card_status' => $admitCard?->status,
+                    'admit_card_token' => $admitCard?->qr_token,
                 ];
             });
     }
