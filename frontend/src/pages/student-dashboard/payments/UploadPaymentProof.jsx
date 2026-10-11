@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import api from "../../../lib/api/apiClient";
+import { useToast } from "../../../components/common/ToastProvider";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Upload,
@@ -31,7 +33,13 @@ const itemVariants = {
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
 };
 
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const ALLOWED_FILE_EXTENSIONS = ["pdf", "jpg", "jpeg", "png"];
+
 export default function UploadPaymentProof() {
+  const { toast } = useToast();
+  const location = useLocation();
+  const highlightedEnrollmentId = location.state?.enrollmentId ?? null;
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploadingId, setUploadingId] = useState(null);
@@ -53,11 +61,46 @@ export default function UploadPaymentProof() {
     loadData();
   }, []);
 
+  // Scroll to and highlight the enrollment card the user navigated
+  // here for (MakePayment passes { state: { enrollmentId } }).
+  useEffect(() => {
+    if (!highlightedEnrollmentId || loading || rows.length === 0) return;
+
+    const el = document.getElementById(
+      `payment-proof-card-${highlightedEnrollmentId}`
+    );
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [highlightedEnrollmentId, loading, rows.length]);
+
+  const handleFileSelect = (enrollmentId, file) => {
+    if (!file) return;
+
+    const extension = file.name.split(".").pop()?.toLowerCase() || "";
+    if (!ALLOWED_FILE_EXTENSIONS.includes(extension)) {
+      toast(
+        "Unsupported file type. Allowed: PDF, JPG, JPEG, PNG.",
+        "error"
+      );
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      toast("File is too large. Maximum allowed size is 10MB.", "error");
+      return;
+    }
+
+    setSelectedFiles((prev) => ({
+      ...prev,
+      [enrollmentId]: file,
+    }));
+  };
+
   const submitUpload = async (enrollmentId) => {
     const file = selectedFiles[enrollmentId];
 
     if (!file) {
-      alert("Please select a file first.");
+      toast("Please select a file first.", "error");
       return;
     }
 
@@ -83,9 +126,11 @@ export default function UploadPaymentProof() {
         return updated;
       });
 
+      toast("Payment proof uploaded successfully.", "success");
+
       await loadData();
     } catch (e) {
-      alert(e?.response?.data?.message || "Upload failed");
+      toast(e?.response?.data?.message || "Upload failed", "error");
     } finally {
       setUploadingId(null);
     }
@@ -202,10 +247,15 @@ export default function UploadPaymentProof() {
                   return (
                     <motion.div
                       key={row.id}
+                      id={`payment-proof-card-${row.id}`}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.1 }}
-                      className="bg-white/60 backdrop-blur-2xl rounded-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 md:p-8 relative overflow-hidden group hover:bg-white/90 transition-all duration-300 flex flex-col"
+                      className={`bg-white/60 backdrop-blur-2xl rounded-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 md:p-8 relative overflow-hidden group hover:bg-white/90 transition-all duration-300 flex flex-col ${
+                        highlightedEnrollmentId === row.id
+                          ? "ring-2 ring-indigo-500"
+                          : ""
+                      }`}
                     >
                       {/* Decorative Background Glows */}
                       <div className={`absolute -right-20 -top-20 w-64 h-64 rounded-full opacity-5 group-hover:opacity-10 group-hover:scale-150 transition-all duration-700 blur-3xl pointer-events-none bg-gradient-to-br ${config.glow}`}></div>
@@ -292,12 +342,10 @@ export default function UploadPaymentProof() {
                                 accept=".pdf,.jpg,.jpeg,.png"
                                 hidden
                                 disabled={!canUpload || isUploading}
-                                onChange={(e) =>
-                                  setSelectedFiles((prev) => ({
-                                    ...prev,
-                                    [row.id]: e.target.files?.[0],
-                                  }))
-                                }
+                                onChange={(e) => {
+                                  handleFileSelect(row.id, e.target.files?.[0]);
+                                  e.target.value = "";
+                                }}
                               />
                             </label>
                           </div>
