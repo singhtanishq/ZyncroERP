@@ -622,11 +622,7 @@ export default function ManageCourses() {
                                               </button>
 
                                               <button
-                                                  onClick={() =>
-                                                  api
-                                                      .patch(`/admin/batches/${b.id}/toggle`)
-                                                      .then(() => loadBatches(c.id))
-                                                  }
+                                                  onClick={() => toggleBatchStatus(b, c.id)}
                                                   className={`p-1.5 rounded-xl transition-all ${b.status === 'active' ? 'text-[rgb(var(--zx-text-muted))] hover:text-emerald-600 hover:bg-emerald-500/10' : 'text-[rgb(var(--zx-text-muted))] hover:text-rose-600 hover:bg-rose-500/10'}`}
                                                   title="Toggle Status"
                                               >
@@ -665,6 +661,7 @@ export default function ManageCourses() {
         open={!!editCourse}
         course={editCourse}
         onClose={() => setEditCourse(null)}
+        onError={(message) => showToast(message, "error")}
         onSaved={() => {
           setEditCourse(null);
           loadCourses();
@@ -676,6 +673,7 @@ export default function ManageCourses() {
         open={!!editBatch}
         batch={editBatch}
         onClose={() => setEditBatch(null)}
+        onError={(message) => showToast(message, "error")}
         onSaved={(courseId) => {
           setEditBatch(null);
           loadBatches(courseId);
