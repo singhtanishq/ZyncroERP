@@ -17,10 +17,16 @@ class AdminUserController extends Controller
     // ================= ADD USER =================
     public function store(Request $request)
     {
+        /*
+         | Franchise and employee logins are provisioned through their
+         | dedicated flows (Add Franchise with owner login, Corporate →
+         | Add Employee) because both require a profile row — a bare user
+         | here would 404 on every dashboard request.
+         */
         $data = $request->validate([
             'name'  => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
-            'role'  => ['required', 'in:student,faculty,franchise,admin,employee'],
+            'role'  => ['required', 'in:student,faculty,admin'],
         ]);
 
         $plainPassword = Str::random(32);
@@ -89,15 +95,22 @@ class AdminUserController extends Controller
          | Sent after the transaction commits so a mail failure can never
          | roll back the created account.
          */
-        app(EmailService::class)->userCredentials(
+        $mailResult = app(EmailService::class)->userCredentials(
             $user->email,
             $user->name,
             $plainPassword,
             $user->role
         );
 
+        $message = 'User created successfully';
+
+        if (! ($mailResult['ok'] ?? false)) {
+            $message .= ', but the credentials email could not be sent. '
+                . 'Use "Reset Credentials" to re-send them.';
+        }
+
         return response()->json([
-            'message' => 'User created successfully',
+            'message' => $message,
             'user'    => $user,
         ], 201);
     }
@@ -134,25 +147,39 @@ class AdminUserController extends Controller
             // Delete linked profile first
 
             if ($user->role === 'student') {
-            
+
                 Student::where(
                     'user_id',
                     $user->id
                 )->delete();
-            
+
             }
-            
+
             if ($user->role === 'faculty') {
-            
+
                 Faculty::where(
                     'user_id',
                     $user->id
                 )->delete();
-            
+
             }
-            
-            // Franchise profile can be added later
-            
+
+            /*
+             | Franchise/employee profiles own their user row; deleting the
+             | login alone would orphan the profile. Detach instead of
+             | cascading — the profile survives with its data.
+             */
+            if ($user->role === 'franchise') {
+                \App\Models\Franchise::where('user_id', $user->id)
+                    ->update(['user_id' => null]);
+            }
+
+            if ($user->role === 'employee') {
+                \App\Models\CorporateEmployee::where('user_id', $user->id)
+                    ->update(['user_id' => null]);
+            }
+
+            $user->tokens()->delete();
             $user->delete();
 
             return response()->json([
@@ -171,15 +198,24 @@ class AdminUserController extends Controller
         $user->password = Hash::make($plainPassword);
         $user->save();
 
-        app(EmailService::class)->userCredentials(
+        // A credential reset must end every existing session.
+        $user->tokens()->delete();
+
+        $mailResult = app(EmailService::class)->userCredentials(
             $user->email,
             $user->name,
             $plainPassword,
             $user->role
         );
 
+        $message = 'Credentials reset and emailed';
+
+        if (! ($mailResult['ok'] ?? false)) {
+            $message = 'Credentials were reset, but the email could not be sent. Try again.';
+        }
+
         return response()->json([
-            'message' => 'Credentials reset and emailed'
+            'message' => $message,
         ]);
     }
 
