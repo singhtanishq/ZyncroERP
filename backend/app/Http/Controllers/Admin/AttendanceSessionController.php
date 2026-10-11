@@ -39,51 +39,58 @@ class AttendanceSessionController extends Controller
 
         $now = now();
 
-        DB::table('attendance_sessions')
-            ->where('ends_at', '<=', $now)
-            ->where('status', 'active')
-            ->update([
-                'status' => 'expired',
-                'updated_at' => $now
-            ]);
-
-        /* ---------------- CHECK ACTIVE SESSION ---------------- */
-
-        $exists = DB::table('attendance_sessions')
-            ->where('course_id', $data['course_id'])
-            ->where('batch_id', $data['batch_id'])
-            ->where('status', 'active')
-            ->exists();
-
-        if ($exists) {
-            return response()->json([
-                'message' => 'Attendance already running for this course and batch'
-            ], 409);
-        }
-
         /* ---------------- CREATE SESSION ---------------- */
 
-        $endsAt = $now->copy()->addMinutes(10);
-        $qrToken = (string) Str::uuid();
+        /*
+         | Serialized on the course/batch pair: the existence check + insert
+         | run inside one transaction against a locked query so two
+         | concurrent starts cannot both pass.
+         */
+        return DB::transaction(function () use ($data, $now) {
 
-        $sessionId = DB::table('attendance_sessions')->insertGetId([
-            'course_id'    => $data['course_id'],
-            'batch_id'     => $data['batch_id'],
-            'session_date' => $now->toDateString(),
-            'starts_at'    => $now,
-            'ends_at'      => $endsAt,
-            'qr_token'     => $qrToken,
-            'created_by'   => auth()->id(),
-            'status'       => 'active',
-            'created_at'   => $now,
-            'updated_at'   => $now,
-        ]);
+            DB::table('attendance_sessions')
+                ->where('ends_at', '<=', $now)
+                ->where('status', 'active')
+                ->update([
+                    'status' => 'expired',
+                    'updated_at' => $now
+                ]);
 
-        return response()->json([
-            'session_id' => $sessionId,
-            'qr_token'   => $qrToken,
-            'expires_at' => $endsAt->toIso8601String(),
-        ]);
+            $exists = DB::table('attendance_sessions')
+                ->where('course_id', $data['course_id'])
+                ->where('batch_id', $data['batch_id'])
+                ->where('status', 'active')
+                ->lockForUpdate()
+                ->exists();
+
+            if ($exists) {
+                return response()->json([
+                    'message' => 'Attendance already running for this course and batch'
+                ], 409);
+            }
+
+            $endsAt = $now->copy()->addMinutes(10);
+            $qrToken = (string) Str::uuid();
+
+            $sessionId = DB::table('attendance_sessions')->insertGetId([
+                'course_id'    => $data['course_id'],
+                'batch_id'     => $data['batch_id'],
+                'session_date' => $now->toDateString(),
+                'starts_at'    => $now,
+                'ends_at'      => $endsAt,
+                'qr_token'     => $qrToken,
+                'created_by'   => auth()->id(),
+                'status'       => 'active',
+                'created_at'   => $now,
+                'updated_at'   => $now,
+            ]);
+
+            return response()->json([
+                'session_id' => $sessionId,
+                'qr_token'   => $qrToken,
+                'expires_at' => $endsAt->toIso8601String(),
+            ]);
+        });
     }
 
     public function end(Request $request)
