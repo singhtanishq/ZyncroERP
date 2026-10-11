@@ -15,6 +15,9 @@ trait ResolvesFranchise
 
         abort_unless($franchise, 403, 'No franchise profile is linked to this account.');
 
+        // A deactivated franchise must not keep reading its dashboard data.
+        abort_unless($franchise->status === 'active', 403, 'This franchise account is currently deactivated.');
+
         return $franchise;
     }
 }
