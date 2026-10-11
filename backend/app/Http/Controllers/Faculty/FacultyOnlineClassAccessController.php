@@ -15,8 +15,14 @@ class FacultyOnlineClassAccessController extends OnlineClassAccessController
         $class = OnlineClass::with('accessRules')
             ->findOrFail($id);
 
+        /*
+         | Write access: the creator may attach the first rule to their own
+         | class; everyone else needs a matching course/batch rule.
+         */
         FacultyAssignmentService::authorizeAccessRules(
-            $class
+            $class,
+            'accessRules',
+            true
         );
 
         $data = $request->validate([
