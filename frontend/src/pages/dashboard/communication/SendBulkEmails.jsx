@@ -42,7 +42,7 @@ export default function SendBulkEmails() {
     setIsLoading(true);
     try {
       const res = await api.get("/admin/communication/users", {
-        params: { role: filter, search },
+        params: { role: filter, search: debouncedSearch },
         withCredentials: true,
       });
       setUsers(res.data);
@@ -53,9 +53,15 @@ export default function SendBulkEmails() {
     }
   };
 
+  // Debounce the search input so we don't fire a request per keystroke.
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), 350);
+    return () => clearTimeout(t);
+  }, [search]);
+
   useEffect(() => {
     fetchUsers();
-  }, [filter, search]);
+  }, [filter, debouncedSearch]);
 
   // ================= SELECT =================
   const toggleUser = (id) => {
