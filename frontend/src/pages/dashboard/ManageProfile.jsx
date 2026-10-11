@@ -389,12 +389,12 @@ export default function ManageProfile() {
       {/* PREMIUM TOAST SYSTEM */}
       {(msg || success) && (
         <div className="fixed bottom-8 right-8 z-[100] animate-in slide-in-from-bottom-5 fade-in duration-300">
-          <div className="bg-slate-900 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700/50 min-w-[300px]">
+          <div className="bg-[rgb(var(--zx-text))] text-[rgb(var(--zx-surface))] px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 border border-transparent min-w-[300px]">
             <div className={`rounded-full p-1 ${success ? 'bg-emerald-500' : 'bg-rose-500'}`}>
                 {success ? <CheckCircle2 size={14} className="text-white" strokeWidth={3} /> : <AlertCircle size={14} className="text-white" strokeWidth={3} />}
             </div>
             <span className="text-sm font-semibold tracking-wide mr-4">{success || msg}</span>
-            <button onClick={() => { setMsg(""); setSuccess(""); }} className="ml-auto text-slate-400 hover:text-white transition-colors">
+            <button onClick={() => { setMsg(""); setSuccess(""); }} className="ml-auto opacity-60 hover:opacity-100 transition-opacity">
                 <X size={16} />
             </button>
           </div>
