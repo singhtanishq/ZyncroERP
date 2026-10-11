@@ -20,10 +20,12 @@ class StudentEnrollmentController extends Controller
         $student = Student::where('user_id', $user->id)
             ->firstOrFail();
 
+        // Cancelled enrollments must not block a fresh application.
         $enrollments = StudentEnrollment::where(
             'student_id',
             $student->id
         )
+        ->where('status', '!=', 'cancelled')
         ->get()
         ->keyBy('course_id');
 
@@ -92,7 +94,11 @@ class StudentEnrollmentController extends Controller
             $data
         ) {
 
-            $batch = Batch::findOrFail(
+            $course = Course::lockForUpdate()->findOrFail(
+                $data['course_id']
+            );
+
+            $batch = Batch::lockForUpdate()->findOrFail(
                 $data['batch_id']
             );
 
@@ -104,7 +110,15 @@ class StudentEnrollmentController extends Controller
                 ], 422);
             }
 
-            $duplicate = StudentEnrollment::where(
+            if ($course->status !== 'active' || $batch->status !== 'active') {
+
+                return response()->json([
+                    'message' =>
+                        'Enrollments require an active course and batch.'
+                ], 422);
+            }
+
+            $existing = StudentEnrollment::where(
                 'student_id',
                 $student->id
             )
@@ -112,14 +126,35 @@ class StudentEnrollmentController extends Controller
                 'course_id',
                 $data['course_id']
             )
-            ->exists();
+            ->first();
 
-            if ($duplicate) {
+            if ($existing && $existing->status !== 'cancelled') {
 
                 return response()->json([
                     'message' =>
                         'You are already enrolled in this course.'
                 ], 422);
+            }
+
+            if ($existing) {
+                // The (student, course, batch) unique index means a rejected
+                // application is revived in place rather than duplicated.
+                $existing->update([
+                    'batch_id' => $data['batch_id'],
+                    'joined_at' => now()->toDateString(),
+                    'status' => 'pending',
+                    'payment_status' => 'pending',
+                    'remarks' => null,
+                    'completion_date' => null,
+                ]);
+
+                return response()->json([
+                    'message' =>
+                        'Enrollment request submitted successfully.',
+
+                    'enrollment' =>
+                        $existing,
+                ]);
             }
 
             $enrollment = StudentEnrollment::create([
@@ -143,30 +178,24 @@ class StudentEnrollmentController extends Controller
                     'pending',
             ]);
 
-            $course = Course::findOrFail(
-                $data['course_id']
+            StudentFee::firstOrCreate(
+                [
+                    'student_id' => $student->id,
+                    'course_id' => $course->id,
+                ],
+                [
+                    'batch_id' => $batch->id,
+
+                    'total_fees' =>
+                        $course->amount ?? 0,
+
+                    'paid_fees' =>
+                        0,
+
+                    'status' =>
+                        'pending',
+                ]
             );
-
-            StudentFee::create([
-
-                'student_id' =>
-                    $student->id,
-
-                'course_id' =>
-                    $course->id,
-
-                'batch_id' =>
-                    $batch->id,
-
-                'total_fees' =>
-                    $course->amount ?? 0,
-
-                'paid_fees' =>
-                    0,
-
-                'status' =>
-                    'pending',
-            ]);
 
             return response()->json([
                 'message' =>
