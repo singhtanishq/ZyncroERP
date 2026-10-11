@@ -148,35 +148,46 @@ class FacultyAssignmentService
     
     public static function authorizeAccessRules(
         Model $model,
-        string $relation = 'accessRules'
+        string $relation = 'accessRules',
+        bool $forWrite = false
     ): void {
-    
+
         $allowed = self::assignments();
-    
+
         $authorized = false;
-    
+
         $model->loadMissing($relation);
-    
+
+        /*
+         | A global ("all") rule makes content visible to every faculty member,
+         | but it must not hand out write access to admin-created or other
+         | faculty-created records. Writes require ownership or an exact
+         | course/batch rule.
+         */
+        if ($forWrite && isset($model->created_by) && (int) $model->created_by === (int) auth()->id()) {
+            return;
+        }
+
         foreach ($model->$relation as $rule) {
-    
-            if ($rule->access_type === 'all') {
+
+            if ($rule->access_type === 'all' && ! $forWrite) {
                 $authorized = true;
                 break;
             }
-    
+
             foreach ($allowed as $assignment) {
-    
+
                 if (
                     $rule->access_type === 'course'
                     &&
                     $rule->course_id == $assignment->course_id
                 ) {
-    
+
                     $authorized = true;
                     break 2;
-    
+
                 }
-    
+
                 if (
                     $rule->access_type === 'batch'
                     &&
@@ -184,32 +195,37 @@ class FacultyAssignmentService
                     &&
                     $rule->batch_id == $assignment->batch_id
                 ) {
-    
+
                     $authorized = true;
                     break 2;
-    
+
                 }
-    
+
             }
-    
+
         }
-    
+
         abort_unless($authorized, 403);
-    
+
     }
-    
+
     public static function applyCourseBatchFilter(
         Builder $query
     ): Builder {
-    
+
         $assignments = self::assignments();
-    
+
+        // A faculty with no assignments must see nothing, not everything.
+        if ($assignments->isEmpty()) {
+            return $query->whereRaw('1 = 0');
+        }
+
         return $query->where(function ($q) use ($assignments) {
-    
+
             foreach ($assignments as $assignment) {
-    
+
                 $q->orWhere(function ($row) use ($assignment) {
-    
+
                     $row->where(
                         'course_id',
                         $assignment->course_id
@@ -218,12 +234,12 @@ class FacultyAssignmentService
                         'batch_id',
                         $assignment->batch_id
                     );
-    
+
                 });
-    
+
             }
-    
+
         });
-    
+
     }
 }
