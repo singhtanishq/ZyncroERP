@@ -1,41 +1,34 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
+/**
+ * Re-scopes the document uniqueness constraint: proofs and documents are
+ * unique per (enrollment, type) rather than per student.
+ */
 return new class extends Migration
 {
     public function up(): void
     {
-        DB::statement("
-            ALTER TABLE student_documents
-            DROP INDEX student_document_unique
-        ");
+        Schema::table('student_documents', function (Blueprint $table) {
+            $table->dropUnique('student_document_unique');
+        });
 
-        DB::statement("
-            ALTER TABLE student_documents
-            ADD UNIQUE KEY student_document_unique
-            (
-                enrollment_id,
-                document_type
-            )
-        ");
+        Schema::table('student_documents', function (Blueprint $table) {
+            $table->unique(['enrollment_id', 'document_type'], 'student_document_unique');
+        });
     }
 
     public function down(): void
     {
-        DB::statement("
-            ALTER TABLE student_documents
-            DROP INDEX student_document_unique
-        ");
+        Schema::table('student_documents', function (Blueprint $table) {
+            $table->dropUnique('student_document_unique');
+        });
 
-        DB::statement("
-            ALTER TABLE student_documents
-            ADD UNIQUE KEY student_document_unique
-            (
-                student_id,
-                document_type
-            )
-        ");
+        Schema::table('student_documents', function (Blueprint $table) {
+            $table->unique(['student_id', 'document_type'], 'student_document_unique');
+        });
     }
 };
