@@ -15,22 +15,17 @@ class FacultyStudyMaterialAccessController extends StudyMaterialAccessController
         $material = StudyMaterial::with('accessRules')
             ->findOrFail($id);
 
+        /*
+         | Write access: the creator may attach the first rule to their own
+         | material (otherwise freshly created content is stuck with zero
+         | rules and can never be published); everyone else needs a matching
+         | course/batch rule.
+         */
         FacultyAssignmentService::authorizeAccessRules(
-            $material
+            $material,
+            'accessRules',
+            true
         );
-
-        $data = $request->validate([
-            'access_type' => 'required|in:batch',
-            'course_id'   => 'required|exists:courses,id',
-            'batch_id'    => 'required|exists:batches,id',
-        ]);
-
-        {
-
-            FacultyAssignmentService::authorize(
-                $data['course_id'],
-                $data['batch_id']
-            );
 
             $batch = Batch::where(
                 'id',
