@@ -51,20 +51,42 @@ class AdminFranchisePaymentController extends Controller
     /* ================= UPDATE PAYMENT ================= */
     public function update(Request $request, $id)
     {
+        $franchise = Franchise::find($id);
+
+        if (! $franchise) {
+            return response()->json(['message' => 'Franchise not found.'], 404);
+        }
+
         $data = $request->validate([
             'total_amount' => 'required|numeric|min:0',
             'paid_amount' => 'required|numeric|min:0',
         ]);
 
+        if ($data['paid_amount'] > $data['total_amount']) {
+            return response()->json([
+                'message' => 'Paid amount cannot exceed the recorded total.',
+            ], 422);
+        }
+
         $payment = FranchisePayment::updateOrCreate(
-            ['franchise_id' => $id],
+            ['franchise_id' => $franchise->id],
             [
                 'total_amount' => $data['total_amount'],
                 'paid_amount' => $data['paid_amount'],
             ]
         );
 
-        return $payment;
+        // Keep the persisted status in sync with what index() derives.
+        $commission = optional(FranchiseCommission::first())->commission ?? 0;
+        $due = ($payment->total_amount * $commission) / 100;
+
+        $status = 'pending';
+        if ($payment->paid_amount > 0 && $payment->paid_amount < $due) $status = 'partial';
+        if ($due > 0 && $payment->paid_amount >= $due) $status = 'paid';
+
+        $payment->update(['status' => $status]);
+
+        return $payment->fresh();
     }
 
     /* ================= UPDATE COMMISSION ================= */
