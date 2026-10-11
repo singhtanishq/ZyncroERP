@@ -207,8 +207,12 @@ export default function MobileAttendance() {
                     {loading ? <><Loader2 size={20} className="animate-spin" /> Verifying...</> : "Verify & Proceed"}
                   </button>
 
-                  <button 
-                    onClick={() => setStep("email")}
+                  <button
+                    onClick={() => {
+                      setStep("email");
+                      setOtp("");
+                      setMessage("");
+                    }}
                     className="w-full py-2 text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors"
                   >
                     Change Email
@@ -238,7 +242,7 @@ export default function MobileAttendance() {
                   <Scanner
                     constraints={{ video: { facingMode: "environment" } }}
                     onScan={(result) => {
-                      if (result?.[0]?.rawValue && !loading) {
+                      if (result?.[0]?.rawValue && !scanLockRef.current) {
                         markAttendance(result[0].rawValue);
                       }
                     }}
