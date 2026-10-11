@@ -28,6 +28,7 @@ export default function ManageStudyMaterials({
   }) {
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   const [addOpen, setAddOpen] = useState(false);
   const [editMaterial, setEditMaterial] = useState(null);
@@ -72,8 +73,12 @@ export default function ManageStudyMaterials({
   /* ================= ACTIONS ================= */
 
   const toggleStatus = async (id) => {
-    await api.patch(`${apiPrefix}/study-materials/${id}/toggle`);
-    loadMaterials();
+    try {
+      await api.patch(`${apiPrefix}/study-materials/${id}/toggle`);
+      loadMaterials();
+    } catch (e) {
+      showToast(e?.response?.data?.message || "Failed to update status", "error");
+    }
   };
 
   const confirmDelete = async () => {
@@ -96,6 +101,10 @@ export default function ManageStudyMaterials({
   /* ================= UI ================= */
 
   const gridLayout = "grid grid-cols-[2fr_1fr_1fr_1fr_180px] gap-4 items-center";
+
+  const filteredMaterials = materials.filter((m) =>
+    m.title?.toLowerCase().includes(search.trim().toLowerCase())
+  );
 
   return (
     <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8 pt-0 space-y-8 animate-fade-in font-sans">
@@ -132,9 +141,11 @@ export default function ManageStudyMaterials({
       <div className="flex items-center gap-4 relative z-10">
         <div className="relative flex-1 max-w-md">
             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[rgb(var(--zx-text-muted))]" />
-            <input 
-                type="text" 
-                placeholder="Search materials..." 
+            <input
+                type="text"
+                placeholder="Search materials..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-11 pr-4 py-3 bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] rounded-2xl text-sm focus:outline-none focus:border-brand-teal-500 transition-all font-medium text-[rgb(var(--zx-text))] placeholder:text-[rgb(var(--zx-text-muted))]/60 shadow-sm"
             />
         </div>
@@ -157,17 +168,23 @@ export default function ManageStudyMaterials({
              <div className="w-8 h-8 border-4 border-brand-teal-500/30 border-t-brand-teal-500 rounded-full animate-spin"></div>
              <span className="font-medium text-sm">Loading study materials...</span>
           </div>
-        ) : materials.length === 0 ? (
+        ) : filteredMaterials.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-[rgb(var(--zx-text-muted))] bg-[rgb(var(--zx-surface))]">
             <div className="w-16 h-16 bg-[rgb(var(--zx-surface-hover))] rounded-2xl flex items-center justify-center mb-4 border border-[rgb(var(--zx-border))] shadow-sm text-[rgb(var(--zx-text-muted))]">
               <StickyNote size={24} />
             </div>
-            <p className="text-[17px] font-bold text-[rgb(var(--zx-text))]">No study materials found</p>
-            <p className="text-[14px] text-[rgb(var(--zx-text-muted))] mt-1">Get started by uploading a new file or video link.</p>
+            <p className="text-[17px] font-bold text-[rgb(var(--zx-text))]">
+              {materials.length === 0 ? "No study materials found" : "No matching materials"}
+            </p>
+            <p className="text-[14px] text-[rgb(var(--zx-text-muted))] mt-1">
+              {materials.length === 0
+                ? "Get started by uploading a new file or video link."
+                : "Try a different search term."}
+            </p>
           </div>
         ) : (
           <div className="divide-y divide-[rgb(var(--zx-border))]">
-            {materials.map((m) => (
+            {filteredMaterials.map((m) => (
               <div
                 key={m.id}
                 className={`${gridLayout} px-6 py-4 hover:bg-[rgb(var(--zx-surface-hover))] transition-all duration-200 group`}
