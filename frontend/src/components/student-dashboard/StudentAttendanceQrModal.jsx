@@ -31,9 +31,8 @@ export default function StudentAttendanceQrModal({
     return null;
   }
 
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(
-    session.qr_token
-  )}`;
+  // Local QR rendering keeps session tokens off third-party services
+  const qrUrl = `/api/qr?data=${encodeURIComponent(session.qr_token)}`;
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
