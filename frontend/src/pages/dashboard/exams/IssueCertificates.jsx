@@ -190,7 +190,7 @@ export default function IssueCertificates({
                                                     className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[rgb(var(--zx-surface))] border border-[rgb(var(--zx-border))] text-[rgb(var(--zx-text))] shadow-sm text-xs font-bold uppercase tracking-wider hover:border-brand-teal-500 hover:text-brand-teal-500 transition-all active:scale-95"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        window.open(`${import.meta.env.VITE_API_BASE_URL}/certificate/${cert.certificate_number}`, "_blank");
+                                                        window.open(`${import.meta.env.VITE_API_BASE_URL}/api/certificate/${cert.certificate_number}`, "_blank");
                                                     }}
                                                 >
                                                     <ExternalLink size={16} /> View Digital Certificate
