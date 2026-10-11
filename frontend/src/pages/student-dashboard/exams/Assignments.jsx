@@ -151,7 +151,7 @@ function AssignmentModal({ assignment, onClose, onSubmitted }) {
                   <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Attachment</p>
                   {detail.assignment_file ? (
                     <a
-                      href={`/api/admin/assignments/${detail.id}/file`}
+                      href={`/api/student/assignments/${detail.id}/attachment`}
                       target="_blank"
                       rel="noreferrer"
                       className="text-sm font-bold text-slate-700 group-hover:text-indigo-600 transition-colors"
