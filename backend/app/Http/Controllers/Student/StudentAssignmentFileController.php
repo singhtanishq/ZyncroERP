@@ -67,8 +67,10 @@ class StudentAssignmentFileController extends Controller
             ->where('student_id', $student->id)
             ->first();
 
-        if ($previous && $previous->response_file) {
-            Storage::disk('local')->delete($previous->response_file);
+        if ($previous) {
+            return response()->json([
+                'message' => 'This assignment has already been submitted — no further uploads are allowed.',
+            ], 422);
         }
 
         Storage::disk('local')
