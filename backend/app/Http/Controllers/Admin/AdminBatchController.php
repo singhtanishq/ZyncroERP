@@ -65,11 +65,43 @@ class AdminBatchController extends Controller
     {
         $batch = Batch::findOrFail($id);
 
+        /*
+         | Students is not the only cascade: exams, assignments,
+         | enrollments and fee rows all hang off (course, batch) pairs.
+         */
         $hasStudents = Student::where('batch_id', $batch->id)->exists();
 
         if ($hasStudents) {
             return response()->json([
                 'message' => 'Students are associated with this batch. Deletion not allowed.'
+            ], 409);
+        }
+
+        $hasExams = \App\Models\Exam::where('batch_id', $batch->id)->exists();
+        if ($hasExams) {
+            return response()->json([
+                'message' => 'Exams are scheduled in this batch. Deletion not allowed.'
+            ], 409);
+        }
+
+        $hasAssignments = \App\Models\Assignment::where('batch_id', $batch->id)->exists();
+        if ($hasAssignments) {
+            return response()->json([
+                'message' => 'Assignments exist for this batch. Deletion not allowed.'
+            ], 409);
+        }
+
+        $hasEnrollments = \App\Models\StudentEnrollment::where('batch_id', $batch->id)->exists();
+        if ($hasEnrollments) {
+            return response()->json([
+                'message' => 'Enrollment records exist for this batch. Deletion not allowed.'
+            ], 409);
+        }
+
+        $hasFees = \App\Models\StudentFee::where('batch_id', $batch->id)->exists();
+        if ($hasFees) {
+            return response()->json([
+                'message' => 'Fee records exist for this batch. Deletion not allowed.'
             ], 409);
         }
 
