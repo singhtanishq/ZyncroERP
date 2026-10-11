@@ -114,7 +114,9 @@ return [
         ],
         
         'payments_db' => [
-            'driver' => 'mysql',
+            // PAY_DB_DRIVER allows the test suite to point the ledger at
+            // sqlite (:memory:) instead of the local MySQL instance.
+            'driver' => env('PAY_DB_DRIVER', 'mysql'),
             'host' => env('PAY_DB_HOST', '127.0.0.1'),
             'port' => env('PAY_DB_PORT', '3306'),
             'database' => env('PAY_DB_DATABASE', 'forge'),
