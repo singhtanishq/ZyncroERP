@@ -2,23 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CourseCertificate;
+use App\Models\Certificate;
+use Illuminate\Support\Facades\RateLimiter;
 
+/**
+ * Public certificate verification — resolved by the non-sequential
+ * certificate number (never the database id) to prevent enumeration.
+ */
 class CertificateVerifyController extends Controller
 {
-    public function verify(string $certificateId)
+    public function verify(string $certificateNumber)
     {
-        $certificate = CourseCertificate::where('certificate_id', $certificateId)
-            ->where('status', 'issued')
-            ->with(['student', 'course', 'batch'])
+        $key = 'certificate-verify:' . $certificateNumber;
+        abort_if(RateLimiter::tooManyAttempts($key, 30), 429, 'Too many verification attempts.');
+        RateLimiter::hit($key, 60);
+
+        $certificate = Certificate::query()
+            ->where('certificate_number', $certificateNumber)
+            ->where('type', 'course')
+            ->whereNotNull('issued_at')
+            ->with(['certifiable', 'course', 'batch'])
             ->firstOrFail();
 
+        $holder = $certificate->certifiable;
+
         return [
-            'certificate_id' => $certificate->certificate_id,
-            'student_sid' => $certificate->student->sid,
-            'student_name' => $certificate->student->name,
-            'course' => $certificate->course->name,
-            'batch' => $certificate->batch->name,
+            'certificate_number' => $certificate->certificate_number,
+            'student_sid' => $holder->sid ?? null,
+            'student_name' => $holder?->user?->name,
+            'course' => $certificate->course?->name,
+            'batch' => $certificate->batch?->name,
             'score' => $certificate->score,
             'issued_at' => $certificate->issued_at,
             'status' => 'Valid',
