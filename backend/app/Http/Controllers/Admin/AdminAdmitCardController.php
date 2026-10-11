@@ -66,7 +66,7 @@ class AdminAdmitCardController extends Controller
         $enrolled = StudentEnrollment::where('student_id', $student->id)
             ->where('course_id', $exam->course_id)
             ->where('batch_id', $exam->batch_id)
-            ->whereIn('status', ['active', 'pending'])
+            ->where('status', 'active')
             ->exists();
 
         if (! $enrolled) {
@@ -97,7 +97,31 @@ class AdminAdmitCardController extends Controller
     }
 
     /**
-     * PUBLIC PDF (iframe-safe)
+     * PUBLIC PDF (iframe-safe). Resolved by the non-sequential qr_token so
+     * admit cards cannot be enumerated by id the way certificates and ID
+     * cards are protected.
+     */
+    public function pdfByToken(string $token)
+    {
+        $admitCard = AdmitCard::where('qr_token', $token)
+            ->where('status', '!=', AdmitCardStatus::INVALIDATED)
+            ->firstOrFail();
+
+        $admitCard->load([
+            'exam.course',
+            'exam.batch',
+            'student.user'
+        ]);
+
+        $pdf = Pdf::loadView('pdf.admit-card', [
+            'admitCard' => $admitCard
+        ])->setPaper('a4', 'portrait');
+
+        return $pdf->stream("admit-card-{$admitCard->id}.pdf");
+    }
+
+    /**
+     * Authenticated PDF used by the admin/faculty admit-card screens.
      */
     public function pdf(AdmitCard $admitCard)
     {
