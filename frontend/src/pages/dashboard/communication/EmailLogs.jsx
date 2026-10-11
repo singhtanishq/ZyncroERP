@@ -335,10 +335,9 @@ export default function EmailLogs() {
 
             {/* Email Content Body */}
             <div className="p-6 bg-[rgb(var(--zx-surface-hover))]/50 border border-[rgb(var(--zx-border))] rounded-2xl min-h-[250px]">
-              <div 
-                className="prose prose-slate dark:prose-invert max-w-none text-[rgb(var(--zx-text))] text-sm leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: selectedLog.content }}
-              />
+              <pre className="whitespace-pre-wrap break-words font-sans max-w-none text-[rgb(var(--zx-text))] text-sm leading-relaxed">
+                {stripHtml(selectedLog.content)}
+              </pre>
             </div>
           </div>
         </AppModal>
