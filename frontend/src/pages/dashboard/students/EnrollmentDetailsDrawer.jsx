@@ -433,6 +433,7 @@ export default function EnrollmentDetailsDrawer({
                         </div>
                       </div>
                     )}
+                    </div>
                   </div>
                 );
               })}
