@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -17,15 +16,17 @@ return new class extends Migration
 
         });
 
-        DB::statement("
-            ALTER TABLE student_documents
-            ADD UNIQUE KEY student_document_unique
-            (student_id, document_type)
-        ");
+        Schema::table('student_documents', function (Blueprint $table) {
+            $table->unique(['student_id', 'document_type'], 'student_document_unique');
+        });
     }
 
     public function down(): void
     {
+        Schema::table('student_documents', function (Blueprint $table) {
+            $table->dropUnique('student_document_unique');
+        });
+
         Schema::table('student_documents', function (Blueprint $table) {
 
             if (Schema::hasColumn('student_documents', 'remarks')) {
@@ -33,10 +34,5 @@ return new class extends Migration
             }
 
         });
-
-        DB::statement("
-            ALTER TABLE student_documents
-            DROP INDEX student_document_unique
-        ");
     }
 };
