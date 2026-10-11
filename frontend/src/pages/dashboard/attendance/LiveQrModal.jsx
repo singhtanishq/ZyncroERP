@@ -39,9 +39,8 @@ export default function LiveQrModal({ session, onMinimize, onEnd }) {
 
   if (!session) return null;
 
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(
-    session.qr_token
-  )}`;
+  // Local QR rendering keeps session tokens off third-party services
+  const qrUrl = `/api/qr?data=${encodeURIComponent(session.qr_token)}`;
 
   // Format time mm:ss for better readability
   const formatTime = (seconds) => {
