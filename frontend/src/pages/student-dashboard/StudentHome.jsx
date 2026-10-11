@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import api from "../../lib/api/apiClient";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Sparkles,
   User,
   Mail,
   Hash,
