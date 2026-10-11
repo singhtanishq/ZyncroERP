@@ -78,6 +78,11 @@ export default function EnrollmentCenter() {
     api.get("/admin/courses").then((res) => {
       setCourses((res.data || []).filter((c) => c.status === "active"));
     });
+
+    api
+      .get("/franchises")
+      .then((res) => setFranchises(res.data || []))
+      .catch(() => setFranchises([]));
   }, []);
 
   useEffect(() => {
@@ -123,13 +128,18 @@ export default function EnrollmentCenter() {
   const createEnrollment = async () => {
     try {
       setSaving(true);
-      await api.post("/admin/enrollments", form);
+      await api.post("/admin/enrollments", {
+        ...form,
+        franchise_id: form.franchise_id || null,
+      });
 
-      setForm({ student_id: "", course_id: "", batch_id: "" });
+      toast("Enrollment created successfully", "success");
+
+      setForm({ student_id: "", course_id: "", batch_id: "", franchise_id: "" });
       setShowForm(false);
       loadData();
     } catch (e) {
-      alert(e?.response?.data?.message || "Failed to create enrollment");
+      toast(e?.response?.data?.message || "Failed to create enrollment", "error");
     } finally {
       setSaving(false);
     }
