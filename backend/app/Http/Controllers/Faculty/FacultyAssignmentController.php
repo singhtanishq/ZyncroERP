@@ -19,11 +19,15 @@ class FacultyAssignmentController extends AdminAssignmentController
     {
         $pairs = FacultyAssignmentService::assignmentPairs();
 
-        return Assignment::with([
+        $query = Assignment::with([
                 'course:id,name',
                 'batch:id,name',
-            ])
-            ->where(function ($query) use ($pairs) {
+            ]);
+
+        // No assignments => no assignments visible; an empty closure would
+        // return every assignment in the institution.
+        if ($pairs->isNotEmpty()) {
+            $query->where(function ($query) use ($pairs) {
 
                 foreach ($pairs as $pair) {
 
@@ -42,9 +46,12 @@ class FacultyAssignmentController extends AdminAssignmentController
 
                 }
 
-            })
-            ->latest()
-            ->get();
+            });
+        } else {
+            $query->whereRaw('1 = 0');
+        }
+
+        return $query->latest()->get();
     }
 
     /*
