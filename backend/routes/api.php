@@ -567,7 +567,12 @@ Route::get('/certificate/{certificateNumber}', [CourseCertificatePdfController::
 Route::get(
     '/admit-card/{admitCard}/pdf',
     [AdminAdmitCardController::class, 'pdf']
-)->name('admit-card.pdf');
+)->middleware('auth:sanctum')->name('admit-card.pdf');
+
+Route::get(
+    '/admit-card/token/{token}/pdf',
+    [AdminAdmitCardController::class, 'pdfByToken']
+)->name('admit-card.token-pdf');
 
 Route::get('/corporate-certificate/{certificateNumber}/view', [CorporateCertificatePdfController::class, 'view'])->where('certificateNumber', '[A-Za-z0-9\-]+');
 Route::get('/corporate-certificate/{certificateNumber}/download', [CorporateCertificatePdfController::class, 'download'])->where('certificateNumber', '[A-Za-z0-9\-]+');
