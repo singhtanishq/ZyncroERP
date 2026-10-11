@@ -17,6 +17,8 @@ class AdminStudentCommunicationController extends Controller
     {
         return StudentCommunication::with([
             'creator:id,name',
+            'accessRules.course:id,name',
+            'accessRules.batch:id,name',
         ])
         ->orderByDesc('created_at')
         ->get();
