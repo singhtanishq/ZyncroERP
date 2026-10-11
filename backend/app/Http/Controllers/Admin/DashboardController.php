@@ -56,8 +56,10 @@ class DashboardController extends Controller
 
         /* ===================== CHARTS ===================== */
 
+        // Grouped by year+month so the same month across different years
+        // no longer merges into one bucket.
         $revenueChart = Payment::select(
-                DB::raw("MONTH(created_at) as month"),
+                DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
                 DB::raw("SUM(amount) as total")
             )
             ->where('status', 'success')
@@ -67,7 +69,7 @@ class DashboardController extends Controller
             ->get();
 
         $studentChart = Student::select(
-                DB::raw("MONTH(created_at) as month"),
+                DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
                 DB::raw("COUNT(*) as total")
             )
             ->where('created_at', '>=', Carbon::now()->subMonths(6))
