@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../../../lib/api/apiClient";
+import { ErrorState } from "../../../components/common/States";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Award,
@@ -35,24 +36,36 @@ export default function MyResults() {
   const [selected, setSelected] = useState("");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [enrollError, setEnrollError] = useState("");
+  const [resultsError, setResultsError] = useState("");
 
-  useEffect(() => {
+  const loadEnrollments = () => {
+    setEnrollError("");
     api
       .get("/student/results/enrollments")
-      .then((res) => setEnrollments(res.data || []));
+      .then((res) => setEnrollments(res.data || []))
+      .catch(() =>
+        setEnrollError("Unable to load your enrollments. Please try again.")
+      );
+  };
+
+  useEffect(() => {
+    loadEnrollments();
   }, []);
 
   const loadResults = async (value) => {
     setSelected(value);
+    setResults([]);
 
     if (!value) {
-      setResults([]);
+      setResultsError("");
       return;
     }
 
     const [courseId, batchId] = value.split("|");
 
     setLoading(true);
+    setResultsError("");
 
     try {
       const res = await api.get(
@@ -60,6 +73,11 @@ export default function MyResults() {
       );
 
       setResults(res.data || []);
+    } catch (err) {
+      setResultsError(
+        err?.response?.data?.message ||
+          "Unable to load results for this enrollment. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -97,6 +115,13 @@ export default function MyResults() {
 
         {/* CONTROLS & FILTERS */}
         <motion.div variants={itemVariants} className="relative group max-w-xl mb-10 z-20">
+          {enrollError ? (
+            <ErrorState
+              message={enrollError}
+              onRetry={loadEnrollments}
+            />
+          ) : (
+            <>
           <BookOpen
             size={20}
             className="absolute left-4 top-3.5 text-slate-400 group-focus-within:text-indigo-500 transition-colors duration-300 z-10"
@@ -120,6 +145,8 @@ export default function MyResults() {
             size={20}
             className="absolute right-4 top-3.5 text-slate-400 pointer-events-none"
           />
+            </>
+          )}
         </motion.div>
 
         {/* CONTENT AREA */}
@@ -161,8 +188,24 @@ export default function MyResults() {
               </motion.div>
             )}
 
-            {/* STATE 3: ENROLLMENT SELECTED BUT NO RESULTS */}
-            {selected && !loading && results.length === 0 && (
+            {/* STATE 3: RESULTS FAILED TO LOAD */}
+            {selected && !loading && resultsError && (
+              <motion.div
+                key="error-results"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="bg-white/40 backdrop-blur-2xl rounded-3xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
+              >
+                <ErrorState
+                  message={resultsError}
+                  onRetry={() => loadResults(selected)}
+                />
+              </motion.div>
+            )}
+
+            {/* STATE 4: ENROLLMENT SELECTED BUT NO RESULTS */}
+            {selected && !loading && !resultsError && results.length === 0 && (
               <motion.div 
                 key="empty-results"
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -182,8 +225,8 @@ export default function MyResults() {
               </motion.div>
             )}
 
-            {/* STATE 4: RESULTS RENDERED */}
-            {selected && !loading && results.length > 0 && (
+            {/* STATE 5: RESULTS RENDERED */}
+            {selected && !loading && !resultsError && results.length > 0 && (
               <motion.div 
                 key="results-grid"
                 initial={{ opacity: 0 }}
