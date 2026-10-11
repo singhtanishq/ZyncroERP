@@ -541,6 +541,45 @@ export default function EnrollmentDetailsDrawer({
                 Complete
               </button>
             </div>
+
+            {/* WHY APPROVE IS BLOCKED */}
+            {!isApproved && !isCompleted && !canApprove && (
+              <div className="text-xs font-medium text-rose-500 mt-2.5 flex items-center gap-1">
+                <XCircle size={13} /> Verify the payment proof before approving.
+              </div>
+            )}
+
+            {/* INLINE REJECT FLOW */}
+            {showEnrollmentReject && (
+              <div className="mt-3 border border-rose-500/30 bg-rose-500/5 rounded-xl p-3 space-y-2">
+                <textarea
+                  value={enrollmentRejectReason}
+                  onChange={(e) => setEnrollmentRejectReason(e.target.value)}
+                  rows={2}
+                  maxLength={500}
+                  placeholder="Reason for rejection (required, max 500 characters)"
+                  className="w-full bg-[rgb(var(--zx-surface))] dark:bg-slate-900 border border-[rgb(var(--zx-border))] dark:border-slate-800 rounded-xl px-3 py-2 text-xs outline-none focus:border-brand-teal-500 transition-all font-medium text-[rgb(var(--zx-text))] dark:text-white placeholder:text-[rgb(var(--zx-text-muted))]/60 resize-none"
+                />
+                <div className="flex justify-end gap-2">
+                  <button
+                    type="button"
+                    disabled={busy}
+                    onClick={cancelEnrollmentReject}
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-[rgb(var(--zx-border))] dark:border-slate-700 text-[rgb(var(--zx-text-muted))] dark:text-slate-400 hover:bg-[rgb(var(--zx-surface-hover))] dark:hover:bg-slate-800 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    disabled={busy || !enrollmentRejectReason.trim()}
+                    onClick={submitEnrollmentReject}
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-600 text-white hover:bg-rose-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {busy ? "Rejecting..." : "Confirm Reject"}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </AppModal>
