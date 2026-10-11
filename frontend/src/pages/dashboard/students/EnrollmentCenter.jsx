@@ -306,6 +306,24 @@ export default function EnrollmentCenter() {
                       </select>
                     </div>
                   </div>
+                  {/* FRANCHISE SELECTION (OPTIONAL) */}
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-bold text-[rgb(var(--zx-text-muted))] uppercase tracking-widest ml-1">
+                      Enrolled Via Franchise (optional)
+                    </label>
+                    <select
+                      value={form.franchise_id}
+                      onChange={(e) => setForm({ ...form, franchise_id: e.target.value })}
+                      className="w-full px-4 py-3.5 rounded-xl border border-[rgb(var(--zx-border))] bg-[rgb(var(--zx-surface))] focus:outline-none focus:border-brand-teal-500 transition-all font-medium text-[rgb(var(--zx-text))]"
+                    >
+                      <option value="">Direct / No franchise</option>
+                      {franchises.map((f) => (
+                        <option key={f.id} value={f.id}>
+                          {f.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-[rgb(var(--zx-border))] flex justify-end">
