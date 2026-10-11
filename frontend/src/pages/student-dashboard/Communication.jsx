@@ -5,7 +5,6 @@ import {
   Megaphone,
   Search,
   CalendarDays,
-  Globe,
   BookOpen,
   Layers,
   Loader2,
@@ -135,11 +134,15 @@ export default function Communication() {
                   <div className="flex flex-wrap items-center gap-2 mb-2.5">
                     <span className="inline-flex items-center gap-1.5 text-[12px] font-bold text-purple-700 bg-purple-50/80 border border-purple-200/60 px-2.5 py-1 rounded-lg">
                       <BookOpen size={12} className="text-indigo-400" />
-                      {item.student_course?.name || item.accessRules?.[0]?.course?.name || "N/A"}
+                      {item.access_type === "all"
+                        ? "All Courses"
+                        : item.student_course?.name || item.accessRules?.[0]?.course?.name || "N/A"}
                     </span>
                     <span className="inline-flex items-center gap-1.5 text-[12px] font-bold text-purple-700 bg-purple-50/80 border border-purple-200/60 px-2.5 py-1 rounded-lg">
                       <Layers size={12} className="text-indigo-400" />
-                      {item.student_batch?.name || item.accessRules?.[0]?.batch?.name || "N/A"}
+                      {item.access_type === "all"
+                        ? "All Batches"
+                        : item.student_batch?.name || item.accessRules?.[0]?.batch?.name || "N/A"}
                     </span>
                   </div>
 
