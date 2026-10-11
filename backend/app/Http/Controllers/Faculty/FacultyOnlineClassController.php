@@ -50,7 +50,7 @@ class FacultyOnlineClassController extends AdminOnlineClassController
         $class = OnlineClass::with('accessRules')
             ->findOrFail($id);
 
-        FacultyAssignmentService::authorizeAccessRules($class);
+        FacultyAssignmentService::authorizeAccessRules($class, 'accessRules', true);
 
         return parent::update($request, $id);
     }
@@ -60,7 +60,7 @@ class FacultyOnlineClassController extends AdminOnlineClassController
         $class = OnlineClass::with('accessRules')
             ->findOrFail($id);
 
-        FacultyAssignmentService::authorizeAccessRules($class);
+        FacultyAssignmentService::authorizeAccessRules($class, 'accessRules', true);
 
         return parent::goLive($id);
     }
@@ -70,7 +70,7 @@ class FacultyOnlineClassController extends AdminOnlineClassController
         $class = OnlineClass::with('accessRules')
             ->findOrFail($id);
 
-        FacultyAssignmentService::authorizeAccessRules($class);
+        FacultyAssignmentService::authorizeAccessRules($class, 'accessRules', true);
 
         return parent::destroy($id);
     }
