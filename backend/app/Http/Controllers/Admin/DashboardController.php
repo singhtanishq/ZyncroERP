@@ -58,8 +58,12 @@ class DashboardController extends Controller
 
         // Grouped by year+month so the same month across different years
         // no longer merges into one bucket.
+        $monthExpr = DB::connection()->getDriverName() === 'sqlite'
+            ? "strftime('%Y-%m', created_at)"
+            : "DATE_FORMAT(created_at, '%Y-%m')";
+
         $revenueChart = Payment::select(
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
+                DB::raw("{$monthExpr} as month"),
                 DB::raw("SUM(amount) as total")
             )
             ->where('status', 'success')
@@ -69,7 +73,7 @@ class DashboardController extends Controller
             ->get();
 
         $studentChart = Student::select(
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
+                DB::raw("{$monthExpr} as month"),
                 DB::raw("COUNT(*) as total")
             )
             ->where('created_at', '>=', Carbon::now()->subMonths(6))
