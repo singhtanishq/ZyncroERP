@@ -16,7 +16,7 @@ class FacultyAdmitCardController extends AdminAdmitCardController
             'course',
             'batch',
         ])
-        ->where('status', '!=', 'past')
+        ->whereNotIn('status', ['past', 'cancelled'])
         ->orderBy('start_time');
 
         FacultyAssignmentService::applyCourseBatchFilter(
