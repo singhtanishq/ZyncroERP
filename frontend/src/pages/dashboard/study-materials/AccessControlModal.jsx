@@ -114,6 +114,11 @@ export default function AccessControlModal({
   const save = async () => {
     setError("");
 
+    if (accessType === "course" && !courseId) {
+      setError("Please select a course");
+      return;
+    }
+
     if (accessType === "batch" && (!courseId || !batchId)) {
       setError("Please select both course and batch");
       return;
@@ -125,10 +130,10 @@ export default function AccessControlModal({
       await api.post(`${apiPrefix}/study-materials/${material.id}/access`, {
         access_type: accessType,
         course_id:
-        accessType === "batch"
-            ? courseId
+        accessType === "batch" || accessType === "course"
+            ? Number(courseId)
             : null,
-        batch_id: accessType === "batch" ? batchId : null,
+        batch_id: accessType === "batch" ? Number(batchId) : null,
       });
 
       if (onSaved) {
