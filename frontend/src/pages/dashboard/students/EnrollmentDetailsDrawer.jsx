@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   X,
   CheckCircle2,
@@ -9,6 +9,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import api from "../../../lib/api/apiClient";
+import { useToast } from "../../../components/common/ToastProvider";
 import ConfirmModal from "../../../components/ConfirmModal";
 import AppModal from "../../../components/common/AppModal";
 
@@ -26,23 +27,51 @@ export default function EnrollmentDetailsDrawer({
   enrollment,
   refresh,
 }) {
+  const { toast } = useToast();
   const [amount, setAmount] = useState("");
   const [busy, setBusy] = useState(false);
   const [previewDoc, setPreviewDoc] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [overrideConfirm, setOverrideConfirm] = useState(null);
 
+  // Fresh copy of the enrollment fetched after actions — props are never mutated.
+  const [fetched, setFetched] = useState(null);
+
+  // Inline reject flows (document + enrollment)
+  const [rejectDoc, setRejectDoc] = useState(null);
+  const [docRejectReason, setDocRejectReason] = useState("");
+  const [showEnrollmentReject, setShowEnrollmentReject] = useState(false);
+  const [enrollmentRejectReason, setEnrollmentRejectReason] = useState("");
+
+  // Reset the fetched copy whenever a different enrollment is opened.
+  useEffect(() => {
+    setFetched(null);
+  }, [enrollment?.id]);
+
+  // Reset inline flows when the drawer closes.
+  useEffect(() => {
+    if (!open) {
+      setRejectDoc(null);
+      setDocRejectReason("");
+      setShowEnrollmentReject(false);
+      setEnrollmentRejectReason("");
+    }
+  }, [open]);
+
+  const current = fetched || enrollment;
+
   if (!open || !enrollment) return null;
 
-  const docs = enrollment.enrollment_documents || [];
+  const docs = current.enrollment_documents || [];
 
-  const fee = enrollment.student?.fees?.find(
-    (x) => x.course_id === enrollment.course_id
+  const fee = current.student?.fees?.find(
+    (x) => x.course_id === current.course_id
   );
 
   const totalFee = Number(fee?.total_fees || 0);
   const paidFee = Number(fee?.paid_fees || 0);
   const balanceFee = Math.max(totalFee - paidFee, 0);
+  const isFreeCourse = totalFee === 0;
 
   const paymentProof = docs.find(
     (x) => x.document_type === "payment_proof"
@@ -52,36 +81,38 @@ export default function EnrollmentDetailsDrawer({
     paymentProof?.verification_status === "verified";
 
   // Status flags for UI constraints
-  const isApproved = enrollment.status === "active" || enrollment.status === "approved";
-  const isRejected = enrollment.status === "cancelled";
-  const isCompleted = enrollment.status === "completed";
+  const isApproved = current.status === "active" || current.status === "approved";
+  const isRejected = current.status === "cancelled";
+  const isCompleted = current.status === "completed";
 
-  // UX Refinement: Disable Mark Paid if balance is 0 or less
-  const canMarkPaid = paymentProofVerified && balanceFee > 0;
+  // Free courses have no fee to record; paid courses need a verified proof and balance.
+  const canMarkPaid = paymentProofVerified && !isFreeCourse && balanceFee > 0;
 
-  // UX Refinement: Enforce payment rules and check if not already approved/completed
+  // Free courses can be approved once the proof is verified; otherwise fully paid.
   const canApprove =
     paymentProofVerified &&
-    paidFee >= totalFee &&
-    totalFee > 0 &&
+    (isFreeCourse || paidFee >= totalFee) &&
     !isApproved &&
     !isCompleted;
 
   const canComplete =
-    enrollment.status === "active" &&
+    current.status === "active" &&
     !isCompleted;
-  
+
   const getDocument = (type) => docs.find((x) => x.document_type === type);
+
+  const fetchEnrollment = async () => {
+    const res = await api.get(`/admin/enrollments/${enrollment.id}`);
+    setFetched(res.data);
+    return res.data;
+  };
 
   const reloadEnrollment = async () => {
     try {
-      const res = await api.get(`/admin/enrollments/${enrollment.id}`);
-      enrollment.student = res.data.student;
-      enrollment.enrollment_documents = res.data.enrollment_documents || [];
-      enrollment.status = res.data.status;
-      enrollment.payment_status = res.data.payment_status;
+      await fetchEnrollment();
     } catch (e) {
       console.error(e);
+      toast(e?.response?.data?.message || "Unable to refresh enrollment", "error");
     }
     refresh?.();
   };
@@ -104,7 +135,7 @@ export default function EnrollmentDetailsDrawer({
         e?.response?.status === 404
           ? "No document exists for this payment proof. It was verified using Admin Override."
           : "Unable to load document.";
-      alert(message);
+      toast(message, "error");
     }
   };
 
@@ -120,36 +151,51 @@ export default function EnrollmentDetailsDrawer({
     try {
       setBusy(true);
       await api.post(`/admin/student-documents/${doc.id}/verify`);
-      await reloadEnrollment();
-      
+      const fresh = await fetchEnrollment();
+      refresh?.();
+
       if (previewDoc?.id === doc.id) {
-        const res = await api.get(`/admin/enrollments/${enrollment.id}`);
-        const freshDoc = res.data.enrollment_documents.find(d => d.id === doc.id);
-        setPreviewDoc(freshDoc);
+        setPreviewDoc(
+          fresh.enrollment_documents.find((d) => d.id === doc.id) || null
+        );
       }
     } catch (e) {
-      alert(e?.response?.data?.message || "Unable to verify document");
+      toast(e?.response?.data?.message || "Unable to verify document", "error");
     } finally {
       setBusy(false);
     }
   };
 
-  const rejectDocument = async (doc) => {
-    const remarks = prompt("Enter rejection reason");
-    if (!remarks) return;
+  const startDocReject = (doc) => {
+    setRejectDoc(doc);
+    setDocRejectReason("");
+  };
+
+  const cancelDocReject = () => {
+    setRejectDoc(null);
+    setDocRejectReason("");
+  };
+
+  const submitDocReject = async () => {
+    const doc = rejectDoc;
+    const remarks = docRejectReason.trim();
+    if (!doc || !remarks) return;
 
     try {
       setBusy(true);
       await api.post(`/admin/student-documents/${doc.id}/reject`, { remarks });
-      await reloadEnrollment();
-      
+      const fresh = await fetchEnrollment();
+      refresh?.();
+
       if (previewDoc?.id === doc.id) {
-        const res = await api.get(`/admin/enrollments/${enrollment.id}`);
-        const freshDoc = res.data.enrollment_documents.find(d => d.id === doc.id);
-        setPreviewDoc(freshDoc);
+        setPreviewDoc(
+          fresh.enrollment_documents.find((d) => d.id === doc.id) || null
+        );
       }
+
+      cancelDocReject();
     } catch (e) {
-      alert(e?.response?.data?.message || "Unable to reject document");
+      toast(e?.response?.data?.message || "Unable to reject document", "error");
     } finally {
       setBusy(false);
     }
@@ -162,18 +208,19 @@ export default function EnrollmentDetailsDrawer({
         "/admin/student-documents/admin-override",
         { enrollment_id: enrollment.id }
       );
-      await reloadEnrollment();
+      const fresh = await fetchEnrollment();
+      refresh?.();
 
       if (previewDoc) {
-        const res = await api.get(`/admin/enrollments/${enrollment.id}`);
-        const freshDoc = res.data.enrollment_documents.find(
-          (d) => d.document_type === "payment_proof"
+        setPreviewDoc(
+          fresh.enrollment_documents.find(
+            (d) => d.document_type === "payment_proof"
+          ) || null
         );
-        setPreviewDoc(freshDoc);
       }
     } catch (e) {
       console.error(e);
-      alert(e?.response?.data?.message || "Unable to bypass verification.");
+      toast(e?.response?.data?.message || "Unable to bypass verification.", "error");
     } finally {
       setBusy(false);
       setOverrideConfirm(null);
@@ -189,7 +236,7 @@ export default function EnrollmentDetailsDrawer({
       setAmount("");
       await reloadEnrollment();
     } catch (e) {
-      alert(e?.response?.data?.message || "Unable to mark payment");
+      toast(e?.response?.data?.message || "Unable to mark payment", "error");
     } finally {
       setBusy(false);
     }
@@ -201,22 +248,33 @@ export default function EnrollmentDetailsDrawer({
       await api.post(`/admin/enrollments/${enrollment.id}/approve`);
       await reloadEnrollment();
     } catch (e) {
-      alert(e?.response?.data?.message || "Unable to approve enrollment");
+      toast(e?.response?.data?.message || "Unable to approve enrollment", "error");
     } finally {
       setBusy(false);
     }
   };
 
-  const rejectEnrollment = async () => {
-    const remarks = prompt("Reason for rejection");
+  const startEnrollmentReject = () => {
+    setShowEnrollmentReject(true);
+    setEnrollmentRejectReason("");
+  };
+
+  const cancelEnrollmentReject = () => {
+    setShowEnrollmentReject(false);
+    setEnrollmentRejectReason("");
+  };
+
+  const submitEnrollmentReject = async () => {
+    const remarks = enrollmentRejectReason.trim();
     if (!remarks) return;
 
     try {
       setBusy(true);
       await api.post(`/admin/enrollments/${enrollment.id}/reject`, { remarks });
+      cancelEnrollmentReject();
       await reloadEnrollment();
     } catch (e) {
-      alert(e?.response?.data?.message || "Unable to reject enrollment");
+      toast(e?.response?.data?.message || "Unable to reject enrollment", "error");
     } finally {
       setBusy(false);
     }
@@ -228,7 +286,7 @@ export default function EnrollmentDetailsDrawer({
       await api.post(`/admin/enrollments/${enrollment.id}/complete`);
       await reloadEnrollment();
     } catch (e) {
-      alert(e?.response?.data?.message || "Unable to complete enrollment");
+      toast(e?.response?.data?.message || "Unable to complete enrollment", "error");
     } finally {
       setBusy(false);
     }
@@ -275,10 +333,8 @@ export default function EnrollmentDetailsDrawer({
                 const disableRejectBtn = !uploaded || busy || isDocVerified || isDocRejected;
 
                 return (
-                  <div
-                    key={type.key}
-                    className="border border-[rgb(var(--zx-border))] dark:border-slate-800 bg-[rgb(var(--zx-surface))] dark:bg-slate-900 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
-                  >
+                  <div key={type.key} className="space-y-2">
+                    <div className="border border-[rgb(var(--zx-border))] dark:border-slate-800 bg-[rgb(var(--zx-surface))] dark:bg-slate-900 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <div>
                       <div className="font-semibold text-xs sm:text-sm text-[rgb(var(--zx-text))] dark:text-white">
                         {type.label}
