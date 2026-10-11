@@ -6,6 +6,7 @@ import {
   ArrowLeft,
   X,
   CheckCircle2,
+  AlertCircle,
   Award,
   User,
   Hash,
@@ -37,11 +38,11 @@ export default function IssueCertificate() {
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [isCertLoading, setIsCertLoading] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [toast, setToast] = useState("");
+  const [toast, setToast] = useState(null);
 
-  const showToast = (msg) => {
-    setToast(msg);
-    setTimeout(() => setToast(""), 2500);
+  const showToast = (msg, type = "success") => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 2500);
   };
 
   // ================= LOAD EMPLOYEES =================
