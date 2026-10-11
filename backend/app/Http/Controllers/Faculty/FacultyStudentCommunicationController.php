@@ -31,7 +31,7 @@ class FacultyStudentCommunicationController extends AdminStudentCommunicationCon
     {
         $communication = StudentCommunication::findOrFail($id);
 
-        FacultyAssignmentService::authorizeAccessRules($communication);
+        FacultyAssignmentService::authorizeAccessRules($communication, 'accessRules', true);
 
         return parent::update($request, $id);
     }
@@ -40,7 +40,7 @@ class FacultyStudentCommunicationController extends AdminStudentCommunicationCon
     {
         $communication = StudentCommunication::findOrFail($id);
 
-        FacultyAssignmentService::authorizeAccessRules($communication);
+        FacultyAssignmentService::authorizeAccessRules($communication, 'accessRules', true);
 
         return parent::toggle($id);
     }
@@ -49,7 +49,7 @@ class FacultyStudentCommunicationController extends AdminStudentCommunicationCon
     {
         $communication = StudentCommunication::findOrFail($id);
 
-        FacultyAssignmentService::authorizeAccessRules($communication);
+        FacultyAssignmentService::authorizeAccessRules($communication, 'accessRules', true);
 
         return parent::destroy($id);
     }
