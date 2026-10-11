@@ -101,6 +101,7 @@ lerna-debug.log*
 
 *.tmp
 *.temp
+auto-push.sh
 
 # ------------------------------------------------------------
 # Runtime / User Uploaded Files
