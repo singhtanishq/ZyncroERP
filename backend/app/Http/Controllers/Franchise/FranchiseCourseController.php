@@ -56,11 +56,12 @@ class FranchiseCourseController extends Controller
                     $courses[$course->id]['active_enrollments']++;
                 }
 
-                $fee = $student->fees->firstWhere('course_id', $course->id);
+                // Sum every fee row for the course (re-enrollments can hold several).
+                $paidForCourse = $student->fees
+                    ->where('course_id', $course->id)
+                    ->sum('paid_fees');
 
-                if ($fee) {
-                    $courses[$course->id]['collected'] += (float) $fee->paid_fees;
-                }
+                $courses[$course->id]['collected'] += (float) $paidForCourse;
             }
         }
 
