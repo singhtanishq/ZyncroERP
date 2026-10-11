@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import api from "../../lib/api/apiClient";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,11 +15,18 @@ import {
 } from "lucide-react";
 
 export default function MobileAttendance() {
-  const [step, setStep] = useState("email"); 
+  const [step, setStep] = useState("email");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  /*
+   * Synchronous scan lock: the `loading` state is stale across rapid QR
+   * scan frames (multiple onScan fires before a re-render), so guard the
+   * mark-attendance request with a ref instead.
+   */
+  const scanLockRef = useRef(false);
 
   const sendOtp = async () => {
     try {
@@ -42,8 +49,8 @@ export default function MobileAttendance() {
       await api.post("/attendance/verify-otp", { email, otp });
       setStep("scan");
       setMessage("");
-    } catch {
-      setMessage("Invalid OTP");
+    } catch (e) {
+      setMessage(e?.response?.data?.message || "Invalid OTP");
     } finally {
       setLoading(false);
     }
@@ -51,23 +58,28 @@ export default function MobileAttendance() {
 
   /* MARK ATTENDANCE */
   const markAttendance = async (qrToken) => {
+    if (scanLockRef.current) return;
+    scanLockRef.current = true;
+
     try {
       setLoading(true);
-      const res = await api.post("/attendance/mark", {
+      await api.post("/attendance/mark", {
         email,
         qr_token: qrToken,
       });
 
-      setMessage(
-        `Attendance marked (Course ${res.data.course}, Batch ${res.data.batch})`
-      );
+      setMessage("Attendance marked successfully.");
       setStep("done");
 
       setTimeout(reset, 10000);
-    } catch {
-      setMessage("Attendance failed or session expired");
+    } catch (e) {
+      setMessage(
+        e?.response?.data?.message ||
+          "Attendance failed or session expired"
+      );
     } finally {
       setLoading(false);
+      scanLockRef.current = false;
     }
   };
 
