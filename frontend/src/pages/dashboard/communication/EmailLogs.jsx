@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import api from "../../../lib/api/apiClient";
 import AppModal from "../../../components/common/AppModal";
+import { ErrorState } from "../../../components/common/States";
+import { useToast } from "../../../components/common/ToastProvider";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  MailOpen, 
-  X, 
-  CheckCircle2, 
-  XCircle, 
-  User, 
-  Clock, 
+import {
+  MailOpen,
+  X,
+  CheckCircle2,
+  XCircle,
+  User,
+  Clock,
   Inbox,
   Loader2,
   ChevronRight,
@@ -16,6 +18,22 @@ import {
   Hash,
   ShieldCheck
 } from "lucide-react";
+
+// Render stored email HTML as plain, preformatted text (never inject raw HTML).
+const stripHtml = (html) => {
+  if (!html) return "";
+  return String(html)
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(p|div|li|h[1-6]|tr)>/gi, "\n")
+    .replace(/<[^>]*>/g, "")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .trim();
+};
 
 // --- ANIMATION VARIANTS ---
 const containerVariants = {
