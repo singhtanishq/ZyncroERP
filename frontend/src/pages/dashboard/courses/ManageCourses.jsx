@@ -309,9 +309,23 @@ function EditBatchModal({ open, batch, onClose, onSaved, onError }) {
           </button>
           <button
             onClick={save}
-            className="px-6 py-2.5 bg-brand-teal-500 text-white rounded-xl text-sm font-semibold hover:bg-brand-teal-600 shadow-lg shadow-brand-teal-500/20 transition-all flex items-center gap-2 active:scale-95"
+            disabled={saving}
+            className={`px-6 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-lg transition-all active:scale-95 ${
+              saving
+                ? "bg-[rgb(var(--zx-surface-hover))] text-[rgb(var(--zx-text-muted))] border border-[rgb(var(--zx-border))] cursor-not-allowed shadow-none"
+                : "bg-brand-teal-500 text-white hover:bg-brand-teal-600 shadow-brand-teal-500/20"
+            }`}
           >
-            <Save size={16} /> Save Changes
+            {saving ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                  <span>Saving...</span>
+                </>
+            ) : (
+                <>
+                    <Save size={16} /> Save Changes
+                </>
+            )}
           </button>
         </div>
       </div>
