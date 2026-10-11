@@ -61,17 +61,35 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
+        // Per-user throttle so the code cannot be spammed/regenerated at will.
+        $sendKey = 'pwd_otp_send_' . $user->id;
+        if (Cache::has($sendKey)) {
+            return response()->json([
+                'message' => 'Please wait before requesting another OTP.',
+            ], 429);
+        }
+
+        /*
+         | Previous codes are invalidated on every new send, but the guess
+         | counter is intentionally NOT reset here — otherwise each resend
+         | would grant five fresh guesses and defeat the lockout entirely.
+         */
         $otp = (string) random_int(100000, 999999);
 
-        // Store OTP (5 mins)
-        Cache::put('pwd_otp_' . $user->id, $otp, now()->addMinutes(5));
+        // Store hashed OTP (5 mins)
+        Cache::put('pwd_otp_' . $user->id, hash('sha256', $otp), now()->addMinutes(5));
 
-        // Reset attempts (10 mins)
-        Cache::put('pwd_attempts_' . $user->id, 0, now()->addMinutes(10));
+        // Ensure the attempt counter exists (10 min window, never reset by resends)
+        Cache::add($attemptKey = 'pwd_attempts_' . $user->id, 0, now()->addMinutes(10));
+
+        // 60s cooldown between sends
+        Cache::put($sendKey, true, now()->addSeconds(60));
 
         $result = $mail->otp($user->email, $user->name, $otp);
 
         if (! ($result['ok'] ?? false)) {
+            Cache::forget($sendKey);
+
             return response()->json([
                 'message' => 'Failed to send OTP email. Please try again.'
             ], 500);
@@ -95,7 +113,7 @@ class ProfileController extends Controller
         $otpKey = 'pwd_otp_' . $user->id;
         $attemptKey = 'pwd_attempts_' . $user->id;
 
-        $attempts = Cache::get($attemptKey, 0);
+        $attempts = (int) Cache::get($attemptKey, 0);
 
         if ($attempts >= 5) {
             return response()->json([
@@ -105,8 +123,8 @@ class ProfileController extends Controller
 
         $cachedOtp = Cache::get($otpKey);
 
-        if (!$cachedOtp || $cachedOtp != $request->otp) {
-            Cache::increment($attemptKey);
+        if (!$cachedOtp || ! hash_equals($cachedOtp, hash('sha256', (string) $request->otp))) {
+            Cache::put($attemptKey, $attempts + 1, now()->addMinutes(10));
 
             return response()->json([
                 'message' => 'Invalid OTP. Attempts left: ' . (5 - ($attempts + 1))
