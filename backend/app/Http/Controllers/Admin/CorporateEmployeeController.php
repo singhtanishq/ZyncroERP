@@ -128,7 +128,6 @@ class CorporateEmployeeController extends Controller
         if ($employee->user_id) {
             $user = User::find($employee->user_id);
             if ($user) {
-                $user->tokens()->delete();
                 $user->delete();
             }
         }
