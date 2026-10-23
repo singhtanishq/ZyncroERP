@@ -110,7 +110,6 @@ class AdminFranchiseController extends Controller
         if ($franchise->user_id) {
             $user = User::find($franchise->user_id);
             if ($user) {
-                $user->tokens()->delete();
                 $user->delete();
             }
         }
