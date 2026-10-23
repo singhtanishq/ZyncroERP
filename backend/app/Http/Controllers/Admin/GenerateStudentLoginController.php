@@ -27,9 +27,6 @@ class GenerateStudentLoginController extends Controller
             return $user;
         });
 
-        // The reset invalidates every existing session.
-        $user->tokens()->delete();
-
         $mailResult = app(EmailService::class)->studentCredentials(
             $user->email,
             $user->name,
