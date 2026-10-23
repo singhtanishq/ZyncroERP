@@ -179,7 +179,6 @@ class AdminUserController extends Controller
                     ->update(['user_id' => null]);
             }
 
-            $user->tokens()->delete();
             $user->delete();
 
             return response()->json([
@@ -197,9 +196,6 @@ class AdminUserController extends Controller
 
         $user->password = Hash::make($plainPassword);
         $user->save();
-
-        // A credential reset must end every existing session.
-        $user->tokens()->delete();
 
         $mailResult = app(EmailService::class)->userCredentials(
             $user->email,
